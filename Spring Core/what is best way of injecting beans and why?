@@ -1,5 +1,5 @@
-#1.All Required Dependencies Are Available at Initialization Time - \
-We create an object by calling a constructor. \
+#1.All Required Dependencies Are Available at Initialization Time - 
+We create an object by calling a constructor. 
 If the constructor expects all required dependencies as parameters,then we can be 100% sure that the class will never be instantiated without its dependencies injected.\
 The IoC container makes sure that all the arguments provided in the constructor are available before passing them into the constructor.\
 This helps in preventing the infamous NullPointerException.\
