@@ -10,6 +10,8 @@
   In Spring, the objects that form the backbone of your application and that are managed by the Spring IoC container are called beans. A bean is an object that is instantiated, assembled, and otherwise managed by a Spring IoC container.
 - Any normal Java POJO class can be a Spring Bean if it’s configured to be initialized via container by providing configuration metadata information.
 
+-----
+** Example to understand topic easily ** 
 - Assume we have a class declaration:
 
 ```
@@ -91,6 +93,7 @@ assertEquals(1000, company.getAddress().getNumber());
 The result proves that the IoC container has created and initialized beans correctly.
 
 ### How to create a Spring bean?
+-
 ### What Is the Default Bean Scope in Spring Framework?
 ### How to Define the Scope of a Bean?
 ### What are the other scopes available?
