@@ -328,7 +328,7 @@ newService hashcode=678984726
    <!-- collaborators and configuration for this bean go here -->
 </bean>
 ```
-- In *Annotation Based Spring Bean Configuration*,scope is defined with @Scope annotaion on @Service or @Component class
+- In *Annotation Based Spring Bean Configuration*,scope is defined with @Scope annotation on @Service or @Component class
 ```
 @Service
 @Scope("singleton")
@@ -349,7 +349,17 @@ public class MyConfiguration {
 }
 ```
 ### What Is the Default Bean Scope in Spring Framework?
+- Singleton scope is the default scope in Spring Framework.
+
 ### What are the other scopes available?
+There are five scopes defined for Spring Beans.
+- *singleton* - Only one instance of the bean will be created for each container. This is the default scope for the spring beans. While using this scope, make sure bean doesn’t have shared instance variables otherwise it might lead to data inconsistency issues.
+- *prototype* - A new instance will be created every time the bean is requested.
+- *request* - This is same as prototype scope, however it’s meant to be used for web applications. A new instance of the bean will be created for each HTTP request.
+- *session* - A new bean will be created for each HTTP session by the container.
+- *global-session* - This is used to create global session beans for Portlet applications.
+Spring Framework is extendable and we can create our own scopes too. However, most of the times we are good with the scopes provided by the framework.
+
 ### How is Spring’s singleton bean different from Gang of Four Singleton Pattern?
 ### Are Singleton Beans Thread-Safe?
 ### What Does the Spring Bean Lifecycle Look Like?
