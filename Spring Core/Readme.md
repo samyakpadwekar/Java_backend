@@ -366,13 +366,24 @@ Spring Framework is extendable and we can create our own scopes too. However, mo
 - Spring Singleton as per Spring 3.1 Doc
 > A Spring singleton bean can be any normal class you write, but declaring it's scope as singleton means that Spring will only create one instance and provide its reference to all beans that reference the declared bean. You may have many instances of that class in your application, but only one will be created for that bean. You may even have multiple beans of the same class all declared as singleton. Each bean will create exactly one instance of the class.
 - The *Java singleton Pattern* is scoped by the Java class loader, the *Spring singleton* is scoped by the container context.
-Which basically means that, \
+Which basically means that,
 - In Java, you can be sure that a singleton is a truly a singleton only within the context of the class loader which loaded it. Other class loaders should be capable of creating another instance of it (provided the class loaders are not in the same class loader hierarchy), despite of all your efforts in code to try to prevent it.
 - In Spring, if you could load your singleton class in two different contexts and then again we can break the singleton concept.
 - So, in summary, Java considers something a singleton if it cannot create more than one instance of that class within a given class loader, whereas Spring would consider something a singleton if it cannot create more than one instance of a class within a given container context.
 - Even if we declare same bean two different times, it will be created just once. Spring is smart enough to handle that and when you try to fetch instances via IDs, can be tested using "==" operator.
 
 ### Are Singleton Beans Thread-Safe?
+- No. The two concepts are not even related.
+- Singletons are about *creation*. This design pattern ensures that only one instance of a class is created.Thread safety is about *execution*. To quote Wikipedia:
+> A piece of code is thread-safe if it only manipulates shared data structures in a manner that guarantees safe execution by multiple threads at the same time.
+- So eventually thread safety depends on the code and the code only. And this is the reason why Spring beans are not thread safe per se.
+- Spring singleton beans are created once and there can be only one instance available at any point of time.
+- Lets say your have an instance variable which is modified in an non-synchronized method. \
+  In multi-threaded environment,same class instance will be assigned to all the threads and 2 concurrent threads can update/change the instance variables which may lead unexpected situation. \
+  Singleton beans does not provide thread safety and now you know that instance variables usage may lead to unexpected result, you have 2 options to solve the same :
+1. Don't use instance variables in multithreaded environment. OR
+2. Use synchronized block/keyword on methods wherever the instance variables are modified to avoid unexpected results.
+
 ### What Does the Spring Bean Lifecycle Look Like?
 ### What are Bean Factory and Application Context?
 ### Can you compare Bean Factory with Application Context?
