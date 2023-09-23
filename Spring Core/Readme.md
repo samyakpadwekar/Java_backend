@@ -361,6 +361,17 @@ There are five scopes defined for Spring Beans.
 Spring Framework is extendable and we can create our own scopes too. However, most of the times we are good with the scopes provided by the framework.
 
 ### How is Spring’s singleton bean different from Gang of Four Singleton Pattern?
+- GOF Singleton Pattern as per Wikipedia
+> A Java singleton, per the design pattern where instantiation is restricted to one, usually per class loader by the code.
+- Spring Singleton as per Spring 3.1 Doc
+> A Spring singleton bean can be any normal class you write, but declaring it's scope as singleton means that Spring will only create one instance and provide its reference to all beans that reference the declared bean. You may have many instances of that class in your application, but only one will be created for that bean. You may even have multiple beans of the same class all declared as singleton. Each bean will create exactly one instance of the class.
+- The *Java singleton Pattern* is scoped by the Java class loader, the *Spring singleton* is scoped by the container context.
+Which basically means that, \
+- In Java, you can be sure that a singleton is a truly a singleton only within the context of the class loader which loaded it. Other class loaders should be capable of creating another instance of it (provided the class loaders are not in the same class loader hierarchy), despite of all your efforts in code to try to prevent it.
+- In Spring, if you could load your singleton class in two different contexts and then again we can break the singleton concept.
+- So, in summary, Java considers something a singleton if it cannot create more than one instance of that class within a given class loader, whereas Spring would consider something a singleton if it cannot create more than one instance of a class within a given container context.
+- Even if we declare same bean two different times, it will be created just once. Spring is smart enough to handle that and when you try to fetch instances via IDs, can be tested using "==" operator.
+
 ### Are Singleton Beans Thread-Safe?
 ### What Does the Spring Bean Lifecycle Look Like?
 ### What are Bean Factory and Application Context?
