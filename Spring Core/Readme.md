@@ -385,6 +385,23 @@ Which basically means that,
 2. Use synchronized block/keyword on methods wherever the instance variables are modified to avoid unexpected results.
 
 ### What Does the Spring Bean Lifecycle Look Like?
+- The bean life cycle refers to when & how the bean is instantiated, what action it performs until it lives, and when & how it is destroyed.
+- Bean life cycle is managed by the spring container.
+- When we run the program then, first of all,
+  1. the spring container gets started.
+  2. After that, the container creates the instance of a bean as per the request,
+  3. Dependencies are injected.
+  4. Custom init() method is called. \
+     if we want to execute some code on the bean instantiation then we can write that code inside the custom init() method.
+  5. Custom utility methods are called.
+  6. Custom destroy() is called. \
+     if we want to execute some code just after closing the spring container then we can write that code inside the destroy() method.
+  7. And finally, the bean is destroyed when the spring container is closed.
+- Note: We can choose a custom method name instead of init() and destroy().
+  
+The following image shows the process flow of the bean life cycle.(Soure : Geeksforgeeks)
+![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20200428011831/Bean-Life-Cycle-Process-flow3.png)
+
 ### What are Bean Factory and Application Context?
 ### Can you compare Bean Factory with Application Context?
 ### How do you create an application context with Spring?
