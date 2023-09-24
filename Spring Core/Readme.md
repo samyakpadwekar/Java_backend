@@ -418,18 +418,175 @@ The following image shows the process flow of the bean life cycle.(Soure : Geeks
 Strategy design pattern, Service Locator pattern, Factory pattern, and Dependency Injection (DI).
 
 ### What is IOC Container & it's important roles?
-- An IoC container is a common characteristic of frameworks that implement IoC.
-- In the Spring framework, the interface *ApplicationContext* represents the IoC container. The Spring container is responsible for instantiating, configuring and assembling objects known as *beans*, as well as managing their life cycles.
-- The Spring framework provides several implementations of the ApplicationContext interface: ClassPathXmlApplicationContext and FileSystemXmlApplicationContext for standalone applications, and WebApplicationContext for web applications.
-In order to assemble beans, the container uses configuration metadata, which can be in the form of XML configuration or annotations.
-Here’s one way to manually instantiate a container:
-```
-ApplicationContext context
-  = new ClassPathXmlApplicationContext("applicationContext.xml");
-```
-To set the item attribute in the example above, we can use metadata. Then the container will read this metadata and use it to assemble beans at runtime.
-Dependency Injection in Spring can be done through constructors, setters or fields.
+- Spring IoC (Inversion of Control) Container is the core of Spring Framework.
+- It creates the objects, configures and assembles their dependencies, manages their entire life cycle.
+- The Container uses Dependency Injection(DI) to manage the components that make up the application.
+- It gets the information about the objects from a configuration file(XML)[XML based bean configuration] or Java Code[Java based bean configuration] or Java Annotations[Annotation based bean configuration] and Java POJO class. These objects are called *Beans*.
+- Since the Controlling of Java objects and their lifecycle is not done by the developers, hence the name *Inversion Of Control*.
+- There are 2 types of IoC containers:
+  1. BeanFactory 
+  2. ApplicationContext 
+- That means if you want to use an IoC container in spring whether we need to use a *BeanFactory* or *ApplicationContext*. The BeanFactory is the most basic version of IoC containers, and the ApplicationContext extends the features of BeanFactory.
+- The followings are some of the features/roles of Spring IoC,
+  1. Creating Object for us,
+  2. Managing our objects,
+  3. Helping our application to be configurable,
+  4. Managing dependencies
+  5. Managing bean entire life cycle.
 
+-----
+*Example to understand topic easily* 
+
+Let’s understand what is IoC in Spring with an example. Suppose we have one interface named Sim and it has some abstract methods calling() and data().
+```
+// Java Program to Illustrate Sim Interface
+public interface Sim
+{
+    void calling();
+    void data();
+}
+```
+Now we have created another two classes Airtel and Jio which implement the Sim interface and override the interface methods.
+```
+// Java Program to Illustrate Airtel Class
+ 
+// Class
+// Implementing Sim interface
+public class Airtel implements Sim {
+ 
+    @Override public void calling()
+    {
+        System.out.println("Airtel Calling");
+    }
+ 
+    @Override public void data()
+    {
+        System.out.println("Airtel Data");
+    }
+}
+```
+
+```
+// Java Program to Illustrate Jio Class
+ 
+// Class
+// Implementing Sim interface
+public class Jio implements Sim{
+    @Override
+    public void calling() {
+        System.out.println("Jio Calling");
+    }
+ 
+    @Override
+    public void data() {
+        System.out.println("Jio Data");
+    }
+}
+```
+
+So let’s now call these methods inside the main method. So by implementing the Run time polymorphism concept we can do something like this
+
+```
+// Java Program to Illustrate Mobile Class
+ 
+// Class
+public class Mobile {
+ 
+    // Main driver method
+    public static void main(String[] args)
+    {
+ 
+        // Creating instance of Sim interface
+        // inside main() method
+        // with reference to Jio class constructor
+        // invocation
+        Sim sim = new Jio();
+ 
+        // Sim sim = new Airtel();
+ 
+        sim.calling();
+        sim.data();
+    }
+}
+```
+But what happens if in the future another new Sim Vodafone came and we need to change again to the child class name in the code, like this
+```
+Sim sim = new Vodafone();
+```
+So we have to do our configuration in the source code. So how to make it configurable? \
+We don’t want to touch the source code of this. The source code should be constant. \
+And how can we make it? \
+Here Spring IoC comes into the picture. So in this example, we are going to use *ApplicationContext* to implement an IoC container. \
+
+First, we have to create an XML file and name the file as “beans.xml“.
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+ 
+  <bean id="sim" class="Jio"></bean>
+</beans>
+```
+
+Output Explanation: 
+In the beans.xml file, we have created beans. So inside the id, we have to pass the unique id and inside the class, we have to pass the Class name for which you want to create the bean. Later on, inside the main method, we can tweek it out that will be described in the upcoming program.
+
+> Bean Definition: In Spring, the objects that form the backbone of your application and that are managed by the Spring IoC container are called beans. A bean is an object that is instantiated, assembled, and otherwise managed by a Spring IoC container.
+```
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+ 
+public class Mobile {
+    public static void main(String[] args) {
+        // Using ApplicationContext tom implement Spring IoC
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
+         
+        // Get the bean
+        Sim sim = applicationContext.getBean("sim", Sim.class);
+         
+        // Calling the methods
+        sim.calling();
+        sim.data();
+    }
+}
+```
+Output:
+```
+Jio Calling
+Jio Data
+```
+And now if you want to use the Airtel sim so you have to change only inside the beans.xml file. The main method is going to be the same.
+```
+<bean id="sim" class="Airtel"></bean>
+```
+
+```
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+ 
+public class Mobile {
+    public static void main(String[] args) {
+       
+        // Using ApplicationContext tom implement Spring IoC
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
+         
+        // Get the bean
+        Sim sim = applicationContext.getBean("sim", Sim.class);
+         
+        // Calling the methods
+        sim.calling();
+        sim.data();
+    }
+}
+```
+Output:
+```
+Airtel Calling
+Airtel Data
+```
 ### What are Bean Factory and Application Context?
 ### Can you compare Bean Factory with Application Context?
 ### How do you create an application context with Spring?
