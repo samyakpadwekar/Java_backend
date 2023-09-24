@@ -402,18 +402,41 @@ Which basically means that,
 The following image shows the process flow of the bean life cycle.(Soure : Geeksforgeeks)
 ![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20200428011831/Bean-Life-Cycle-Process-flow3.png)
 
+### What is the difference between XML and Java Configurations for Spring?
+### How do you choose between XML and Java Configurations for Spring?
+### How do you define a component scan in XML and Java Configurations?
+
+### What is IOC (Inversion of Control)?
+- Inversion of Control is a principle in software engineering which transfers the control of objects or portions of a program to a container or framework, often used it in the context of object-oriented programming.
+- In contrast with traditional programming, in which our custom code makes calls to a library, IoC enables a framework to take control of the flow of a program and make calls to our custom code. To enable this, frameworks use abstractions with additional behavior built in. If we want to add our own behavior, we need to extend the classes of the framework or plugin our own classes.
+- The advantages of this architecture are:
+1. decoupling the execution of a task from its implementation
+2. making it easier to switch between different implementations
+3. greater modularity of a program
+4. greater ease in testing a program by isolating a component or mocking its dependencies, and allowing components to communicate through contracts
+- We can achieve Inversion of Control through various mechanisms such as: \
+Strategy design pattern, Service Locator pattern, Factory pattern, and Dependency Injection (DI).
+
+### What is IOC Container & it's important roles?
+- An IoC container is a common characteristic of frameworks that implement IoC.
+- In the Spring framework, the interface *ApplicationContext* represents the IoC container. The Spring container is responsible for instantiating, configuring and assembling objects known as *beans*, as well as managing their life cycles.
+- The Spring framework provides several implementations of the ApplicationContext interface: ClassPathXmlApplicationContext and FileSystemXmlApplicationContext for standalone applications, and WebApplicationContext for web applications.
+In order to assemble beans, the container uses configuration metadata, which can be in the form of XML configuration or annotations.
+Here’s one way to manually instantiate a container:
+```
+ApplicationContext context
+  = new ClassPathXmlApplicationContext("applicationContext.xml");
+```
+To set the item attribute in the example above, we can use metadata. Then the container will read this metadata and use it to assemble beans at runtime.
+Dependency Injection in Spring can be done through constructors, setters or fields.
+
 ### What are Bean Factory and Application Context?
 ### Can you compare Bean Factory with Application Context?
 ### How do you create an application context with Spring?
 ### What are the different options available to create Application Contexts for Spring?
 ### How does Spring know where to search for Components or Beans?
-### What is the difference between XML and Java Configurations for Spring?
-### How do you choose between XML and Java Configurations for Spring?
-### How do you define a component scan in XML and Java Configurations?
-### What is IOC (Inversion of Control)?
 ### What is Dependency Injection?
 ### Can you give few examples of Dependency Injection?
-### What are the important roles of an IOC Container?
 ### How Can We Inject Beans in Spring?
 ### What is setter injection?
 ### What is constructor injection?
