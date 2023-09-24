@@ -784,6 +784,20 @@ StudentService studentService = context.getBean("studentService", StudentService
 ----
 
 ### Can you compare Bean Factory with Application Context?
+|            BeanFactory 	 			|         ApplicationContext 			|
+| ---------------------------------     | ---------------------------------     |
+| It is a fundamental container that provides the basic functionality for extends the BeanFactory that managing beans. | It is an advanced container that extends the BeanFactory that provides all basic functionality and adds some advanced features. |
+| It is suitable to build standalone applications. | It is suitable to build Web applications, integration with AOP modules, ORM and distributed applications. |
+| It supports only Singleton and Prototype bean scopes. | It supports all types of bean scopes such as Singleton, Prototype, Request, Session etc. |
+| It does not support Annotations. In Bean Autowiring, we need to configure the properties in XML file only. | It supports Annotation based configuration in Bean Autowiring. |
+| This interface does not provides messaging (i18n or internationalization) functionality. | ApplicationContext interface extends MessageSource interface, thus it provides messaging (i18n or internationalization) functionality. |
+| BeanFactory does not support Event publication functionality. | Event handling in the ApplicationContext is provided through the ApplicationEvent class and ApplicationListener interface. |
+| In BeanFactory, we need to manually register BeanPostProcessors and BeanFactoryPostProcessors. | The ApplicationContext automatically registers BeanFactoryPostProcessor and BeanPostProcessor at startup. |
+| BeanFactory will create a bean object when the getBean() method is called thus making it Lazy initialization. | ApplicationContext loads all the beans and creates objects at the time of startup only thus making it Eager initialization. |
+| BeanFactory interface provides basic features only thus requires less memory. For standalone applications where the basic features are enough and when memory consumption is critical, we can use BeanFactory. | ApplicationContext provides all the basic features and advanced features, including several that are geared towards enterprise applications thus requires more memory. |
+
+For more info refer <a href="https://www.geeksforgeeks.org/spring-difference-between-beanfactory-and-applicationcontext/" target="_blank">gfg</a>
+
 ### How do you create an application context with Spring?
 ### What are the different options available to create Application Contexts for Spring?
 ### How does Spring know where to search for Components or Beans?
