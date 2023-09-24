@@ -587,7 +587,202 @@ Output:
 Airtel Calling
 Airtel Data
 ```
-### What are Bean Factory and Application Context?
+------
+### What is Bean Factory?
+- The BeanFactory is the actual container which instantiates, configures, and manages a number of beans.
+- These beans typically collaborate with one another, and thus have dependencies between themselves.
+- These dependencies are reflected in the configuration data used by the BeanFactory (although some dependencies may not be visible as configuration data, but rather be a function of programmatic interactions between beans at runtime).
+- A BeanFactory is represented by the interface org.springframework.beans.factory.BeanFactory, for which there are multiple implementations.
+- The most commonly used simple BeanFactory implementation is org.springframework.beans.factory.xml.XmlBeanFactory. (This should be qualified with the reminder that ApplicationContexts are a subclass of BeanFactory, and most users end up using XML variants of ApplicationContext).
+- Although for most scenarios, almost all user code managed by the BeanFactory does not have to be aware of the BeanFactory, the BeanFactory does have to be instantiated somehow. This can happen via explicit user code such as:
+```
+Resource res = new FileSystemResource("beans.xml");
+XmlBeanFactory factory = new XmlBeanFactory(res);
+```
+or
+```
+ClassPathResource res = new ClassPathResource("beans.xml");
+XmlBeanFactory factory = new XmlBeanFactory(res);
+```
+or
+```
+ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(
+        new String[] {"applicationContext.xml", "applicationContext-part2.xml"});
+// of course, an ApplicationContext is just a BeanFactory
+BeanFactory factory = (BeanFactory) appContext;
+```
+----
+*Example to understand topic easily* 
+
+Bean Definition: Create a Student POJO class.
+```
+// Java Program where we are creating a POJO class
+
+// POJO class
+public class Student {
+
+  // Member variables
+  private String name;
+  private String age;
+
+  // Constructor 1
+  public Student() {
+  }
+
+  // Constructor 2
+  public Student(String name, String age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  // Method inside POJO class
+  @Override
+  public String toString() {
+
+    // Print student class attributes
+    return "Student{" + "name='" + name + '\'' + ", age='" + age + '\'' + '}';
+  }
+}
+```
+XML Bean Configuration: Configure the Student bean in the bean-factory-demo.xml file.
+```
+<?xml version = "1.0" encoding="UTF-8"?>
+<beans xmlns = "http://www.springframework.org/schema/beans"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation = "http://www.springframework.org/schema/beans
+            https://www.springframework.org/schema/beans/spring-beans.xsd">
+            
+    <bean id="student" class = "com.gfg.demo.domain.Student">
+                <constructor-arg name="name" value="Tina"/>
+                <constructor-arg name="age" value="21"/>
+        </bean>
+</beans>
+```
+Main Class
+```
+// Application class 
+@SpringBootApplication
+
+// Main class
+public class DemoApplication {
+
+  // Main driver method
+  public static void main(String[] args) {
+
+    // Creating object in a spring container (Beans)
+    BeanFactory factory = new ClassPathXmlApplicationContext("bean-factory-demo.xml");
+    Student student = (Student) factory.getBean("student");
+
+    System.out.println(student);
+  }
+}
+```
+Output:
+```
+Student{name='Tina', age='21'}
+```
+*Note: XmlBeanFactory class is deprecated.*
+
+-----
+
+###  What is Application Context?
+- ApplicationContext is the sub-interface of BeanFactory.
+- BeanFactory provides basic functionalities and is recommended to use for lightweight applications like mobile and applets.
+- ApplicationContext provides basic features in addition to enterprise-specific functionalities which are as follows:
+1. Publishing events to registered listeners by resolving property files.
+2. Methods for accessing application components.
+3. Supports Internationalization.
+4. Loading File resources in a generic fashion.
+Note: It is because of these additional features, developers prefer to use ApplicationContext over BeanFactory. 
+
+*ApplicationContext Implementation Classes*
+- There are different types of Application containers provided by Spring for different requirements as listed below which later onwards are described alongside with declaration, at lastly providing an example to get through the implementation part with the pictorial aids. Containers are as follows:
+1. AnnotationConfigApplicationContext container 
+2. AnnotationConfigWebApplicationContext
+3. XmlWebApplicationContext
+4. FileSystemXmlApplicationContext
+5. ClassPathXmlApplicationContext
+
+-----
+*Detailed Explanation for better understanding*
+
+**Container 1: AnnotationConfigApplicationContext**
+
+AnnotationConfigApplicationContext class was introduced in Spring 3.0. It accepts classes annotated with @Configuration, @Component, and JSR-330 compliant classes. The constructor of AnnotationConfigApplicationContext accepts one or more classes. \
+For example, in the below declaration, two Configuration classes Appconfig and AppConfig1 are passed as arguments to the constructor. The beans defined in later classes will override the same type and name beans in earlier classes when passed as arguments. \
+For example, AppConfig and AppConfig1 have the same bean declaration. The bean defined in AppConfig1 overrides the bean in AppConfig.
+
+Syntax: Declaration
+```
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class, AppConfig1.class);
+```
+Note: Add the following to the properties file in the IDE to allow the spring to override beans.
+```
+spring.main.allow-bean-definition-overriding=true
+```
+
+**Container 2: AnnotationConfigWebApplicationContext**
+
+AnnotationConfigWebApplicationContext class was introduced in Spring 3.0. It is similar to AnnotationConfigApplicationContext for a web environment. It accepts classes annotated with @Configuration, @Component, and JSR-330 compliant classes. These classes can be registered via register() method or passing base packages to scan() method. This class may be used when we configure ContextLoaderListener servlet listener or a DispatcherServlet in a web.xml. From Spring 3.1, this class can be instantiated and injected to DispatcherServlet using java code by implementing WebApplicationInitializer, an alternative to web.xml.
+ ```
+// Class
+// Implementing WebApplicationInitializer
+public class MyWebApplicationInitializer implements WebApplicationInitializer {
+
+  // Servlet container
+
+  public void onStartup(ServletContext container) throws ServletException {
+    AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+    context.register(AppConfig.class);
+    context.setServletContext(container);
+
+    // Servlet configuration
+  }
+}
+```
+
+**Container 3: XmlWebApplicationContext**
+
+Spring MVC Web-based application can be configured completely using XML or Java code. Configuring this container is similar to the AnnotationConfigWebApplicationContext container, which implies we can configure it in web.xml or using java code.
+```
+// Class
+// Implementing WebApplicationInitializer
+public class MyXmlWebApplicationInitializer implements WebApplicationInitializer {
+
+  // Servlet container
+  public void onStartup(ServletContext container) throws ServletException {
+    XmlWebApplicationContext context = new XmlWebApplicationContext();
+    context.setConfigLocation("/WEB-INF/spring/applicationContext.xml");
+    context.setServletContext(container);
+
+    // Servlet configuration
+  }
+}
+```
+
+**Container 4: FileSystemXmlApplicationContext**
+
+FileSystemXmlApplicationContext is used to load XML-based Spring Configuration files from the file system or from URL. We can get the application context using Java code. It is useful for standalone environments and test harnesses. The following code shows how to create a container and use the XML as metadata information to load the beans.
+
+Illustration:
+```
+String path = "Documents/demoProject/src/main/resources/applicationcontext/student-bean-config.xml";
+
+ApplicationContext context = new FileSystemXmlApplicationContext(path);
+AccountService accountService = context.getBean("studentService", StudentService.class);
+```
+
+**Container 5: ClassPathXmlApplicationContext**
+
+FileSystemXmlApplicationContext is used to load XML-based Spring Configuration files from the classpath. We can get the application context using Java code. It is useful for standalone environments and test harnesses. The following code shows how to create a container and use the XML as metadata information to load the beans.
+
+Illustration:
+```
+ApplicationContext context = new ClassPathXmlApplicationContext("applicationcontext/student-bean-config.xml");
+StudentService studentService = context.getBean("studentService", StudentService.class);
+```
+----
+
 ### Can you compare Bean Factory with Application Context?
 ### How do you create an application context with Spring?
 ### What are the different options available to create Application Contexts for Spring?
