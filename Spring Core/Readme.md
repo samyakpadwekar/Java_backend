@@ -1,11 +1,11 @@
 # Spring-Core-Interview-Question
 
-### what is spring framework?
-### what are the features of spring?
-### what are the modules of spring?
-### What is Loose Coupling?
-### What is a Dependency?
-### What Is a Spring Bean?
+### 1.what is spring framework?
+### 2.what are the features of spring?
+### 3.what are the modules of spring?
+### 4.What is Loose Coupling?
+### 5.What is a Dependency?
+### 6.What Is a Spring Bean?
 - Here’s a definition of beans in the Spring Framework documentation: \
   In Spring, the objects that form the backbone of your application and that are managed by the Spring IoC container are called beans. A bean is an object that is instantiated, assembled, and otherwise managed by a Spring IoC container.
 - Any normal Java POJO class can be a Spring Bean if it’s configured to be initialized via container by providing configuration metadata information.
@@ -93,7 +93,7 @@ The result proves that the IoC container has created and initialized beans corre
 
 ------
 
-### How to create a Spring bean?
+### 7.How to create a Spring bean?
 Spring Framework provides three ways to configure beans to be used in the application. \
 *Annotation Based Configuration* - By using @Service or @Component annotations. Scope details can be provided with @Scope annotation.\
 *XML Based Configuration* - By creating Spring Configuration XML file to configure the beans. If you are using Spring MVC framework, the xml based configuration can be loaded automatically by writing some boiler plate code in web.xml file. \
@@ -321,7 +321,7 @@ newService hashcode=678984726
 ```
 
 ---
-### How to Define the Scope of a Bean?
+### 8.How to Define the Scope of a Bean?
 - In *XML Based Spring Bean Configuration*,Scope is defined as 
 ```
 <bean id = "..." class = "..." scope = "singleton">
@@ -348,10 +348,10 @@ public class MyConfiguration {
 	
 }
 ```
-### What Is the Default Bean Scope in Spring Framework?
+### 9.What Is the Default Bean Scope in Spring Framework?
 - Singleton scope is the default scope in Spring Framework.
 
-### What are the other scopes available?
+### 10.What are the other scopes available?
 There are five scopes defined for Spring Beans.
 - *singleton* - Only one instance of the bean will be created for each container. This is the default scope for the spring beans. While using this scope, make sure bean doesn’t have shared instance variables otherwise it might lead to data inconsistency issues.
 - *prototype* - A new instance will be created every time the bean is requested.
@@ -360,7 +360,7 @@ There are five scopes defined for Spring Beans.
 - *global-session* - This is used to create global session beans for Portlet applications.
 Spring Framework is extendable and we can create our own scopes too. However, most of the times we are good with the scopes provided by the framework.
 
-### How is Spring’s singleton bean different from Gang of Four Singleton Pattern?
+### 11.How is Spring’s singleton bean different from Gang of Four Singleton Pattern?
 - GOF Singleton Pattern as per Wikipedia
 > A Java singleton, per the design pattern where instantiation is restricted to one, usually per class loader by the code.
 - Spring Singleton as per Spring 3.1 Doc
@@ -372,7 +372,7 @@ Which basically means that,
 - So, in summary, Java considers something a singleton if it cannot create more than one instance of that class within a given class loader, whereas Spring would consider something a singleton if it cannot create more than one instance of a class within a given container context.
 - Even if we declare same bean two different times, it will be created just once. Spring is smart enough to handle that and when you try to fetch instances via IDs, can be tested using "==" operator.
 
-### Are Singleton Beans Thread-Safe?
+### 12.Are Singleton Beans Thread-Safe?
 - No. The two concepts are not even related.
 - Singletons are about *creation*. This design pattern ensures that only one instance of a class is created.Thread safety is about *execution*. To quote Wikipedia:
 > A piece of code is thread-safe if it only manipulates shared data structures in a manner that guarantees safe execution by multiple threads at the same time.
@@ -384,7 +384,7 @@ Which basically means that,
 1. Don't use instance variables in multithreaded environment. OR
 2. Use synchronized block/keyword on methods wherever the instance variables are modified to avoid unexpected results.
 
-### What Does the Spring Bean Lifecycle Look Like?
+### 13.What Does the Spring Bean Lifecycle Look Like?
 - The bean life cycle refers to when & how the bean is instantiated, what action it performs until it lives, and when & how it is destroyed.
 - Bean life cycle is managed by the spring container.
 - When we run the program then, first of all,
@@ -402,11 +402,11 @@ Which basically means that,
 The following image shows the process flow of the bean life cycle.(Soure : Geeksforgeeks)
 ![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20200428011831/Bean-Life-Cycle-Process-flow3.png)
 
-### What is the difference between XML and Java Configurations for Spring?
-### How do you choose between XML and Java Configurations for Spring?
-### How do you define a component scan in XML and Java Configurations?
+### 14.What is the difference between XML and Java Configurations for Spring?
+### 15.How do you choose between XML and Java Configurations for Spring?
+### 16.How do you define a component scan in XML and Java Configurations?
 
-### What is IOC (Inversion of Control)?
+### 17.What is IOC (Inversion of Control)?
 - Inversion of Control is a principle in software engineering which transfers the control of objects or portions of a program to a container or framework, often used it in the context of object-oriented programming.
 - In contrast with traditional programming, in which our custom code makes calls to a library, IoC enables a framework to take control of the flow of a program and make calls to our custom code. To enable this, frameworks use abstractions with additional behavior built in. If we want to add our own behavior, we need to extend the classes of the framework or plugin our own classes.
 - The advantages of this architecture are:
@@ -417,7 +417,7 @@ The following image shows the process flow of the bean life cycle.(Soure : Geeks
 - We can achieve Inversion of Control through various mechanisms such as: \
 Strategy design pattern, Service Locator pattern, Factory pattern, and Dependency Injection (DI).
 
-### What is IOC Container & it's important roles?
+### 18.What is IOC Container & it's important roles?
 - Spring IoC (Inversion of Control) Container is the core of Spring Framework.
 - It creates the objects, configures and assembles their dependencies, manages their entire life cycle.
 - The Container uses Dependency Injection(DI) to manage the components that make up the application.
@@ -588,7 +588,7 @@ Airtel Calling
 Airtel Data
 ```
 ------
-### What is Bean Factory?
+### 19.What is Bean Factory?
 - The BeanFactory is the actual container which instantiates, configures, and manages a number of beans.
 - These beans typically collaborate with one another, and thus have dependencies between themselves.
 - These dependencies are reflected in the configuration data used by the BeanFactory (although some dependencies may not be visible as configuration data, but rather be a function of programmatic interactions between beans at runtime).
@@ -685,7 +685,7 @@ Student{name='Tina', age='21'}
 
 -----
 
-###  What is Application Context?
+###  20.What is Application Context?
 - ApplicationContext is the sub-interface of BeanFactory.
 - BeanFactory provides basic functionalities and is recommended to use for lightweight applications like mobile and applets.
 - ApplicationContext provides basic features in addition to enterprise-specific functionalities which are as follows:
@@ -798,15 +798,15 @@ StudentService studentService = context.getBean("studentService", StudentService
 
 For more info refer <a href="https://www.geeksforgeeks.org/spring-difference-between-beanfactory-and-applicationcontext/" target="_blank">gfg</a>
 
-### How do you create an application context with Spring?
-### What are the different options available to create Application Contexts for Spring?
-### How does Spring know where to search for Components or Beans?
-### What is Dependency Injection?
-### Can you give few examples of Dependency Injection?
-### How Can We Inject Beans in Spring?
-### What is setter injection?
-### What is constructor injection?
-### Which Is the Best Way of Injecting Beans and Why?
+### 21.How do you create an application context with Spring?
+### 22.What are the different options available to create Application Contexts for Spring?
+### 23.How does Spring know where to search for Components or Beans?
+### 24.What is Dependency Injection?
+### 25.Can you give few examples of Dependency Injection?
+### 26.How Can We Inject Beans in Spring?
+### 27.What is setter injection?
+### 28.What is constructor injection?
+### 29.Which Is the Best Way of Injecting Beans and Why?
 1. *All Required Dependencies Are Available at Initialization Time* - \
 We create an object by calling a constructor. 
 If the constructor expects all required dependencies as parameters,then we can be 100% sure that the class will never be instantiated without its dependencies injected.
@@ -838,28 +838,28 @@ Constructor injection helps in creating immutable objects because a constructor�
 Once we create a bean, we cannot alter its dependencies anymore. 
 With setter injection, it’s possible to inject the dependency after creation, thus leading to mutable objects which, among other things, may not be thread-safe in a multi-threaded environment and are harder to debug due to their mutability.
 
-### What is Auto Wiring?
-### How does Spring do Autowiring?
-### What are the different modes of Autowiring in Spring?
-### How is it done with Spring Boot?
-### What does @Component signify?
-### What is a Component Scan?
-### What does @Autowired signify?
-### What’s the difference Between @Controller, @Component, @Repository, and @Service Annotations in Spring?
-### How do you debug problems with Spring Framework?
-### How do you solve NoUniqueBeanDefinitionException?
-### How do you solve NoSuchBeanDefinitionException?
-### What is @Primary?
-### What is @Qualifier?
-### What is CDI (Contexts and Dependency Injection)?
-### Does Spring Support CDI?
-### Would you recommed to use CDI or Spring Annotations?
-### What are the major features in different versions of Spring?
-### What are new features in Spring Framework 4.0?
-### What are new features in Spring Framework 5.0?
-### What are important Spring Projects?
-### What is the simplest way of ensuring that we are using single version of all Spring related dependencies?
-### Name some of the design patterns used in Spring Framework?
-### What do you think about Spring Framework?
-### Why is Spring Popular?
-### Can you give a big picture of the Spring Framework?
+### 30.What is Auto Wiring?
+### 31.How does Spring do Autowiring?
+### 32.What are the different modes of Autowiring in Spring?
+### 33.How is it done with Spring Boot?
+### 34.What does @Component signify?
+### 35.What is a Component Scan?
+### 36.What does @Autowired signify?
+### 37.What’s the difference Between @Controller, @Component, @Repository, and @Service Annotations in Spring?
+### 38.How do you debug problems with Spring Framework?
+### 39.How do you solve NoUniqueBeanDefinitionException?
+### 40.How do you solve NoSuchBeanDefinitionException?
+### 41.What is @Primary?
+### 42.What is @Qualifier?
+### 43.What is CDI (Contexts and Dependency Injection)?
+### 44.Does Spring Support CDI?
+### 45.Would you recommed to use CDI or Spring Annotations?
+### 46.What are the major features in different versions of Spring?
+### 47.What are new features in Spring Framework 4.0?
+### 48.What are new features in Spring Framework 5.0?
+### 49.What are important Spring Projects?
+### 50.What is the simplest way of ensuring that we are using single version of all Spring related dependencies?
+### 51.Name some of the design patterns used in Spring Framework?
+### 52.What do you think about Spring Framework?
+### 53.Why is Spring Popular?
+### 54.Can you give a big picture of the Spring Framework?
