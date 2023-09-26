@@ -799,8 +799,103 @@ StudentService studentService = context.getBean("studentService", StudentService
 For more info refer <a href="https://www.geeksforgeeks.org/spring-difference-between-beanfactory-and-applicationcontext/" target="_blank">gfg</a>
 
 ### 21.How do you create an application context with Spring?
+- refer space between que.18 and 19
+
 ### 22.What are the different options available to create Application Contexts for Spring?
+- refer que.20
+
 ### 23.How does Spring know where to search for Components or Beans?
+- Where to search for the beans is defined by the @ComponentScan which can be annotated on the @Configuration class that is used to bootstrap Spring.
+- For example , it has an attribute called scanBasePackages which tells Spring to scan the beans(A class that is annotated with @Component or its sterotypes such as @Service , @Repository , @Controller etc. ) from certain packages and its sub-packages only.
+- Then for each bean that are registered , it goes on see if there are any methods annotation with @Bean.If yes, also register them as beans.
+
+-----
+*long answer for better understanding*
+
+**@ComponentScan**
+If you understand Component Scan, you understand Spring.
+
+Spring is a dependency injection framework. It is all about beans and wiring in dependencies. \
+The first step of defining Spring Beans is by adding the right annotation — @Component or @Service or @Repository. \
+However, Spring does not know about the bean unless it knows where to search for it. \
+This part of “telling Spring where to search” is called a **Component Scan**. \
+You define the packages that have to be scanned.
+
+Once you define a Component Scan for a package, Spring would search the package and all its sub packages for components/beans.
+
+*Defining a Component Scan*
+
+If you are using Spring Boot, check the configuration in Approach 1.
+If you are doing a JSP/Servlet or a Spring MVC application without using Spring Boot, use Approach 2.
+
+*Approach 1: Component Scan in a Spring Boot Project*
+
+If your other package hierarchies are below your main app with the @SpringBootApplication annotation, you’re covered by the implicit Component Scan. If there are beans/components in other packages that are not sub-packages of the main package, you should manually add them as @ComponentScan.
+
+Consider below class
+```
+package com.in28minutes.springboot.basics.springbootin10steps;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+@SpringBootApplication
+public class SpringbootIn10StepsApplication {
+    public static void main(String[] args) {
+        ApplicationContext applicationContext =
+            SpringApplication.run(SpringbootIn10StepsApplication.class, args);
+        for (String name: applicationContext.getBeanDefinitionNames()) {
+            System.out.println(name);
+        }
+    }
+}
+```
+*@SpringBootApplication* is defined in the SpringbootIn10StepsApplication class which is in the package com.in28minutes.springboot.basics.springbootin10steps \
+@SpringBootApplication defines an automatic Component Scan on the package com.in28minutes.springboot.basics.springbootin10steps. \
+You are fine if all your components are defined in the above package or a sub-package of it. \
+
+However, let’s say one of the components is defined in package com.in28minutes.springboot.somethingelse \
+In this case, you would need to add the new package into Component Scan. \
+
+You have two options:
+
+Option 1:
+```
+@ComponentScan(“com.in28minutes.springboot”)
+@SpringBootApplication
+public class SpringbootIn10StepsApplication {...}
+```
+Option 2:: Define as array
+```
+@ComponentScan({"com.in28minutes.springboot.basics.springbootin10steps","com.in28minutes.springboot.somethingelse"})
+@SpringBootApplication
+public class SpringbootIn10StepsApplication {...}
+```
+
+*Approach 2: Non-Spring Boot Project*
+
+Option 1:
+```
+@ComponentScan(“com.in28minutes)
+@Configuration
+public class SpringConfiguration {...}
+```
+Option 2:
+```
+@ComponentScan({"com.in28minutes.package1","com.in28minutes.package2"})
+@Configuration
+public class SpringConfiguration {...}
+```
+XML application context:
+```
+<context:component-scan base-package="com.in28minutes" />
+```
+Specific multiple packages:
+```
+<context:component-scan base-package="com.in28minutes.package1, com.in28minutes.package2" 
+```
+-----
+
 ### 24.What is Dependency Injection?
 ### 25.Can you give few examples of Dependency Injection?
 ### 26.How Can We Inject Beans in Spring?
@@ -838,14 +933,162 @@ Constructor injection helps in creating immutable objects because a constructor�
 Once we create a bean, we cannot alter its dependencies anymore. 
 With setter injection, it’s possible to inject the dependency after creation, thus leading to mutable objects which, among other things, may not be thread-safe in a multi-threaded environment and are harder to debug due to their mutability.
 
-### 30.What is Auto Wiring?
-### 31.How does Spring do Autowiring?
+### 30.What is Auto Wiring in Spring?
+- Wiring allows the Spring container to automatically resolve dependencies between collaborating beans by inspecting the beans that have been defined.
+- The Spring container detects those dependencies specified in the configuration file and @ the relationship between the beans. This is referred to as autowiring in Spring.
+- An autowired application requires fewer lines of code comparatively but at the same time, it provides very little flexibility to the programmer.
+  
 ### 32.What are the different modes of Autowiring in Spring?
-### 33.How is it done with Spring Boot?
-### 34.What does @Component signify?
-### 35.What is a Component Scan?
-### 36.What does @Autowired signify?
-### 37.What’s the difference Between @Controller, @Component, @Repository, and @Service Annotations in Spring?
+- *No autowiring*: In this mode, you need to explicitly wire the bean properties using the <ref/> element in XML configuration or @Bean methods in Java-based configuration. \
+XML Configuration:
+```
+<bean id="myBean" class="com.example.MyBean">
+    <property name="myDependency" ref="myDependencyBean"/>
+</bean>
+<bean id="myDependencyBean" class="com.example.MyDependency"/>
+```
+Java-based Configuration:
+```
+@Configuration
+public class MyConfig {
+    @Bean
+    public MyBean myBean() {
+        MyBean bean = new MyBean();
+        bean.setMyDependency(myDependency());
+        return bean;
+    }
+
+    @Bean
+    public MyDependency myDependency() {
+        return new MyDependency();
+    }
+}
+```
+
+- *Autowiring by name*: In this mode, properties of the autowired bean are wired by searching for a bean with the same name or ID in the configuration file. \
+XML Configuration:
+```
+<bean id="myBean" class="com.example.MyBean" autowire="byName"/>
+<bean id="myDependency" class="com.example.MyDependency"/>
+```
+Java-based Configuration:
+```
+@Configuration
+public class MyConfig {
+    @Autowired
+    private MyDependency myDependency;
+
+    @Bean
+    public MyBean myBean() {
+        return new MyBean();
+    }
+
+    @Bean
+    public MyDependency myDependency() {
+        return new MyDependency();
+    }
+}
+```
+- *Autowiring by type*: In this mode, properties of the autowired bean are wired by searching for a bean whose type is compatible with the property’s type. \
+XML Configuration:
+```
+<bean id="myBean" class="com.example.MyBean" autowire="byType"/>
+<bean id="myDependency" class="com.example.MyDependency"/>
+```
+Java-based Configuration:
+```
+@Configuration
+public class MyConfig {
+    @Autowired
+    private MyDependency myDependency;
+
+    @Bean
+    public MyBean myBean() {
+        return new MyBean();
+    }
+
+    @Bean
+    public MyDependency myDependency() {
+        return new MyDependency();
+    }
+}
+```
+- *Autowiring by constructor*: In this mode, wiring is done using the constructor of the autowired bean by looking for a bean whose type is compatible with the constructor argument. \
+XML Configuration:
+```
+<bean id="myBean" class="com.example.MyBean" autowire="constructor"/>
+<bean id="myDependency" class="com.example.MyDependency"/>
+```
+Java-based Configuration:
+```
+@Configuration
+public class MyConfig {
+    @Autowired
+    private MyDependency myDependency;
+
+    @Bean
+    public MyBean myBean() {
+        return new MyBean(myDependency);
+    }
+
+    @Bean
+    public MyDependency myDependency() {
+        return new MyDependency();
+    }
+}
+```
+
+### 33.What are some of the important Spring Core Annotations?
+Some of the spring core framework annotations are: \
+- *@Configuration*: Used to indicate that a class declares one or more @Bean methods. These classes are processed by the Spring container to generate bean definitions and service requests for those beans at runtime.
+- *@Bean*: Indicates that a method produces a bean to be managed by the Spring container. This is one of the most used and important spring annotation. @Bean annotation also can be used with parameters like name, initMethod and destroyMethod.
+1. name – allows you give name for bean
+2. initMethod – allows you to choose method which will be invoked on context register
+3. destroyMethod – allows you to choose method which will be invoked on context shutdown \
+For example:
+```
+@Configuration
+public class AppConfig {
+
+    @Bean(name = "comp", initMethod = "turnOn", destroyMethod = "turnOff")
+    Computer computer(){
+        return new Computer();
+    }
+}
+```
+```
+public class Computer {
+
+    public void turnOn(){
+        System.out.println("Load operating system");
+    }
+    public void turnOff(){
+        System.out.println("Close all programs");
+    }
+}
+```
+- *@PreDestroy* and *@PostConstruct* are alternative way for bean initMethod and destroyMethod. It can be used when the bean class is defined by us. For example;
+```
+ public class Computer {
+
+    @PostConstruct
+    public void turnOn(){
+        System.out.println("Load operating system");
+    }
+
+    @PreDestroy
+    public void turnOff(){
+        System.out.println("Close all programs");
+    }
+}
+```
+- *@ComponentScan*: Configures component scanning directives for use with @Configuration classes. Here we can specify the base packages to scan for spring components.
+- *@Component*: Indicates that an annotated class is a “component”. Such classes are considered as candidates for auto-detection when using annotation-based configuration and classpath scanning.
+- *@PropertySource*: provides a simple declarative mechanism for adding a property source to Spring’s Environment. There is a similar annotation for adding an array of property source files i.e @PropertySources.
+- *@Service*: Indicates that an annotated class is a “Service”. This annotation serves as a specialization of @Component, allowing for implementation classes to be autodetected through classpath scanning.
+- *@Repository*: Indicates that an annotated class is a “Repository”. This annotation serves as a specialization of @Component and advisable to use with DAO classes.
+- *@Autowired*: Spring @Autowired annotation is used for automatic injection of beans. Spring @Qualifier annotation is used in conjunction with Autowired to avoid confusion when we have two of more bean configured for same type.
+
 ### 38.How do you debug problems with Spring Framework?
 ### 39.How do you solve NoUniqueBeanDefinitionException?
 ### 40.How do you solve NoSuchBeanDefinitionException?
