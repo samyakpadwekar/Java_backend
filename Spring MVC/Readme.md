@@ -23,6 +23,11 @@ Disadvantages of Spring MVC Framework
 
 ### 1.How to Get Servletcontext and Servletconfig Objects in a Spring Bean?
 ### 2.What Is a Controller in Spring Mvc?
+- Controllers control the flow of the application execution.
+- In Spring MVC architecture the DispatcherServlet works as Front Controller.
+- DispatcherServlet process the request and pass the request to the controller class annotated with @Controller.
+- Each controller class is responsible to handle one or more requests of a certain type.
+
 ### 3.How Does the @Requestmapping Annotation Work?
 ### 4.What is Model 1 architecture?
 ### 5.What is Model 2 architecture?
