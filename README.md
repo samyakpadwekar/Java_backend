@@ -10,7 +10,9 @@ This repo has interview questions and topics required for java backend interview
 &emsp;1.5.Autowiring. \
 &emsp;1.6.Beans and Beans Scopes. \
 &emsp;1.7.Spring Configurations - XML,Annotations,Java Code. \
-&emsp;1.8.Debugging Spring Application. 
+
+2.Spring MVC \
+
 
 new topics will be added...
 feel free to add questions and topic to this repo
