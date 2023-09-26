@@ -93,7 +93,7 @@ The result proves that the IoC container has created and initialized beans corre
 
 ------
 
-### 7.How to create a Spring bean?
+### 7.How to create/register a Spring bean?
 Spring Framework provides three ways to configure beans to be used in the application. \
 *Annotation Based Configuration* - By using @Service or @Component annotations. Scope details can be provided with @Scope annotation.\
 *XML Based Configuration* - By creating Spring Configuration XML file to configure the beans. If you are using Spring MVC framework, the xml based configuration can be loaded automatically by writing some boiler plate code in web.xml file. \
@@ -1039,7 +1039,7 @@ public class MyConfig {
 ```
 
 ### 33.What are some of the important Spring Core Annotations?
-Some of the spring core framework annotations are: \
+Some of the spring core framework annotations are: 
 - *@Configuration*: Used to indicate that a class declares one or more @Bean methods. These classes are processed by the Spring container to generate bean definitions and service requests for those beans at runtime.
 - *@Bean*: Indicates that a method produces a bean to be managed by the Spring container. This is one of the most used and important spring annotation. @Bean annotation also can be used with parameters like name, initMethod and destroyMethod.
 1. name – allows you give name for bean
@@ -1089,20 +1089,97 @@ public class Computer {
 - *@Repository*: Indicates that an annotated class is a “Repository”. This annotation serves as a specialization of @Component and advisable to use with DAO classes.
 - *@Autowired*: Spring @Autowired annotation is used for automatic injection of beans. Spring @Qualifier annotation is used in conjunction with Autowired to avoid confusion when we have two of more bean configured for same type.
 
-### 38.How do you debug problems with Spring Framework?
-### 39.How do you solve NoUniqueBeanDefinitionException?
-### 40.How do you solve NoSuchBeanDefinitionException?
-### 41.What is @Primary?
-### 42.What is @Qualifier?
-### 43.What is CDI (Contexts and Dependency Injection)?
-### 44.Does Spring Support CDI?
-### 45.Would you recommed to use CDI or Spring Annotations?
-### 46.What are the major features in different versions of Spring?
-### 47.What are new features in Spring Framework 4.0?
-### 48.What are new features in Spring Framework 5.0?
-### 49.What are important Spring Projects?
-### 50.What is the simplest way of ensuring that we are using single version of all Spring related dependencies?
-### 51.Name some of the design patterns used in Spring Framework?
-### 52.What do you think about Spring Framework?
-### 53.Why is Spring Popular?
-### 54.Can you give a big picture of the Spring Framework?
+### 34.How do you debug problems with Spring Framework?
+### 35.How do you solve NoUniqueBeanDefinitionException?
+> public class NoUniqueBeanDefinitionException extends NoSuchBeanDefinitionException
+- Exception thrown when a BeanFactory is asked for a bean instance for which multiple matching candidates have been found when only one matching bean was expected.
+- There are two simple ways you can resolve the *NoUniqueBeanDefinitionException* exception in Spring. You can use the *@Primary* annotation, which will tell Spring when all other things are equal to select the primary bean over other instances of that type for the autowire requirement.
+- The second way, is to use the *@Qualifier* annotation. Through the use of this annotation, you can give Spring hints about the name of the bean you want to use. By default, the reference name of the bean is typically the lower case class name.
+  
+### 36.How do you solve NoSuchBeanDefinitionException?
+> public class NoSuchBeanDefinitionException extends BeansException
+- Exception thrown when a BeanFactory is asked for a bean instance for which it cannot find a definition. This may point to a non-existing bean, a non-unique bean, or a manually registered singleton instance without an associated bean definition. \
+Reasons to cause NoSuchBeanDefinitionException and their solution :
+1. *The bean doesn't exist, it wasn't registered*
+- There are multiple ways to register bean definitions(Refer que.7)
+2. *Expected single matching bean, but found 2 (or more)*
+- Refer que.6
+3. *Using wrong bean name*
+- Check for bean name as exception suggests
+
+### 37.What is @Primary?
+- *@Primary* annotation in Spring is used to indicate the primary bean when multiple beans of the same type are present for auto wiring. When multiple beans are eligible for auto wiring the @Primary annotation will help to determine which bean should be given preference. 
+- By applying @Primary annotation to a specific bean we are specifying that it is a primary bean for its respective type. When auto-wiring the dependencies if we are having multiple beans then the bean which is annotated with @Primary annotation will be given high preference compared to other beans.
+   
+For more info refer <a href="https://www.geeksforgeeks.org/spring-primary-annotation/" target="_blank">gfg</a>
+
+### 38.What is @Qualifier?
+- There may be a situation when you create more than one bean of the same type and want to wire only one of them with a property. In such cases, you can use the *@Qualifier* annotation along with @Autowired to remove the confusion by specifying which exact bean will be wired.
+
+For more info refer <a href="https://www.baeldung.com/spring-qualifier-annotation" target="_blank">baeldung</a>
+
+### 39.What is CDI (Contexts and Dependency Injection)?
+- CDI stands for "context and dependency injection", while Spring is a complete ecosystem around a dependency injection container.
+- Dependency injection is handled by both containers. The main difference is the fact that CDI handles DI in a dynamic (aka: stateful) way - this means that dependencies are resolved at execution time.
+- Spring's approach is static - this means that components are wired together at creation time. While the CDI-way might seem a bit unusual at a first glimpse, it's far superior and offers way more and advanced options (I'm writing this with the background of two productive CDI apps).
+  
+### 40.What are the major features in different versions of Spring?
+- Spring 2.0 provided XML namespaces and AspectJ support.
+- Spring 2.5 made annotation-driven configuration possible.
+- Spring 3.0 made great use of the Java 5 improvements in language.
+- Spring 4.0 is the first version to fully support Java 8 features. Minimum version of Java to use Spring 4 is Java SE 6.
+  
+### 41.What are new features in Spring Framework 4.0?
+1. spring-websocket module provides support for WebSocket-based communication in web applications.
+2. Spring Framework 4.0 is focused on Servlet 3.0+ environments
+3. @RestController annotation is introduced for use with Spring MVC applications
+4. Spring 4.1 introduces @JmsListener annotations to easily register JMS listener endpoints.
+5. Spring 4.1 supports JCache (JSR-107) annotations using Spring’s existing cache configuration.
+6. Jackson’s@JsonViewissupporteddirectlyon@ResponseBodyandResponseEntitycontroller methods for serializing different amounts of detail for the same POJO
+
+### 42.What are new features in Spring Framework 5.0?
+1. Baseline Upgrades \
+To build and run Spring 5 application, you will need a minimum JDK 8 and Java EE 7.
+Similar to Java baseline, there are changes in baselines of many other frameworks as well. e.g. Hibernate 5,Jackson 2.6,JUnit 5
+2. JDK 9 Compatibility
+3. JDK 8 Features are Baked In \
+Spring 5 has baseline version 8, so it uses many new features of Java 8 and 9 as well. e.g.Java 8 default methods,Use of functional programming in the framework code – lambdas and streams.
+4. Support for Reactive Programming
+5. A Functional Web Framework
+6. Kotlin Support
+
+### 43.What is the simplest way of ensuring that we are using single version of all Spring related dependencies?
+- Spring is made up of a number of small components (spring-core, spring-context, spring-aop, spring-beans and so on). One of the quirks of using Spring framework is the dependency management of these components. Simple way of doing this is using Maven "Bill Of Materials" Dependency.
+```
+<dependencyManagement>
+    <dependencies>
+        <dependency> 
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-framework-bom</artifactId>
+            <version>4.1.6.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+All spring dependencies can now be included in this and the child poms without using version.
+```
+<dependencies>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId> 
+    </dependency>
+    <dependency> 
+        <groupId>org.springframework</groupId> 
+        <artifactId>spring-web</artifactId>
+    </dependency>
+<dependencies>
+```
+
+### 44.Name some of the design patterns used in Spring Framework?
+1. Singleton pattern
+2. Factory Method pattern
+3. Proxy pattern
+4. Template pattern
+   
