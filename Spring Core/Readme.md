@@ -403,8 +403,57 @@ The following image shows the process flow of the bean life cycle.(Soure : Geeks
 ![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20200428011831/Bean-Life-Cycle-Process-flow3.png)
 
 ### 14.What is the difference between XML and Java Configurations for Spring?
+- Spring web-mvc config in xml
+```
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+    <context:component-scan base-package="controller" />
+    <context:component-scan base-package="dao" />
+    <context:component-scan base-package="service" />
+
+    <mvc:annotation-driven />
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/pages/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+</beans>  
+```
+and same config in java based style
+```
+@Configuration
+@EnableWebMvc
+
+@ComponentScans({
+        @ComponentScan("controller"),
+        @ComponentScan("dao"),
+        @ComponentScan("service")      
+})
+public class WebMVCConfig implements WebMvcConfigurer {
+
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix("/WEB-INF/pages/");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
+    }
+}
+```
+
 ### 15.How do you choose between XML and Java Configurations for Spring?
+- Java based configuration have benefits of xml based configuration due to below reasons:
+1. Java is type safe. Compiler will report issues if you are configuring right bean class qualifiers.
+2. XML based on configuration can quickly grow big. [Yes we can split and import but still]
+3. Search is much simpler, refactoring will be bliss. Finding a bean definition will be far easier.
+
 ### 16.How do you define a component scan in XML and Java Configurations?
+- Using the @Component annotation and its sub-classes in which case Spring searches all the packages and sub-packages containing these annotation.
+- Using XML configuration with <context:component-scan> tag specifying the base package.
 
 ### 17.What is IOC (Inversion of Control)?
 - Inversion of Control is a principle in software engineering which transfers the control of objects or portions of a program to a container or framework, often used it in the context of object-oriented programming.
