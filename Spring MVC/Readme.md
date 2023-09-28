@@ -21,25 +21,52 @@ Disadvantages of Spring MVC Framework
 1. It has high complexity to develop the applications using this pattern.
 2. It is not suitable for small applications which affect the application’s performance and design.
 
-### 1.How to Get Servletcontext and Servletconfig Objects in a Spring Bean?
-### 2.What Is a Controller in Spring Mvc?
+### 1.Explain a simple flow in Spring MVC?
+### 2.What is Model 1 architecture?
+### 3.What is Model 2 architecture?
+### 4.What is Model 2 Front Controller architecture?
+### 5.What is Dispatcher Servlet(Front COntroller)?
+### 6.How do you set up Dispatcher Servlet?
+### 7.How to Get Servletcontext and Servletconfig Objects in a Spring Bean?
+There are two options for getting ServletContext and ServletConfig in a Spring Bean.
+- Use *@Autowired* annotation to inject ServletContext and ServletConfig in Spring Bean.
+- Implement *Spring aware interfaces* in the class that depends on ServletConfigor ServletContext.
+Using @Autowired annotation
+```
+@Autowired
+ServletContext servletContext;
+@Autowired
+ServletConfig servletConfig;
+```
+Implementing Spring aware interfaces
+```
+public class ServletConfigAwareClass implements ServletConfigAware {
+
+ private ServletConfig config;
+
+ public void setServletConfig(ServletConfig servletConfig) {
+  this.config = servletConfig;
+ }
+```
+
+### 8.What Is a Controller in Spring Mvc?
 - Controllers control the flow of the application execution.
 - In Spring MVC architecture the DispatcherServlet works as Front Controller.
 - DispatcherServlet process the request and pass the request to the controller class annotated with @Controller.
 - Each controller class is responsible to handle one or more requests of a certain type.
 
-### 3.How Does the @Requestmapping Annotation Work?
-### 4.What is Model 1 architecture?
-### 5.What is Model 2 architecture?
-### 6.What is Model 2 Front Controller architecture?
-### 7.Can you show an example controller method in Spring MVC?
-### 8.Can you explain a simple flow in Spring MVC?
-### 9.What is a ViewResolver?
-### 10.What is Model?
-### 11.What is ModelAndView?
-### 12.What is a RequestMapping?
-### 13.What is Dispatcher Servlet?
-### 14.How do you set up Dispatcher Servlet?
+### 9.What is a RequestMapping?
+
+### 10.How Does the @Requestmapping Annotation Work?
+- The @RequestMapping is used to map web request to the controller in Spring MVC application. We can apply the @RequestMapping annotation to class-level and/or method-level in a controller.
+
+
+### 11.Can you show an example controller method in Spring MVC?
+
+### 12.What is Model?
+### 13.What is ModelAndView?
+### 14.What is a ViewResolver?
+
 ### 15.What is a form backing object?
 ### 16.How is validation done using Spring MVC?
 ### 17.What is BindingResult?
