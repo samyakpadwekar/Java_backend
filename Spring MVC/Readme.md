@@ -22,6 +22,17 @@ Disadvantages of Spring MVC Framework
 2. It is not suitable for small applications which affect the application’s performance and design.
 
 ### 1.Explain a simple flow in Spring MVC?
+![alt text](https://terasolunaorg.github.io/guideline/1.0.1.RELEASE/en/_images/RequestLifecycle.png)
+
+1. Client requests for a page by specifying the Web URL for the page.Client request is intercepted by the *Dispatcher Servlet(Front Controller)*. *Dispatcher Servlet* is a servlet specified in Web.XML file (for XML Based configurations) or in the Web Configuration class (for java based configurations).
+2. Dispatcher Servlet uses *Handler Mapping* to find out the relevant controller class to which request should be passed for subsequent processing.*Handler Mapping* returns the (selected Handler) and *Controller* to *DispatcherServlet*.
+3. *DispatcherServlet* dispatches the task of executing of business logic of *Controller* to *HandlerAdapter*.
+4. *HandlerAdapter* calls the business logic process of *Controller*.
+5. *Controller* class will also be responsible for returning the *ModelAndView* object back to the *Dispatcher Servlet* after getting all business logic executed. *ModelAndView* object returned by the *Controller* back to the *Dispatcher Servlet* specifies both view and model objects.
+6. After receiving *ModelAndView* object from the *Controller*, *Dispatcher Servlet* now sends model object to *View Resolver* to get the name of the view which needs to be rendered.*ViewResolver* returns the *View* mapped to View name.
+7. Once the view to be rendered has been identified, Dispatcher Servlet passes model object to the *View*. Model object contains the data which needs to be displayed in the view.
+8. *View* renders Model data and returns the response.This view is returned to the client and client can see the view and associated data on his browser. Views can be designed in any front-end technology.
+
 ### 2.What is Model 1 architecture?
 ### 3.What is Model 2 architecture?
 ### 4.What is Model 2 Front Controller architecture?
