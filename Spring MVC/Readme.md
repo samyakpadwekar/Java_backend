@@ -217,7 +217,127 @@ public String method5(){
 ```
 -----
 
-### 11.Can you show an example controller method in Spring MVC?
+### 12.What is @PathVariable & @RequestParam?
+- @RequestParam and @PathVariable can both be used to extract values from the request URI, but they are a bit different.
+- While @RequestParam extract values from the query string, @PathVariable extract values from the URI path.
+- Like for @PathVariable, it will be
+```
+@GetMapping("/foos/{id}")
+@ResponseBody
+public String getFooById(@PathVariable String id) {
+    return "ID: " + id;
+}
+```
+Then we can map based on the path:
+http://localhost:8080/spring-mvc-basics/foos/abc
+ID: abc
+- And for @RequestParam, it will be:
+```
+@GetMapping("/foos")
+@ResponseBody
+public String getFooByIdUsingQueryParam(@RequestParam String id) {
+    return "ID: " + id;
+}
+```
+which would give us the same response, just a different URI:
+http://localhost:8080/spring-mvc-basics/foos?id=abc
+ID: abc
+- Both @RequestParam and @PathVariable can be optional.
+- We can make *@PathVariable* optional by using the required attribute starting with Spring 4.3.3:
+```
+@GetMapping({"/myfoos/optional", "/myfoos/optional/{id}"})
+@ResponseBody
+public String getFooByOptionalId(@PathVariable(required = false) String id){
+    return "ID: " + id;
+}
+```
+Then we can do either:
+http://localhost:8080/spring-mvc-basics/myfoos/optional/abc
+ID: abc
+or:
+http://localhost:8080/spring-mvc-basics/myfoos/optional
+ID: null
+- For @RequestParam, we can also use the required attribute.
+- Note that we should be careful when making @PathVariable optional, to avoid conflicts in paths.
+
+### 13.Can you show an example controller method in Spring MVC along with dispatcher servlet? (for understanding)
+- Let’s look at the deployment descriptor (web.xml) where we will configure DispatcherServlet servlet as the front controller.
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xmlns="https://xmlns.jcp.org/xml/ns/javaee" 
+ xsi:schemaLocation="https://xmlns.jcp.org/xml/ns/javaee https://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>Spring-Controller</display-name>
+  <!-- Add Spring MVC DispatcherServlet as front controller -->
+	<servlet>
+        <servlet-name>spring</servlet-name>
+        <servlet-class>
+                org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+       		<param-name>contextConfigLocation</param-name>
+       		<param-value>/WEB-INF/spring-servlet.xml</param-value>
+    		</init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+ 
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/</url-pattern> 
+    </servlet-mapping>
+</web-app>
+```
+-Finally, we have following spring context file. Here we are configuring our application to be annotation-based and providing root package for scanning spring components. We are also configuring InternalResourceViewResolver bean and providing details of view pages.
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="https://www.springframework.org/schema/mvc"
+	xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xmlns:beans="https://www.springframework.org/schema/beans"
+	xmlns:context="https://www.springframework.org/schema/context"
+	xsi:schemaLocation="https://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		https://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		https://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<context:component-scan base-package="com.journaldev.spring" />
+
+	<!-- Resolves views selected for rendering by @Controllers to JSP resources 
+		in the /WEB-INF/views directory -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+
+</beans:beans>
+```
+Our configuration XML files are ready, let’s move on to the Controller class now.
+```
+package com.journaldev.spring.controller;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+	@GetMapping("/hello")
+	public String home(Locale locale, Model model) {
+		Date date = new Date();
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		String formattedDate = dateFormat.format(date);
+		model.addAttribute("serverTime", formattedDate);
+		return "home";
+	}
+
+}
+```
+We have defined a single request handler method, it’s accepting GET requests with URI “/hello” and returning “home.jsp” page as the response. Notice that we are setting an attribute to the model, which will be used in the home.jsp page.
 
 ### 12.What is Model?
 ### 13.What is ModelAndView?
