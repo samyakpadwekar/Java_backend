@@ -52,9 +52,12 @@ The following information gives a brief overview of the MVC Model 2 design patte
 - The Controller portion of the application is focused on receiving requests from the client (typically a user running a web browser), deciding what business logic function is to be performed, and then delegating responsibility for producing the next phase of the user interface to an appropriate View component. In Struts, the primary components of the Controller is a servlet of class ActionServlet and the class RequestProcessor.
 
 ### 4.What is Model 2 Front Controller architecture?
-Front Controller class diagram
+- Front Controller class diagram
+  
 ![alt text](https://www.oracle.com/img/tech/figure07-07.jpg)
-Front Controller Sequence Diagram
+
+- Front Controller Sequence Diagram
+
 ![alt text](https://www.oracle.com/img/tech/figure07-08.jpg)
 
 - *Controller* : The controller is the initial contact point for handling all requests in the system. The controller may delegate to a helper to complete authentication and authorization of a user or to initiate contact retrieval.
