@@ -340,16 +340,78 @@ public class HomeController {
 We have defined a single request handler method, it’s accepting GET requests with URI “/hello” and returning “home.jsp” page as the response. Notice that we are setting an attribute to the model, which will be used in the home.jsp page.
 
 ### 12.What is Model?
+> Java-5-specific interface that defines a holder for model attributes. Primarily designed for adding attributes to the model. Allows for accessing the overall model as a java.util.Map.
+- Model is an essential part of MVC pattern which is widely used in Spring.
+- A Model is a holder of the context data passed by a Controller to be displayed on a View.
+- You can use only one Model which contains more data distinct with a unique key because the Model is based on the java.util.Map 
+
 ### 13.What is ModelAndView?
+- Holder for both Model and View in the web MVC framework. Note that these are entirely distinct.
+- This class merely holds both to make it possible for a controller to return both model and view in a single return value.
+- Represents a model and view returned by a handler, to be resolved by a DispatcherServlet.
+
 ### 14.What is a ViewResolver?
+- The ViewResolver let SPring MVC application to render models in a browser without binding to a specific view technology (e.g. JSP or Thymeleaf).
+- This works by providing a mapping between view names and actual views.
+- View addresses the preparation of data before handing over to a specific view technology.
 
 ### 15.What is a form backing object?
-### 16.How is validation done using Spring MVC?
+- The client-side HTML page fields are mapped with back end Java bean class. This is called as Form Backing Bean Object.
+- It is an object which will have the data of your form. It is automatically initialized so you don't have to get data from form and set it to object's fields.
+- In servlets we need to get data as:
+```
+request.getParameter(String name);
+```
+then we have to initialize the respective field, but in spring this step is done by spring.
+
+### 16.How to validate form data in Spring Web MVC?
+- Spring provides built-in support to use JSR-303 based bean validation.
+- For using JSR-303 based validation, we need to annotate bean variables with the required validations.
+- Let’s take a simple example to validate customer object
+```
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class Customer {
+
+ @NotNull
+ @Size(min = 2, max = 30)
+ private String name;
+
+ @NotNull
+ @Min(18)
+ private Integer age;
+
+ //getter and setters
+
+}
+```
+To trigger JSR-303 based validation, we only need to annotate our incoming object with a @Validannotation
+```
+@Controller
+public class WebController {
+
+ @PostMapping("/")
+ public String checkPersonInfo(@Valid Customer customer, BindingResult bindingResult) {
+
+  if (bindingResult.hasErrors()) {
+   return "form";
+  }
+
+  return "redirect:/results";
+ }
+}
+```
+Spring validation also provides an interface that can create custom validators (in a case out of the box validator does not satisfy the requirements.)
+
 ### 17.What is BindingResult?
+- BindingResult is an interface which dictates how the object that stores the result of validation should store and retrieve the result of the validation(errors, attempt to bind to disallowed fields etc).
+>[BindingResult] is Spring’s object that holds the result of the validation and binding and contains errors that may have occurred. The BindingResult must come right after the model object that is validated or else Spring will fail to validate the object and throw an exception. \
+> When Spring sees @Valid, it tries to find the validator for the object being validated. Spring automatically picks up validation annotations if you have “annotation-driven” enabled. Spring then invokes the validator and puts any errors in the BindingResult and adds the BindingResult to the view model. 
+
 ### 18.How do you map validation results to your view?
 ### 19.What are Spring Form Tags?
-### 20.What is a Path Variable?
-### 21.What is a Model Attribute?
 ### 22.What is a Session Attribute?
 ### 23.What is a init binder?
 ### 24.How do you set default date format with Spring?
