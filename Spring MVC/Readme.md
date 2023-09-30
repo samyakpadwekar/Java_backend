@@ -42,22 +42,26 @@ The following diagram illustrates the JSP Model 1 architecture.
 
 ### 3.What is Model 2 architecture?
 - As a response to the Model 1 architecture, Apache Software Organization developed the Jakarta Project's Struts framework. The MVC Model 2 paradigm applied to web applications lets you separate display code (for example, HTML and tag libraries) from flow control logic (Struts action classes).
+- The following figure illustrates the Model 2 web application architecture, where Servlets control the flow of the web application and delegate the business logic to external components, usually JavaBeans or EJBs, while JSP pages generate the HTML for web browsers:
 
-The following figure illustrates the Model 2 web application architecture, where Servlets control the flow of the web application and delegate the business logic to external components, usually JavaBeans or EJBs, while JSP pages generate the HTML for web browsers:
+![alt text](https://download.oracle.com/otn_hosted_doc/jdeveloper/1012/developing_mvc_applications/images/struts_model2.gif)
 
-JSP Model 2 architecture
+The following information gives a brief overview of the MVC Model 2 design pattern:
+- The Model portion of an MVC-based system typically comprises JavaBean classes that define the internal state of the system; they also specify the actions that can be taken to change that state.
+- The View portion is constructed using JSP technology. JSP pages can contain static HTML (or XML) text called "template text", plus the ability to insert dynamic content based on the interpretation (at page request time) of special action tags. The JSP environment includes a set of custom JSP tag libraries (such as the Struts tag libraries), standard JSP action tags (such as those described in the JavaServer Pages Specification), and a facility to install your own JSP custom tag libraries.
+- The Controller portion of the application is focused on receiving requests from the client (typically a user running a web browser), deciding what business logic function is to be performed, and then delegating responsibility for producing the next phase of the user interface to an appropriate View component. In Struts, the primary components of the Controller is a servlet of class ActionServlet and the class RequestProcessor.
 
-The following information gives a brief overview of the MVC Model 2 design pattern and the role of Oracle ADF:
-
-The Model portion of an MVC-based system typically comprises JavaBean classes that define the internal state of the system; they also specify the actions that can be taken to change that state.
-When you create your web application using the Oracle Application Development Framework (Oracle ADF), binding to the model layer is handled for you. Otherwise, you will need to create the data binding implementation for the view layer. For additional information about Oracle ADF, see About the J2EE Platform and Oracle ADF.
-
-The View portion is constructed using JSP technology or Oracle ADF UIX technology. JSP pages can contain static HTML (or XML) text called "template text", plus the ability to insert dynamic content based on the interpretation (at page request time) of special action tags. The JSP environment includes a set of custom JSP tag libraries (such as the Struts tag libraries), standard JSP action tags (such as those described in the JavaServer Pages Specification), and a facility to install your own JSP custom tag libraries.
-When you use the Oracle Application Development Framework (Oracle ADF), you can take advantage of the data binding facilities in JDeveloper that allow your web pages to display databound dynamic content from the model layer. For complete information about the data controls in JDeveloper, see About Oracle ADF Data Controls.
-
-The Controller portion of the application is focused on receiving requests from the client (typically a user running a web browser), deciding what business logic function is to be performed, and then delegating responsibility for producing the next phase of the user interface to an appropriate View component. In Struts, the primary components of the Controller is a servlet of class ActionServlet and the class RequestProcessor.
-When you use the Struts Page Flow Diagram in JDeveloper, you can work with a visual representation of the application logic. For additional information about the design time for Struts, see About Struts Support in JDeveloper.
 ### 4.What is Model 2 Front Controller architecture?
+Front Controller class diagram
+![alt text](https://www.oracle.com/img/tech/figure07-07.jpg)
+Front Controller Sequence Diagram
+![alt text](https://www.oracle.com/img/tech/figure07-08.jpg)
+
+- *Controller* : The controller is the initial contact point for handling all requests in the system. The controller may delegate to a helper to complete authentication and authorization of a user or to initiate contact retrieval.
+- *View* : A view represents and displays information to the client. The view retrieves information from a model. Helpers support views by encapsulating and adapting the underlying data model for use in the display.
+- *Dispatcher* : A dispatcher is responsible for view management and navigation, managing the choice of the next view to present to the user, and providing the mechanism for vectoring control to this resource.
+- Helper* : A helper is responsible for helping a view or controller complete its processing. Thus, helpers have numerous responsibilities, including gathering data required by the view and storing this intermediate model, in which case the helper is sometimes referred to as a value bean.
+- 
 ### 5.What is Dispatcher Servlet(Front COntroller)?
 ### 6.How do you set up Dispatcher Servlet?
 ### 7.How to Get Servletcontext and Servletconfig Objects in a Spring Bean?
