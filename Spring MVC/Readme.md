@@ -66,8 +66,58 @@ The following information gives a brief overview of the MVC Model 2 design patte
 - Helper* : A helper is responsible for helping a view or controller complete its processing. Thus, helpers have numerous responsibilities, including gathering data required by the view and storing this intermediate model, in which case the helper is sometimes referred to as a value bean.
 - 
 ### 5.What is Dispatcher Servlet(Front COntroller)?
+> DispatcherServlet handles an incoming HttpRequest, delegates the request, and processes that request according to the configured HandlerAdapter interfaces that have been implemented within the Spring application along with accompanying annotations specifying handlers, controller endpoints, and response objects.
+- DispatcherServlet acts as the Front Controller for Spring-based web applications.
+- Any request is going to come into our website the front controller is going to stand in front and is going to accept all the requests and once the front controller accepts that request then this is the job of the front controller that it will make a decision that who is the right controller to handle that request.
+- For example, refer to the below image.
+
+![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20220302055243/DispatcherServlet.jpg)
+
+- Suppose we have a website called student.com and the client is make a request to save student data by hitting the following URL student.com/save and its first come to the front controller and once the front controller accepts that request it is going to assign to the Controller_1 as this controller handle the request for /save operation. Then it is going to return back the response to the Client. 
+- The front controller is already created by the Spring Framework Developer, and the name of that particular controller is *DispatcherServlet*. You can use that front controller in your Spring MVC project. You really not required to create a front controller but you can reuse that front controller created by the Spring Framework Developer and they named it as DispatcherServlet.
+
 ### 6.How do you set up Dispatcher Servlet?
-### 7.How to Get Servletcontext and Servletconfig Objects in a Spring Bean?
+- In Spring MVC project,go to *src > main > webapp > WEB-INF > web.xml* file and here we have to configure our front controller inside a *<servlet>…</servlet>* tag something like this. 
+```
+<servlet>
+      <!-- Provide a Servlet Name -->
+    <servlet-name>frontcontroller-dispatcher</servlet-name>
+    <!-- Provide a fully qualified path to the DispatcherServlet class -->
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+</servlet>
+```
+Now tell this servlet to handle all the requests coming to our website called student.com (for this example). So the way we are going to tell the above servlet is we can write something like this
+```
+<servlet-mapping>
+      <!-- Provide a Servlet Name that you want to map -->
+    <servlet-name>frontcontroller-dispatcher</servlet-name>
+    <!-- Provide a url pattern -->
+    <url-pattern>/student.com/*</url-pattern>
+</servlet-mapping>
+```
+So this does mean that the servlet “frontcontroller-dispatcher” is going to handle all the requests starting from student.com/anything, that may be student.com/save or student.com/get, anything. But it must start with student.com. So we are done with creating a Dispatcher Servlet.
+
+### 7.When Dispatcher Servlet will be Initialized? 
+- The Dispatcher Servlet will be Initialized once we deploy the created dynamic web application inside the tomcat server. So before deploying it let’s add the following line inside the web.xml file 
+```
+<load-on-startup>1</load-on-startup>
+```
+So now the modified code for the servlet is 
+```
+<servlet>
+      <!-- Provide a Servlet Name -->
+    <servlet-name>frontcontroller-dispatcher</servlet-name>    
+    <!-- Provide a fully qualified path to the DispatcherServlet class -->
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+```
+Why this line load-on-startup>1?
+- This will make sure that whenever your server will get started the *DispatcherServlet* will get initialized. 
+- And if you are not writing this line of code then whenever the first request will come to your server starting from /student.com at that time only the DispatcherServlet will be initialized and we don’t want it. 
+- We want the DispatcherServlet will be initialized during the time of the server startup. That’s why we have written this line of code.
+
+### 8.How to Get Servletcontext and Servletconfig Objects in a Spring Bean?
 There are two options for getting ServletContext and ServletConfig in a Spring Bean.
 - Use *@Autowired* annotation to inject ServletContext and ServletConfig in Spring Bean.
 - Implement *Spring aware interfaces* in the class that depends on ServletConfigor ServletContext.
@@ -89,17 +139,83 @@ public class ServletConfigAwareClass implements ServletConfigAware {
  }
 ```
 
-### 8.What Is a Controller in Spring Mvc?
+### 9.What Is a Controller in Spring Mvc?
 - Controllers control the flow of the application execution.
 - In Spring MVC architecture the DispatcherServlet works as Front Controller.
 - DispatcherServlet process the request and pass the request to the controller class annotated with @Controller.
 - Each controller class is responsible to handle one or more requests of a certain type.
 
-### 9.What is a RequestMapping?
+### 10.What is a RequestMapping?
+- *@RequestMapping* is one of the most widely used Spring MVC annotation.
+- *org.springframework.web.bind.annotation.RequestMapping* annotation is used to map web requests onto specific handler classes and/or handler methods.
+- @RequestMapping can be applied to the controller class as well as methods.
 
-### 10.How Does the @Requestmapping Annotation Work?
+### 11.How Does the @Requestmapping Annotation Work?
 - The @RequestMapping is used to map web request to the controller in Spring MVC application. We can apply the @RequestMapping annotation to class-level and/or method-level in a controller.
+- When configuring Spring MVC, you need to specify the mappings between the requests and handler methods.
+- The class-level annotation maps a specific request path or pattern onto a controller. You can then apply additional method-level annotations to make mappings more specific to handler methods. 
 
+-----
+- *@RequestMapping with Class*: We can use it with class definition to create the base URI. For example:
+```
+@Controller
+@RequestMapping("/home")
+public class HomeController {
+
+}
+```
+Now /home is the URI for which this controller will be used. This concept is very similar to servlet context of a web application.
+
+- *@RequestMapping with Method*: We can use it with method to provide the URI pattern for which handler method will be used. For example:
+```
+@RequestMapping(value="/method0")
+@ResponseBody
+public String method0(){
+	return "method0";
+}
+```
+Above annotation can also be written as @RequestMapping("/method0"). On a side note, I am using @ResponseBody to send the String response for this web request, this is done to keep the example simple. Like I always do, I will use these methods in Spring MVC application and test them with a simple program or script.
+
+- *@RequestMapping with Multiple URI*: We can use a single method for handling multiple URIs, for example:
+```
+@RequestMapping(value={"/method1","/method1/second"})
+@ResponseBody
+public String method1(){
+	return "method1";
+}
+```
+If you will look at the source code of RequestMapping annotation, you will see that all of it’s variables are arrays. We can create String array for the URI mappings for the handler method.
+
+- *@RequestMapping with HTTP Method*: Sometimes we want to perform different operations based on the HTTP method used, even though request URI remains same. We can use @RequestMapping method variable to narrow down the HTTP methods for which this method will be invoked. For example:
+```
+@RequestMapping(value="/method2", method=RequestMethod.POST)
+@ResponseBody
+public String method2(){
+	return "method2";
+}
+
+@RequestMapping(value="/method3", method={RequestMethod.POST,RequestMethod.GET})
+@ResponseBody
+public String method3(){
+	return "method3";
+}
+```
+
+- @RequestMapping with Headers: We can specify the headers that should be present to invoke the handler method. For example:
+```
+@RequestMapping(value="/method4", headers="name=pankaj")
+@ResponseBody
+public String method4(){
+	return "method4";
+}
+	
+@RequestMapping(value="/method5", headers={"name=pankaj", "id=1"})
+@ResponseBody
+public String method5(){
+	return "method5";
+}
+```
+-----
 
 ### 11.Can you show an example controller method in Spring MVC?
 
