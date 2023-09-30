@@ -408,8 +408,9 @@ Spring validation also provides an interface that can create custom validators (
 ### 17.What is BindingResult?
 - BindingResult is an interface which dictates how the object that stores the result of validation should store and retrieve the result of the validation(errors, attempt to bind to disallowed fields etc).
 >[BindingResult] is Spring’s object that holds the result of the validation and binding and contains errors that may have occurred. The BindingResult must come right after the model object that is validated or else Spring will fail to validate the object and throw an exception. \
-> When Spring sees @Valid, it tries to find the validator for the object being validated. Spring automatically picks up validation annotations if you have “annotation-driven” enabled. Spring then invokes the validator and puts any errors in the BindingResult and adds the BindingResult to the view model. 
+> When Spring sees @Valid, it tries to find the validator for the object being validated. Spring automatically picks up validation annotations if you have “annotation-driven” enabled. Spring then invokes the validator and puts any errors in the BindingResult and adds the BindingResult to the view model.
 
+https://www.linkedin.com/pulse/spring-mvc-tutorial-abid-anjum/
 ### 18.How do you map validation results to your view?
 ### 19.What are Spring Form Tags?
 ### 22.What is a Session Attribute?
