@@ -410,10 +410,110 @@ Spring validation also provides an interface that can create custom validators (
 >[BindingResult] is Spring’s object that holds the result of the validation and binding and contains errors that may have occurred. The BindingResult must come right after the model object that is validated or else Spring will fail to validate the object and throw an exception. \
 > When Spring sees @Valid, it tries to find the validator for the object being validated. Spring automatically picks up validation annotations if you have “annotation-driven” enabled. Spring then invokes the validator and puts any errors in the BindingResult and adds the BindingResult to the view model.
 
-https://www.linkedin.com/pulse/spring-mvc-tutorial-abid-anjum/
 ### 18.How do you map validation results to your view?
 ### 19.What are Spring Form Tags?
+- The ‘form‘ tag renders an HTML ‘form‘ tag.
+- It exposes a binding path to inner tags for binding the data entered.
+- It puts the command object in the PageContext so that the command object can be accessed by all the inner tags.
+- All the other tags in the spring tag library are nested tags of this form tag.
+- Below is an example of the form tag:
+```
+<form:form action="submit" method="post" modelAttribute="welcome">
+```
+This spring form’s form tag will generate the standard HTML form tag while processing like below,
+```
+<form id="welcome" action="submit" method="post">
+```
+
 ### 22.What is a Session Attribute?
+- @SessionAttributes is used to store model attributes in the HTTP Servlet session between requests.
+- It is a type-level annotation that declares the session attributes used by a specific controller.
+- This typically lists the names of model attributes or types of model attributes that should be transparently stored in the session for subsequent requests to access.
+- The following example uses the @SessionAttributes annotation:
+```
+@Controller
+@SessionAttributes("pet") 
+public class EditPetForm {
+	// ...
+}
+```
+- On the first request, when a model attribute with the name, pet, is added to the model, it is automatically promoted to and saved in the HTTP Servlet session.
+- It remains there until another controller method uses a SessionStatus method argument to clear the storage, as the following example shows:
+```
+@Controller
+@SessionAttributes("pet") - 1
+public class EditPetForm {
+
+	// ...
+
+	@PostMapping("/pets/{id}")
+	public String handle(Pet pet, BindingResult errors, SessionStatus status) {
+		if (errors.hasErrors) {
+			// ...
+		}
+		status.setComplete(); - 2
+		// ...
+	}
+}
+```
+1->Storing the Pet value in the Servlet session.
+2->Clearing the Pet value from the Servlet session.
+
 ### 23.What is a init binder?
-### 24.How do you set default date format with Spring?
-### Why is Spring MVC so popular?
+- The Init Binder is an annotation that is used to customize the request being sent to the controller.
+- It helps to control and format requests that come to the controller as it is defined in the controller.
+- Uses
+1. Before, you had to resort to manually parsing the date:
+```
+ public void webmethod(@RequestParam("date") String strDate) {
+    Date date = ... // manually parse the date
+ }
+```
+Now you can get the parsed date directly:
+```
+ public void webmethod(@RequestParam("date") Date date) {
+ }
+```
+2. If your jsp page supplies a date on the form yyyy-MM-dd you can retrieve it as a Date object directly in your controller.
+3. Spring tries against all registered editors to see if values can be converted into objects. You don't have to do anything in the object itself, that's the beauty of it. 
+
+### 24.What is Spring MVC Interceptor and how to use it?
+- Interceptors are useful to intercept the client request and process it. There are three options to intercept client request using Spring interceptors.
+1. preHandle
+2. postHandle
+3. afterComplete (after the view is rendered to the client)
+- Interceptors are useful for cross-cutting concerns and help us avoid duplicate code (e.g. logging, profiling etc.).We can create spring interceptor by implementing a HandlerInterceptor interface or by extending the abstract class HandlerInterceptorAdapter.
+
+### 24.How to handle exceptions in Spring MVC?
+1. Spring MVC provides the following three options for exception handling
+2. @ExceptionHandler Annotation – ExceptionHandler is a Spring annotation handle exceptions thrown by request handling. This annotation works at the @Controller level.
+<em><strong>@ControllerAdvice</strong></em> Annotation – This annotation supports global Exception handler mechanism. A controller advice allows you to use exactly the same exception handling techniques but applies them across the application, not just to an individual controller.
+3. HandlerExceptionResolver – Resolve any exception thrown by the application.
+
+### 25.What is the difference between @Controller and @RestController?
+- There are few differences between @Controller and @RestController annotation:
+1. @Controller annotation marks a class as Spring MVC Controller while the @RestController is a convenience annotation which also adds both @Controller and @ResponseBody annotation together.
+2. @RestController automatically converts the response to JSON/XML.
+3. The @RestController annotation cannot return a view while @Controller can do that.
+Here is a definition to both for better clarity:
+```
+@Controller
+public class ControllerExample{
+
+  @RequestMapping(value={"/uri"})
+  @ResponseBody
+  public CustomResponse method(){
+      //return response
+   }
+}
+```
+```
+@RestController
+public class ControllerExample{
+
+  @RequestMapping(value={"/uri"})
+  public CustomResponse method(){
+      //return response
+   }
+}
+```
