@@ -2,7 +2,7 @@
 - Hibernate ORM stands for Object Relational Mapping.
 - This is a mapping tool pattern mainly used for converting data stored in a relational database to an object used in object-oriented programming constructs.
 - This tool also helps greatly in simplifying data retrieval, creation, and manipulation.
-![alt text](https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/042/original/Object_Relational_Mapping.png?1614751673)
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/042/original/Object_Relational_Mapping.png" width="500">
 
 ### 2. What are the advantages of Hibernate over JDBC?
 - The advantages of Hibernate over JDBC are listed below:
@@ -78,9 +78,9 @@ Immutable class in hibernate creation could be in the following way.
   Now the task of hibernate is to represent these 2 employee types by considering the below restrictions:
   1. The general employee details are defined in the parent InterviewBitEmployee class. 
   2. Contract and Permanent employee-specific details are stored in IBContractEmployee and IBPermanentEmployee classes respectively
-- The class diagram of this system is as shown below:  
-![alt text](https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/043/original/Hibernate%E2%80%99s_Inheritance_Mapping.png?1614752403)
-
+- The class diagram of this system is as shown below:
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/043/original/Hibernate%E2%80%99s_Inheritance_Mapping.png" width="500">
+  
 ### 12. Is hibernate prone to SQL injection attack?
 - SQL injection attack is a serious vulnerability in terms of web security wherein an attacker can interfere with the queries made by an application/website to its database thereby allowing the attacker to view sensitive data which are generally irretrievable.
 - It can also give the attacker to modify/ remove the data resulting in damages to the application behavior.
@@ -179,6 +179,266 @@ public class InterviewBitEmployee {
   c. JNDI (Java Naming Directory Interface).
 4. Database - MySQL, PostGreSQL, Oracle, etc
 
-![alt text](https://s3.ap-south-1.amazonaws.com/myinterviewtra…48/original/Hibernate_Architecture.png?1614765415)
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/048/original/Hibernate_Architecture.png" width="300">
 
-### 16.
+- The main elements of Hibernate framework are:
+1. SessionFactory: This provides a factory method to get session objects and clients of ConnectionProvider. It holds a second-level cache (optional) of data.
+2. Session: This is a short-lived object that acts as an interface between the java application objects and database data.
+  a. The session can be used to generate transaction, query, and criteria objects.
+  b. It also has a mandatory first-level cache of data.
+3. Transaction: This object specifies the atomic unit of work and has methods useful for transaction management. This is optional.
+4. ConnectionProvider: This is a factory of JDBC connection objects and it provides an abstraction to the application from the DriverManager. This is optional.
+5. TransactionFactory: This is a factory of Transaction objects. It is optional.
+
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/049/original/Hibernate_Framework_Objects.png" width="500">
+
+### 16.Can you tell the difference between getCurrentSession and openSession methods?
+- Both the methods are provided by the Session Factory. The main differences are given below:
+1. getCurrentSession()
+a. This method returns the session bound to the context.
+b. This session object scope belongs to the hibernate context and to make this work hibernate configuration file has to be modified by adding <property name = "hibernate.current_session_context_class"> thread </property>. If not added, then using the method would throw an HibernateException.
+c. This session object gets closed once the session factory is closed.
+d. In a single-threaded environment, this method is faster than openSession().
+2. openSession()
+a. This method always opens a new session.
+b. A new session object has to be created for each request in a multi-threaded environment. Hence, you need not configure any property to call this method.
+c. It's the developer’s responsibility to close this object once all the database operations are done.
+d. In single threaded environment, it is slower than getCurrentSession()single-threaded.
+- Apart from these two methods, there is another method openStatelessSession() and this method returns a stateless session object.
+
+### 17.Differentiate between save() and saveOrUpdate() methods in hibernate session.
+- Both the methods save records to the table in the database in case there are no records with the primary key in the table. However, the main differences between these two are listed below:
+1. save()
+a. save() generates a new identifier and INSERT record into a database
+b. The insertion fails if the primary key already exists in the table.
+c. The return type is Serializable which is the newly generated identifier id value as a Serializable object.
+d. This method is used to bring only a transient object to a persistent state.
+2. saveOrUpdate()
+a. Session.saveOrUpdate() can either INSERT or UPDATE based upon existence of a record.
+b. In case the primary key already exists, then the record is updated.
+c. The return type of the saveOrUpdate() method is void.
+d. This method can bring both transient (new) and detached (existing) objects into a persistent state. It is often used to re-attach a detached object into a Session
+- Clearly, saveOrUpdate() is more flexible in terms of use but it involves extra processing to find out whether a record already exists in the table or not.
+
+### 18.Differentiate between get() and load() in Hibernate session
+- These are the methods to get data from the database. The primary differences between get and load in Hibernate are given below:
+1. get()
+a. This method gets the data from the database as soon as it is called.
+b. The database is hit every time the method is called.
+c. The method returns null if the object is not found.
+d. This method should be used if we are unsure about the existence of data in the database.
+2. load()
+a. This method returns a proxy object and loads the data only when it is required.
+b. The database is hit only when it is really needed and this is called Lazy Loading which makes the method better.
+c. The method throws ObjectNotFoundException if the object is not found.
+d. This method is to be used when we know for sure that the data is present in the database.
+
+### 19.What is criteria API in hibernate?
+- Criteria API in Hibernate helps developers to build dynamic criteria queries on the persistence database.
+- Criteria API is a more powerful and flexible alternative to HQL (Hibernate Query Language) queries for creating dynamic queries.
+- This API allows to programmatically development criteria query objects.
+- The org.hibernate.Criteria interface is used for these purposes.
+- The Session interface of hibernate framework has createCriteria() method that takes the persistent object’s class or its entity name as the parameters and returns persistence object instance the criteria query is executed.
+- It also makes it very easy to incorporate restrictions to selectively retrieve data from the database.
+- It can be achieved by using the add() method which accepts the org.hibernate.criterion.Criterion object representing individual restriction.
+
+-----
+
+Usage examples:
+
+To return all the data of InterviewBitEmployee entity class.
+```
+Criteria criteria = session.createCriteria(InterviewBitEmployee.class);
+List<InterviewBitEmployee> results = criteria.list();
+```
+To retrive objects whose property has value equal to the restriction, we use Restrictions.eq() method. For example, to fetch all records with name ‘Hibernate’:
+```
+Criteria criteria= session.createCriteria(InterviewBitEmployee.class);
+criteria.add(Restrictions.eq("fullName","Hibernate"));
+List<InterviewBitEmployee> results = criteria.list();
+```
+To get objects whose property has the value “not equal to” the restriction, we use Restrictions.ne() method. For example, to fetch all the records whose employee’s name is not Hibernate:
+```
+Criteria criteria= session.createCriteria(InterviewBitEmployee.class);
+criteria.add(Restrictions.ne("fullName","Hibernate"));
+List<Employee> results = criteria.list()
+```
+To retrieve all objects whose property matches a given pattern, we use Restrictions.like() (for case sensitivenes) and Restrictions.ilike()(for case insensitiveness)
+```
+Criteria criteria= session.createCriteria(InterviewBitEmployee.class);
+criteria.add(Restrictions.like("fullName","Hib%",MatchMode.ANYWHERE));
+List<InterviewBitEmployee> results = criteria.list();
+```
+Similarly, it also has other methods like isNull(), isNotNull(), gt(), ge(), lt(), le() etc for adding more varieties of restrictions. It has to be noted that for Hibernate 5 onwards, the functions returning an object of typeCriteria are deprecated. Hibernate 5 version has provided interfaces like CriteriaBuilder and CriteriaQuery to serve the purpose:
+```
+javax.persistence.criteria.CriteriaBuilder
+javax.persistence.criteria.CriteriaQuery
+
+// Create CriteriaBuilder
+CriteriaBuilder builder = session.getCriteriaBuilder();
+
+// Create CriteriaQuery
+CriteriaQuery<YourClass> criteria = builder.createQuery(YourClass.class);
+```
+For introducing restrictions in CriteriaQuery, we can use the CriteriaQuery.where method which is analogous to using the WHERE clause in a JPQL query.
+
+-----
+
+### 20.What is HQL?
+- Hibernate Query Language (HQL) is used as an extension of SQL.
+- It is very simple, efficient, and very flexible for performing complex operations on relational databases without writing complicated queries.
+- HQL is the object-oriented representation of query language, i.e instead of using table name, we make use of the class name which makes this language independent of any database.
+- This makes use of the Query interface provided by Hibernate. The Query object is obtained by calling the createQuery() method of the hibernate Session interface.
+- Following are the most commonly used methods of query interface:
+1. public int executeUpdate() : This method is used to run the update/delete query.
+2. public List list(): This method returns the result as a list.
+3. public Query setFirstResult(int rowNumber): This method accepts the row number as the parameter using which the record of that row number would be retrieved.
+4. public Query setMaxResult(int rowsCount): This method returns a maximum up to the specified rowCount while retrieving from the database.
+5. public Query setParameter(int position, Object value): This method sets the value to the attribute/column at a particular position. This method follows the JDBC style of the query parameter.
+6. public Query setParameter(String name, Object value): This method sets the value to a named query parameter.
+- Example: To get a list of all records from InterviewBitEmployee Table:
+```
+Query query=session.createQuery("from InterviewBitEmployee");  
+List<InterviewBitEmployee> list=query.list();  
+System.out.println(list.get(0));
+```
+
+### 21. Can you tell something about one to many associations and how can we use them in Hibernate?
+- The one-to-many association is the most commonly used which indicates that one object is linked/associated with multiple objects.
+- For example, one person can own multiple cars.
+- In Hibernate, we can achieve this by using @OnetoMany of JPA annotations in the model classes. Consider the above example of a person having multiple cars as shown below:
+```
+@Entity
+@Table(name="Person")
+public class Person {
+
+   //...
+
+   @OneToMany(mappedBy="owner")
+   private Set<Car> cars;
+
+   // getters and setters
+}
+```
+- In the Person class, we have defined the car's property to have @OneToMany association. The Car class would have owned property that is used by the mappedBy variable in the Person class. The Car class is as shown below:
+```
+@Entity
+@Table(name="Car")
+public class Car {
+
+   // Other Properties
+   
+   @ManyToOne
+   @JoinColumn(name="person_id", nullable=false)
+   private Person owner;
+
+   public Car() {}
+
+   // getters and setters
+}
+```
+@ManyToOne annotation indicates that many instances of an entity are mapped to one instance of another entity – many cars of one person.
+
+### 22.What are Many to Many associations?
+- Many-to-many association indicates that there are multiple relations between the instances of two entities.
+- We could take the example of multiple students taking part in multiple courses and vice versa.
+- Since both the student and course entities refer to each other by means of foreign keys, we represent this relationship technically by creating a separate table to hold these foreign keys.
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/053/original/Hibernate_Many_To_Many_Associations.png" width="500">
+Here, Student-Course Table is called the Join Table where the student_id and course_id would form the composite primary key.
+
+### 23. What does session.lock() method in hibernate do?
+- session.lock() method is used to reattach a detached object to the session.
+- session.lock() method does not check for any data synchronization between the database and the object in the persistence context and hence this reattachment might lead to loss of data synchronization.
+
+### 24. What is hibernate caching?
+- Hibernate caching is the strategy for improving the application performance by pooling objects in the cache so that the queries are executed faster.
+- Hibernate caching is particularly useful when fetching the same data that is executed multiple times.
+- Rather than hitting the database, we can just access the data from the cache.
+- This results in reduced throughput time of the application.
+- Types of Hibernate Caching
+1. First Level Cache:
+a. This level is enabled by default.
+b. The first level cache resides in the hibernate session object.
+c. Since it belongs to the session object, the scope of the data stored here will not be available to the entire application as an application can make use of multiple session objects.
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/051/original/Hibernate_First_Level_Caching.png" width="500">
+2. Second Level Cache:
+a. Second level cache resides in the SessionFactory object and due to this, the data is accessible by the entire application.
+b. This is not available by default. It has to be enabled explicitly.
+c. EH (Easy Hibernate) Cache, Swarm Cache, OS Cache, JBoss Cache are some example cache providers.
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/052/original/Hibernate_Second_Level_Caching.png?1614765951" width="500">
+
+### 25. When is merge() method of the hibernate session useful?
+- Merge() method can be used for updating existing values.
+- The specialty of this method is, once the existing values are updated, the method creates a copy from the entity object and returns it.
+- This result object goes into the persistent context and is then tracked for any changes. The object that was initially used is not tracked.
+
+### 26. Collection mapping can be done using One-to-One and Many-to-One Associations. What do you think?
+- False, collection mapping is possible only with One-to-Many and Many-to-Many associations.
+
+### 27. Can you tell the difference between setMaxResults() and setFetchSize() of Query?
+1.setMaxResults() the function works similar to LIMIT in SQL.
+- Here, we set the maximum number of rows that we want to be returned.
+- This method is implemented by all database drivers.
+2. setFetchSize() works for optimizing how Hibernate sends the result to the caller for example: are the results buffered, are they sent in different size chunks, etc.
+- This method is not implemented by all the database drivers.
+
+### 28. Does Hibernate support Native SQL Queries?
+- Yes, it does. Hibernate provides the createSQLQuery() method to let a developer call the native SQL statement directly and returns a Query object.
+- Consider the example where you want to get employee data with the full name “Hibernate”.
+- We don’t want to use HQL-based features, instead, we want to write our own SQL queries. In this case, the code would be:
+```
+Query query = session.createSQLQuery( "select * from interviewbit_employee ibe where ibe.fullName = :fullName")
+                   .addEntity(InterviewBitEmployee.class)
+                   .setParameter("fullName", "Hibernate"); //named parameters
+List result = query.list();
+```
+Alternatively, native queries can also be supported when using NamedQueries.
+
+### 29. What happens when the no-args constructor is absent in the Entity bean?
+- Hibernate framework internally uses Reflection API for creating entity bean instances when get() or load() methods are called.
+- The method Class.newInstance() is used which requires a no-args constructor to be present.
+- When we don't have this constructor in the entity beans, then hibernate fails to instantiate the bean and hence it throws HibernateException.
+
+### 30. Can we declare the Entity class final?
+- No, we should not define the entity class final because hibernate uses proxy classes and objects for lazy loading of data and hits the database only when it is absolutely needed. This is achieved by extending the entity bean.
+- If the entity class (or bean) is made final, then it cant be extended and hence lazy loading can not be supported.
+
+### 31.What are the states of a persistent entity?
+A persistent entity can exist in any of the following states:
+1. Transient:
+- This state is the initial state of any entity object.
+- Once the instance of the entity class is created, then the object is said to have entered a transient state. These objects exist in heap memory.
+- In this state, the object is not linked to any session. Hence, it is not related to any database due to which any changes in the data object don't affect the data in the database.
+```
+InterviewBitEmployee employee=new InterviewBitEmployee(); //The object is in the transient state.  
+   employee.setId(101);  
+   employee.setFullName("Hibernate"); 
+   employee.setEmail("hibernate@interviewbit.com");
+```
+2. Persistent:
+- This state is entered whenever the object is linked or associated with the session.
+- An object is said to be in a persistence state whenever we save or persist an object in the database.
+- Each object corresponds to the row in the database table.
+- Any modifications to the data in this state cause changes in the record in the database.
+- Following methods can be used upon the persistence object:
+```
+session.save(record);  
+session.persist(record);  
+session.update(record);  
+session.saveOrUpdate(record);  
+session.lock(record);  
+session.merge(record);
+```
+3. Detached:
+- The object enters this state whenever the session is closed or the cache is cleared.
+- Due to the object being no longer part of the session, any changes in the object will not reflect in the corresponding row of the database. However, it would still have its representation in the database.
+- In case the developer wants to persist changes of this object, it has to be reattached to the hibernate session.
+- In order to achieve the reattachment, we can use the methods load(), merge(), refresh(), update(), or save() methods on a new session by using the reference of the detached object.
+- The object enters this state whenever any of the following methods are called:
+```
+session.close();
+session.clear();
+session.detach(record);
+session.evict(record);
+```
+<img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/054/original/Hibernate_Persistent_Entity.png" width="500">
