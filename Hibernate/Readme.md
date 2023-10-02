@@ -442,3 +442,52 @@ session.detach(record);
 session.evict(record);
 ```
 <img src="https://s3.ap-south-1.amazonaws.com/myinterviewtrainer-domestic/public_assets/assets/000/000/054/original/Hibernate_Persistent_Entity.png" width="500">
+
+### 32.Explain Query Cache
+- Hibernate framework provides an optional feature called cache region for the queries’ resultset.
+- Additional configurations have to be done in code in order to enable this.
+- The query cache is useful for those queries which are most frequently called with the same parameters.
+- This increases the speed of the data retrieval and greatly improves performance for commonly repetitive queries.
+- This does not cache the state of actual entities in the result set but it only stores the identifier values and results of the value type.
+- Hence, query cache should be always used in association with second-level cache.
+- *Configuration*:
+In the hibernate configuration XML file, set the use_query_cache property to true as shown below:
+```
+<property name="hibernate.cache.use_query_cache">true</property>
+```
+In the code, we need to do the below changes for the query object:
+```
+Query query = session.createQuery("from InterviewBitEmployee");
+query.setCacheable(true);
+query.setCacheRegion("IB_EMP");
+```
+
+### 33. Can you tell something about the N+1 SELECT problem in Hibernate?
+- N+1 SELECT problem is due to the result of using lazy loading and on-demand fetching strategy. \
+Let's take an example.
+- If you have an N items list and each item from the list has a dependency on a collection of another object, say bid.
+- In order to find the highest bid for each item while using the lazy loading strategy, hibernate has to first fire 1 query to load all items and then subsequently fire N queries to load big of each item.
+- Hence, hibernate actually ends up executing N+1 queries.
+
+### 34. How to solve N+1 SELECT problem in Hibernate?
+- Some of the strategies followed for solving the N+1 SELECT problem are:
+1. Pre-fetch the records in batches which helps us to reduce the problem of N+1 to (N/K) + 1 where K refers to the size of the batch.
+2. Subselect the fetching strategy
+3. As last resort, try to avoid or disable lazy loading altogether.
+
+### 35. What are the concurrency strategies available in hibernate?
+- Concurrency strategies are the mediators responsible for storing and retrieving items from the cache.
+- While enabling second-level cache, it is the responsibility of the developer to provide what strategy is to be implemented to decide for each persistent class and collection. \
+Following are the concurrency strategies that are used:
+1. Transactional: This is used in cases of updating data that most likely causes stale data and this prevention is most critical to the application.
+2. Read-Only: This is used when we don't want the data to be modified and can be used for reference data only.
+3. Read-Write: Here, data is mostly read and is used when the prevention of stale data is of critical importance.
+4. Non-strict-Read-Write: Using this strategy will ensure that there wouldn't be any consistency between the database and cache. This strategy can be used when the data can be modified and stale data is not of critical concern.
+
+### 36. What are the benefits of NamedQuery?
+- In order to understand the benefits of NamedQuery, let's first understand the disadvantage of HQL and SQL.
+- The main disadvantage of having HQL and SQL scattered across data access objects is that it makes the code unreadable.
+- Hence, as good practice, it is recommended to group all HQL and SQL codes in one place and use only their reference in the actual data access code.
+- In order to achieve this, Hibernate gives us named queries.
+- A named query is a statically defined query with a predefined unchangeable query string.
+- They are validated when the session factory is created, thus making the application fail fast in case of an error.
