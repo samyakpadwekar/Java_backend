@@ -24,9 +24,13 @@ This repo has interview questions and topics required for java backend interview
 4.Spring Data JPA
 
 5.Spring Data Rest \
-&emsp;5.1.Configuration. \
-&emsp;5.2.Pagination. \
-&emsp;5.3.Sorting.
+&emsp;5.1.Pagination. \
+&emsp;5.2.Sorting. \
+&emsp;5.3.RepositoryRestResource annotation. \
+&emsp;5.3.Projection. \
+&emsp;5.4.Event handler. \
+&emsp;5.5.Custom Validation. \
+&emsp;5.6.Custom Search. 
 
 6.Spring AOP (not imp. in interview) \
 &emsp;6.1.Before Advice Type. \
