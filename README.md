@@ -47,7 +47,7 @@ This repo has interview questions and topics required for java backend interview
 &emsp;7.4.Using Path Variable for REST Endpoints \
 &emsp;7.5.Exception
 
-8.Spring Boot
+8.Spring Boot \
 &emsp;8.1.Spring boot annotation. \
 &emsp;8.2.Embedded Server. \
 &emsp;8.3.Starter Projects. \
