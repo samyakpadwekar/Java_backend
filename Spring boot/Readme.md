@@ -321,8 +321,7 @@ In layman's terms, think of Spring Initializer as a "recipe generator" for build
 Instead of starting from scratch and gathering all the ingredients and cooking instructions yourself, you provide some basic information, and Spring Initializer gives you a ready-to-use recipe (project) that you can start working on immediately. \
 
 Here's how it works: \
-*Visit the Spring Initializer Website*: \
-[click here](https://start.spring.io/) \
+[*Visit the Spring Initializer Website*](https://start.spring.io/) \
 You go to the Spring Initializer website, which is like an online kitchen for building Spring Boot applications. \
 
 *Choose Your Ingredients (Project Options)*: \
