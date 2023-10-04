@@ -66,4 +66,4 @@ This repo has questions and topics required for java backend interview .
 
 PS: I created this repo during my interview Preparation as I was finding it difficult to go to different sites and search for questions and answers and is purely for educational purpose,please add more questions and topic if you face any in your interview process.
 
-Credits : Riddhi Dutta,GeeksForGeeks,Leetcode,Spring.io,InterviewBit etc
+Credits : GeeksForGeeks,Spring.io,InterviewBit,JavaTPoint, etc
