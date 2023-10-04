@@ -55,7 +55,7 @@ This repo has interview questions and topics required for java backend interview
 &emsp;8.5.Spring Initializer. \
 &emsp;8.6.Application.properties & Application.yaml. \
 &emsp;8.7.Profile. \ 
-&emsp;8.8.Spring boot actuator. 
+&emsp;8.8.Spring boot actuator 
 
 9.Spring Security. \
 &emsp;9.1.Authentication and Authorisation. \
