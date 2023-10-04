@@ -48,6 +48,14 @@ This repo has interview questions and topics required for java backend interview
 &emsp;7.5.Exception
 
 8.Spring Boot
+&emsp;8.1.Spring boot annotation. \
+&emsp;8.2.Embedded Server. \
+&emsp;8.3.Starter Projects. \
+&emsp;8.4.Dependency Management. \
+&emsp;8.5.Spring Initializer. \
+&emsp;8.6.Application.properties & Application.yaml. \
+&emsp;8.7.Profile. \ 
+&emsp;8.8.Spring boot actuator. 
 
 9.Spring Security. \
 &emsp;9.1.Authentication and Authorisation. \
