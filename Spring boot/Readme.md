@@ -285,9 +285,10 @@ In this example, @ComponentScan is used to specify that Spring should scan the c
 - Spring Boot's embedded servers simplify deployment because you don't need to separately install and configure a server.
 - It's especially important for creating self-contained, executable JAR files.
 
-### 10. What is the default embedded server with Spring Boot?
+### 10. What is the default embedded server with Spring Boot? What is the default port of tomcat in spring boot?
 - The default embedded server with Spring Boot is Tomcat.
 - It's included by default when you use Spring Boot for web applications.
+- The default port of the tomcat server-id 8080. It can be changed by adding sever.port properties in the application.property file.
 
 ### 11. What are the other embedded servers supported by Spring Boot?
 - Spring Boot supports several embedded servers, including Jetty, Undertow, and more. You can choose a different server by adding the corresponding dependency to your project.
@@ -307,7 +308,8 @@ In this example, @ComponentScan is used to specify that Spring should scan the c
 ### 15. What are the different things that are defined in Starter Parent?
 - Starter Parent defines the Spring Boot version, plugin configurations, and common dependencies. It ensures that all Starter projects have compatible versions and configurations.
 
-### 16. How does Spring Boot enforce common dependency management for all its Starter projects?
+### 16. What is Depenednecy management?How does Spring Boot enforce common dependency management for all its Starter projects?
+- Spring Boot dependency management is used to manage dependencies and configuration automatically without you specifying the version for any of that dependencies.
 - Spring Boot enforces common dependency management by specifying a version for all dependencies in the Parent POM. This ensures that all Starter projects use the same versions of Spring Boot and related libraries.
 
 ### 17. What is Spring Initializer?
@@ -358,69 +360,405 @@ Manually manage the initialization of the Spring Boot application context and an
 By using Spring Initializer, you skip these manual steps and start with a fully configured and structured project, allowing you to focus on writing your application's business logic rather than dealing with project setup and boilerplate code.
 
 -----
-18. What is application.properties?
 
-application.properties is a configuration file in Spring Boot that allows you to configure various aspects of your application. You can set properties for database connections, server ports, logging, and more.
+### 18. What is application.properties?
+- application.properties is a configuration file commonly used in Spring Boot applications to manage application-specific settings and properties.
+- It plays a crucial role in configuring various aspects of your Spring Boot application without modifying the source code.
+- You can customize properties related to database configuration, logging levels, server settings, external service URLs, and any other configuration needed for your application.
+- This file is especially useful for externalizing configuration(another way is application.yml) from your codebase, making it easier to modify settings without recompiling the application.Spring Boot will automatically load these properties when the application starts.
 
-19. What are some of the important things that can be customized in application.properties?
+### 19.Why is application.properties Required?
+- *External Configuration*: It allows you to configure your application externally. Instead of hardcoding configuration values within your code, you can specify them in the application.properties file. This makes it easier to change settings without modifying your code, which is crucial for configuring applications across different environments (e.g., development, testing, production).
+- *Maintainability*: Separating configuration from code improves the maintainability of your application. You can change configuration values without needing to recompile the application, making it more flexible and adaptable.
+- *Profile Management*: Spring Boot supports profiles, which enable you to define different configurations for different environments (e.g., application-dev.properties for development and application-prod.properties for production). By using application.properties along with profiles, you can manage configuration settings for various scenarios efficiently.
 
-You can customize properties related to database configuration, logging levels, server settings, external service URLs, and any other configuration needed for your application.
+-----
 
-20. How do you externalize configuration using Spring Boot?
+Here's an example of an application.properties file and how you can use its properties in a Spring Boot application code. \
 
-You can externalize configuration by placing properties in external configuration files (e.g., application.properties or application.yml) outside your application's code. Spring Boot will automatically load these properties when the application starts.
+Example application.properties file:
+```
+# Database Configuration
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=myuser
+spring.datasource.password=mypassword
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-21. How can you add custom application properties using Spring Boot?
+# Server Configuration
+server.port=8080
 
-You can add custom application properties in the application.properties file or a dedicated custom properties file and access them using Spring's @Value annotation or the Environment object.
+# Logging Configuration
+logging.level.org.springframework=INFO
+logging.level.com.myapp=DEBUG
 
-22. What is @ConfigurationProperties?
+# Custom Application Property
+myapp.api.key=secretapikey
+```
 
-@ConfigurationProperties is an annotation in Spring Boot that binds properties defined in configuration files to Java objects. It simplifies the process of mapping properties to Java objects.
+Now, let's see how you can use these properties in your Spring Boot application code: \
 
-23. What is a profile?
+*Creating a Configuration Class*: \
+You can create a configuration class in your Spring Boot project to access and use these properties. Here's an example: \
+```
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
-A profile in Spring Boot allows you to define different sets of configurations for different environments or scenarios. It helps manage application behavior in various contexts (e.g., development, production).
+@Configuration
+public class AppConfig {
 
-24. How do you define beans for a specific profile?
+    @Value("${spring.datasource.url}")
+    private String databaseUrl;
 
-You can use the @Profile annotation to specify that a bean should be active only when a certain profile is active. For example:
+    @Value("${spring.datasource.username}")
+    private String databaseUsername;
 
-java
-Copy code
+    @Value("${server.port}")
+    private int serverPort;
+
+    @Value("${myapp.api.key}")
+    private String apiKey;
+
+    public String getDatabaseUrl() {
+        return databaseUrl;
+    }
+
+    public String getDatabaseUsername() {
+        return databaseUsername;
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+}
+```
+
+In this configuration class, we use the *@Value* annotation to inject property values from application.properties into instance variables. For example, *@Value("${spring.datasource.url}")* injects the spring.datasource.url property value into the databaseUrl variable. \
+
+*Using Configuration Properties in a Service or Controller*: \
+You can then use these properties in your service or controller classes as needed. Here's an example:
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MyController {
+
+    private final AppConfig appConfig;
+
+    @Autowired
+    public MyController(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
+
+    @GetMapping("/api/config")
+    public String getConfig() {
+        return "Database URL: " + appConfig.getDatabaseUrl() + "\n"
+               + "Database Username: " + appConfig.getDatabaseUsername() + "\n"
+               + "Server Port: " + appConfig.getServerPort() + "\n"
+               + "API Key: " + appConfig.getApiKey();
+    }
+}
+```
+In this controller class, we inject the AppConfig bean and use its methods to retrieve and display the configured properties. \
+
+By using @Value annotations and a configuration class, you can access and use properties defined in application.properties throughout your Spring Boot application code. This allows you to centralize and manage configuration settings easily, making your application more flexible and maintainable.
+
+-----
+
+### 20.What is Application.yaml?
+- application.yaml (or application.yml) is an alternative configuration file format used in Spring Boot applications, alongside the more common application.properties file.
+- Both formats serve the same purpose: configuring your Spring Boot application.
+- However, they have different syntax and features, allowing you to choose the one that suits your preferences and needs.
+
+### 21.How Application.yaml is different from application.properties?
+1. *YAML vs. Properties*:
+- application.properties uses a key-value pair format with properties separated by equal signs (=).
+- application.yaml uses a YAML (YAML Ain't Markup Language) format, which is a human-readable data serialization format. It uses indentation to represent data structures.
+
+2. *Readability*:
+application.yaml is often considered more readable and user-friendly, especially for complex configurations with nested properties and lists.
+YAML's indentation-based structure makes it easy to represent hierarchical data.
+
+3. *Syntax*:
+In application.properties, you set properties like this:
+```
+server.port=8080
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+myapp.api.key=secretapikey
+```
+In application.yaml, you use YAML syntax, which looks like this:
+```
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb
+myapp:
+  api:
+    key: secretapikey
+```
+
+4. *Profiles*:
+- Both formats support profiles, allowing you to define different configurations for different environments (e.g., application-dev.properties or application-dev.yaml for development).
+
+5. *Nested Properties*:
+YAML is often more concise and readable for defining nested properties:
+```
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+```
+In application.properties, nested properties require repetition of prefixes:
+```
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+```
+Here's an example of how the same configuration could be represented in both formats: \
+
+application.properties:
+```
+server.port=8080
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+myapp.api.key=secretapikey
+myapp.supported-languages[0]=English
+myapp.supported-languages[1]=Spanish
+myapp.supported-languages[2]=French
+myapp.description=This is a multiline \
+  description for my app.
+```
+application.yaml:
+```
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb
+myapp:
+  api:
+    key: secretapikey
+  supported-languages:
+    - English
+    - Spanish
+    - French
+  description: |
+    This is a multiline
+    description for my app.
+```
+
+### 22. How can you add custom application properties using Spring Boot?
+- You can add custom application properties in the application.properties file or a dedicated custom properties file and access them using Spring's @Value annotation or the Environment object.
+
+### 23. What is @ConfigurationProperties?
+- @ConfigurationProperties is an annotation in Spring Boot that allows you to bind properties defined in configuration files, such as application.properties or application.yml, to Java objects.
+- It provides a convenient way to externalize configuration settings and inject them into your Spring components.
+
+-----
+
+Suppose you have a Spring Boot application that connects to a database, and you want to externalize the database configuration settings using *@ConfigurationProperties*. \
+
+1. Define a Configuration Class:
+   
+Create a Java class to represent the configuration properties. The class should have fields corresponding to the properties you want to externalize. For example: \
+```
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "database")
+public class DatabaseConfig {
+    private String url;
+    private String username;
+    private String password;
+    // getters and setters
+}
+```
+In this example, we use the @ConfigurationProperties annotation to specify that this class will be used to bind properties with the database prefix from the configuration files.
+
+2. Configure application.properties or application.yml:
+
+Define the properties you want to externalize in your configuration file (application.properties or application.yml). Make sure to use the specified prefix ("database" in this case):
+```
+database.url=jdbc:mysql://localhost:3306/mydb
+database.username=myuser
+database.password=mypassword
+```
+
+3. Use the Configuration Properties in Your Application:
+
+You can now use the DatabaseConfig bean in your application components, such as services or controllers:
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MyController {
+
+    private final DatabaseConfig databaseConfig;
+
+    @Autowired
+    public MyController(DatabaseConfig databaseConfig) {
+        this.databaseConfig = databaseConfig;
+    }
+
+    @GetMapping("/db-config")
+    public String getDatabaseConfig() {
+        return "Database URL: " + databaseConfig.getUrl() + "\n" +
+               "Database Username: " + databaseConfig.getUsername() + "\n" +
+               "Database Password: " + databaseConfig.getPassword();
+    }
+}
+```
+In this controller, we inject the DatabaseConfig bean and use its getters to access the database configuration properties. \
+
+By using @ConfigurationProperties, you've externalized your database configuration, achieved type safety, and organized your code in a cleaner way. Any changes to the configuration can be made in the application.properties or application.yml file without modifying the Java code, making your application more flexible and easier to manage.
+
+-----
+
+### 24.How  @ConfigurationProperties different from @Configuration in spring boot?
+1. *@Configuration*:
+- @Configuration is used to mark a class as a configuration class.
+- Configuration classes are typically used to define Spring Beans, and they are a way to configure the Spring application context.
+- You can define methods within a @Configuration class annotated with @Bean to create and configure Spring Beans.
+- It is used to define and configure beans, manage application context, and set up other configuration-related tasks.
+- Configuration classes are typically used for Java-based configuration.
+```
+@Configuration
+public class MyConfiguration {
+    @Bean
+    public MyBean myBean() {
+        return new MyBean();
+    }
+}
+```
+2. *@ConfigurationProperties*:
+- @ConfigurationProperties is used to bind external configuration properties to Java objects.
+- It is primarily used for externalizing configuration settings from your code and injecting them into Spring components as Java objects.
+- You annotate a Java class with @ConfigurationProperties, specify a prefix for the properties you want to bind, and define fields within the class corresponding to the properties.
+- This annotation provides type-safe binding of properties and is useful when you want to centralize and manage configuration properties.
+```
+@Component
+@ConfigurationProperties(prefix = "database")
+public class DatabaseConfig {
+    private String url;
+    private String username;
+    private String password;
+    // getters and setters
+}
+```
+- In summary, @Configuration is used for configuring beans and the Spring application context, while @ConfigurationProperties is used for externalizing configuration properties and binding them to Java objects. - They serve different purposes within a Spring Boot application, and you may use them in different scenarios based on your requirements.
+
+### 25. Can @ConfigurationProperties be used with @Value?
+- *@ConfigurationProperties* and *@Value* are two distinct mechanisms for retrieving configuration properties in a Spring Boot application, and they are typically used independently.
+- However, you can technically use them together in specific scenarios when needed.
+- Here's how you can use @ConfigurationProperties with @Value:
+- *Using @ConfigurationProperties for Structured Configuration*: \
+- You use @ConfigurationProperties to bind a group of related configuration properties to a Java object. This is especially useful when you want to manage structured or complex configurations.
+```
+@Component
+@ConfigurationProperties(prefix = "myapp")
+public class MyAppConfig {
+    private String apiKey;
+    private String serviceUrl;
+    // getters and setters
+}
+```
+- In this example, we bind properties with the prefix "myapp" to the MyAppConfig class.
+- *Using @Value to Access Specific Properties*:
+- You use @Value to inject a specific configuration property into a field or method parameter when you only need that property in a particular part of your code.
+```
+@Component
+public class MyService {
+    @Autowired
+    private MyAppConfig myAppConfig; // Inject the entire configuration
+
+    @Value("${myapp.apiKey}")
+    private String apiKey; // Use @Value to access a specific property
+
+    public void doSomething() {
+        // Use myAppConfig to access the entire configuration object
+        // Use apiKey to access the specific property
+    }
+}
+```
+- In this example, we inject the entire "myapp" configuration using @Autowired and MyAppConfig, and then we use @Value to inject the "myapp.apiKey" property directly into the apiKey field.
+- Using @ConfigurationProperties with @Value in this way allows you to combine structured configuration (with @ConfigurationProperties) and access to specific properties (with @Value) as needed in your code.
+- However, keep in mind that it's generally more common to choose one of these mechanisms based on your specific use case. @ConfigurationProperties is preferred for structured configurations, while @Value is suitable when you only need individual properties in isolated parts of your code.
+
+### 26. What is a Profile and why is it used?
+- A profile in Spring Boot allows you to define different sets of configurations for different environments or scenarios. It helps manage application behavior in various contexts (e.g., development, production).
+- While developing the application we deal with multiple environments such as dev, QA, Prod, and each environment requires a different configuration.
+- For eg., we might be using an embedded H2 database for dev but for prod, we might have proprietary Oracle or DB2. Even if DBMS is the same across the environment, the URLs will be different.
+- To make this easy and clean, Spring has the provision of Profiles to keep the separate configuration of environments.
+
+### 27. How do you define beans for a specific profile?
+- In Spring Boot, you can define beans for specific profiles by using the @Profile annotation.
+- This annotation allows you to conditionally create or configure beans based on the active profiles in your application..
+- For example:
+```
 @Bean
 @Profile("dev")
 public DataSource devDataSource() {
     // Configuration for the development profile
 }
-25. How do you create application configuration for a specific profile?
+```
 
-You can create separate configuration files for different profiles by naming them as application-{profile}.properties or application-{profile}.yml. Spring Boot will load the appropriate configuration based on the active profile.
+### 28. How do you create application configuration for a specific profile?
+- You can create separate configuration files for different profiles by naming them as application-{profile}.properties or application-{profile}.yml. Spring Boot will load the appropriate configuration based on the active profile.
+- For the dev profile, create a file named application-dev.properties or application-dev.yml (if you prefer YAML configuration).
+- For the prod profile, create a file named application-prod.properties or application-prod.yml.
+- These files should be located in the same directory as your application.properties or application.yml file.
 
-26. How do you have different configuration for different environments?
+### 29. How do you have different configuration for different environments?
+- You can create separate configuration files for different environments (e.g., application-dev.properties, application-prod.properties) and activate the appropriate profile when starting the application. Spring Boot will load the corresponding configuration.
 
-You can create separate configuration files for different environments (e.g., application-dev.properties, application-prod.properties) and activate the appropriate profile when starting the application. Spring Boot will load the corresponding configuration.
+### 30. What is Spring Boot Actuator?
+- Spring Boot Actuator is a set of production-ready features and tools provided by Spring Boot for monitoring and managing your application in a production environment.
+- It's like having a dashboard for your Spring Boot application that gives you insights into how your application is performing, its health, and various runtime metrics.
 
-27. What is Spring Boot Actuator?
+### 31.Why Spring boot actuator is required?
+1. *Monitoring and Management*: Spring Boot Actuator helps you monitor the health, performance, and behavior of your application in real-time. You can check if your application is running properly, detect issues, and manage its components without interrupting service.
+2. *Debugging and Troubleshooting*: It provides essential information about the application's internals, such as environment properties, memory usage, and configuration. This information is invaluable for debugging and troubleshooting issues in production.
+3. *Security*: Spring Boot Actuator offers security measures to restrict access to sensitive endpoints, ensuring that only authorized personnel can access and manage your application's internals.
+4. *Operational Insights*: It collects and exposes metrics and statistics about your application, which can help operations teams gain insights into resource usage, bottlenecks, and overall system health.
+5. *Integration with Monitoring Tools*: Spring Boot Actuator seamlessly integrates with popular monitoring and management tools like Prometheus, Grafana, and Spring Cloud Sleuth, making it easier to manage your application in a larger ecosystem.
 
-Spring Boot Actuator is a set of production-ready features provided by Spring Boot for monitoring and managing applications. It includes endpoints for health checks, metrics, application information, and more.
+### 32.How to implement Spring boot actuator?
+- using Spring Boot Actuator is as simple as adding a dependency to your project and enabling it with a few configurations. Here's an example:
+1. *Add the Spring Boot Actuator dependency to your pom.xml (if you're using Maven) or build.gradle (if you're using Gradle)*:
+```
+<!-- Maven -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+2. *Configure Spring Boot Actuator in your application.properties or application.yml file*:
+```
+management.endpoints.web.exposure.include=*
+```
+This configuration allows all management endpoints to be exposed over the web.
 
-28. How do you monitor web services using Spring Boot Actuator?
+### 33. How do you monitor web services using Spring Boot Actuator?
+- You can use Actuator's built-in endpoints to monitor web services. For example, the /actuator/health endpoint provides information about the application's health, and /actuator/metrics offers various metrics.
 
-You can use Actuator's built-in endpoints to monitor web services. For example, the /actuator/health endpoint provides information about the application's health, and /actuator/metrics offers various metrics.
+### 34. How do you find more information about your application environment using Spring Boot?
+- Spring Boot Actuator provides the /actuator/env endpoint, which displays environment properties, including application properties and system properties.
 
-29. How do you find more information about your application environment using Spring Boot?
+### 35.How to enable debugging log in the spring boot application?
+- Debugging logs can be enabled in three ways -
+1. We can start the application with --debug switch.
+2. We can set the logging.level.root=debug property in application.property file.
+3. We can set the logging level of the root logger to debug in the supplied logging configuration file.
 
-Spring Boot Actuator provides the /actuator/env endpoint, which displays environment properties, including application properties and system properties.
-
-30. What is a CommandLineRunner?
-
-A CommandLineRunner is an interface in Spring Boot that allows you to execute code when the application starts. It's often used for tasks like database initialization or data loading.
-
-Here's a simple example of a CommandLineRunner:
-
-java
-Copy code
+### 36. What is a CommandLineRunner?
+- A CommandLineRunner is an interface in Spring Boot that allows you to execute code when the application starts. It's often used for tasks like database initialization or data loading.
+- Here's a simple example of a CommandLineRunner:
+```
 @Component
 public class MyCommandLineRunner implements CommandLineRunner {
 
@@ -429,4 +767,5 @@ public class MyCommandLineRunner implements CommandLineRunner {
         // Your startup code here
     }
 }
+```
 These explanations and examples should help you understand Spring Boot concepts and features in a practical and straightforward way for your interview preparation.
