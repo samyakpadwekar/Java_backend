@@ -1,6 +1,6 @@
 # Java_backend
 
-This repo has interview questions and topics required for java backend interview for below topics.
+This repo has questions and topics required for java backend interview .
 
 1.Spring core .\
 &emsp;1.1.Spring and it's modules. \
