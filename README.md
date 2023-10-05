@@ -41,11 +41,14 @@ This repo has questions and topics required for java backend interview .
 &emsp;6.6.Advice Types.
 
 7.Spring REST \
-&emsp;7.1.JSON Data Binding. \
-&emsp;7.2.Spring Rest Controller. \
-&emsp;7.3.Retrieve POJOs \
-&emsp;7.4.Using Path Variable for REST Endpoints \
-&emsp;7.5.Exception
+&emsp;7.1.Spring Rest Controller. \
+&emsp;7.2.Request mapping,Path Variable and other annotations. \
+&emsp;7.3.JSON serialization-deserialization and Data Binding. \
+&emsp;7.4.Retrieve POJOs.  \
+&emsp;7.5.Content Negotiation. \
+&emsp;7.6.Versioning. \
+&emsp;7.7.Exception Handling. \
+&emsp;7.8.Caching
 
 8.Spring Boot \
 &emsp;8.1.Spring boot annotation. \
