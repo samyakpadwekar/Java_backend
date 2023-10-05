@@ -5,20 +5,20 @@
 
 ### 2.Explain Spring Rest features.
 Spring provides the Spring Web MVC module, which is commonly used for building RESTful web services. It offers features such as: \
-1. *Annotation-driven controllers*: Controllers can be annotated with @RestController to indicate that they handle RESTful requests. This annotation simplifies the process of building RESTful endpoints. \
-2. *Request mapping*: URLs can be mapped to specific controller methods using annotations like @RequestMapping, @GetMapping, @PostMapping, etc. \
-3. *Content negotiation*: Spring supports content negotiation to produce and consume different representations (e.g., JSON or XML) based on client preferences. \
-4. *Data binding*: Spring can automatically bind HTTP request parameters, form data, or JSON/XML payloads to Java objects, simplifying data handling. \
-5. *Exception handling*: Spring provides mechanisms for handling exceptions gracefully and returning appropriate error responses to clients. \
+1. *Annotation-driven controllers*: Controllers can be annotated with @RestController to indicate that they handle RESTful requests. This annotation simplifies the process of building RESTful endpoints. 
+2. *Request mapping*: URLs can be mapped to specific controller methods using annotations like @RequestMapping, @GetMapping, @PostMapping, etc. 
+3. *Content negotiation*: Spring supports content negotiation to produce and consume different representations (e.g., JSON or XML) based on client preferences. 
+4. *Data binding*: Spring can automatically bind HTTP request parameters, form data, or JSON/XML payloads to Java objects, simplifying data handling. 
+5. *Exception handling*: Spring provides mechanisms for handling exceptions gracefully and returning appropriate error responses to clients. 
 6. *Security*: Spring Security can be integrated to secure RESTful APIs with authentication and authorization mechanisms.
 7. *Testing*: Spring offers testing support for unit and integration testing of REST controllers and endpoints.
 - In summary, "Spring REST" refers to the practice of using the Spring Framework, particularly Spring Web MVC, to design and implement RESTful web services that adhere to REST architectural principles.
 - These services are typically used to expose data or functionality over HTTP for consumption by various clients, such as web applications, mobile apps, or other services.
 
 ### 3.How Spring REST is beneficial?
-1. *Resource-Oriented*: Spring REST is designed specifically for building RESTful APIs. It uses the @RestController annotation, making it clear that this controller is focused on handling REST requests. \
-2. *Simplified Responses*: Spring REST simplifies response handling. You return objects directly from controller methods, and Spring automatically serializes them to JSON or XML based on the request's Accept header. \
-3. *Clear URL Structure*: RESTful URLs like /api/books and /api/books/{id} are straightforward and intuitive for clients to understand. \
+1. *Resource-Oriented*: Spring REST is designed specifically for building RESTful APIs. It uses the @RestController annotation, making it clear that this controller is focused on handling REST requests. 
+2. *Simplified Responses*: Spring REST simplifies response handling. You return objects directly from controller methods, and Spring automatically serializes them to JSON or XML based on the request's Accept header. 
+3. *Clear URL Structure*: RESTful URLs like /api/books and /api/books/{id} are straightforward and intuitive for clients to understand. 
 4. *Statelessness*: REST follows the stateless architecture, which can lead to more scalable and cacheable APIs.
 - By transitioning to Spring REST, you've created a cleaner, more focused API for managing books.
 - Clients can interact with the API using HTTP methods, and the responses are in a format (typically JSON or XML) that's easier to consume programmatically.
@@ -28,7 +28,7 @@ Spring provides the Spring Web MVC module, which is commonly used for building R
 
 Let's start by implementing a basic Spring MVC application and then enhance it to become a Spring REST application. We'll use a simple "Book" entity for illustration. \
 
-*Step 1: Implement Spring MVC* \
+*Step 1: Implement Spring MVC* 
 
 *Book Entity*:
 ```
@@ -72,7 +72,7 @@ public class BookController {
 
 In this Spring MVC example, we have a BookController that handles HTTP requests for listing books and viewing book details. The views are typically implemented using JSP, Thymeleaf, or another template engine. \
 
-*Step 2: Enhance with Spring REST* \
+*Step 2: Enhance with Spring REST*
 
 Now, let's enhance this Spring MVC application to become a Spring REST application by adding Spring Web's REST capabilities.
 
