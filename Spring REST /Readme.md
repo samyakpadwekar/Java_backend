@@ -112,3 +112,96 @@ public class BookRestController {
 ```
 
 -----
+
+### 4.What is Spring REST controller?how is it beneficial?
+- The @RestController annotation in Spring is used to declare a class as a RESTful controller.
+- It tells Spring that this class will handle incoming HTTP requests and send HTTP responses, typically in JSON or XML format. In simple terms, it makes your Java class act like a web service.
+```
+@RestController
+public class MyRestController {
+    // Your controller methods here
+}
+```
+1. *Simplified Development*: @RestController simplifies the development of RESTful web services in Spring. It combines @Controller and @ResponseBody annotations, making it easier to create web services that directly return data, typically in JSON or XML, without needing to annotate each method with @ResponseBody.
+2. *Automatic Serialization*: It automatically serializes the response data into JSON or XML format. This means you can return regular Java objects from your methods, and Spring takes care of converting them into the appropriate format for the HTTP response.
+
+### 5.Explain the purpose of the @RequestMapping,@PostMapping,@PutMapping,@GetMapping annotation in Spring REST.
+- @RequestMapping is a general-purpose annotation for mapping any HTTP method, whereas @PostMapping, @PutMapping, and @GetMapping are specialized annotations for mapping POST, PUT, and GET requests, respectively.
+- The specialized annotations make the code more expressive and easier to understand because they clearly indicate the intended HTTP method.
+- Using specialized annotations helps in code readability and can also help prevent mistakes where the wrong HTTP method is inadvertently used.
+1. *@RequestMapping*:
+- The @RequestMapping annotation is a general-purpose annotation used to map HTTP requests to methods. It can be used for any HTTP method (GET, POST, PUT, DELETE, etc.) by specifying the method attribute.
+```
+@RequestMapping(value = "/resource", method = RequestMethod.GET)
+public ResponseEntity<String> getResource() {
+    // Handle GET request for /resource
+}
+```
+
+2. *@PostMapping*:
+- The @PostMapping annotation is specifically used for mapping HTTP POST requests to methods. It's used when you want a method to handle data submission or resource creation via a POST request.
+```
+@PostMapping("/create")
+public ResponseEntity<String> createResource() {
+    // Handle POST request for creating a resource
+}
+```
+
+3. *@PutMapping*:
+- The @PutMapping annotation is used for mapping HTTP PUT requests to methods. It's typically used for updating an existing resource with new data.
+```
+@PutMapping("/update/{id}")
+public ResponseEntity<String> updateResource(@PathVariable Long id, @RequestBody Resource resource) {
+    // Handle PUT request for updating a resource with the given ID
+}
+```
+
+4. *@GetMapping*:
+- The @GetMapping annotation is specifically used for mapping HTTP GET requests to methods. It's used when you want to retrieve data or perform read-only operations without changing the server's state.
+```
+@GetMapping("/user/{id}")
+public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    // Retrieve user with the given ID
+}
+```
+
+### 6.What HTTP methods are commonly used in RESTful web services, and how does Spring support them?
+- Common HTTP methods in REST are GET, POST, PUT, DELETE, etc. Spring supports these methods through the @RequestMapping annotation. By specifying the method in the annotation, you can control which HTTP method should trigger your method.
+```
+@RequestMapping(value = "/create", method = RequestMethod.POST)
+public ResponseEntity<String> createResource() {
+    // Create a resource here
+}
+```
+
+### 7.What is the purpose of the @PathVariable annotation in Spring REST, and how is it used?how is it different from @RequestParam?
+- The *@PathVariable* and *@RequestParam* annotations in Spring REST are both used to extract data from the URL of an HTTP request, but they serve slightly different purposes and are used in different scenarios. Here's an explanation of each with code examples and their differences:
+
+1. *@PathVariable*:
+- Purpose: The @PathVariable annotation is used to extract values from the URI (the part of the URL that comes after the base URL). It's commonly used to capture parts of the URL and use them as parameters in your controller method.
+- Usage: You annotate a method parameter with @PathVariable and specify the variable name within curly braces {} in the @RequestMapping annotation, matching the variable name to the one in the URL.
+```
+@GetMapping("/users/{userId}")
+public ResponseEntity<User> getUserById(@PathVariable Long userId) {
+    // Extracts the value from the URL, e.g., /users/123
+    // userId will be 123 in this example
+    // Retrieve and return user by userId
+}
+```
+
+2. *@RequestParam*:
+- Purpose: The @RequestParam annotation is used to extract query parameters from the URL. Query parameters are the key-value pairs added to the URL after a **?** symbol.
+- Usage: You annotate a method parameter with @RequestParam and specify the name of the query parameter you want to extract.
+```
+@GetMapping("/search")
+public ResponseEntity<List<User>> searchUsers(@RequestParam String query) {
+    // Extracts the 'query' parameter from the URL, e.g., /search?query=John
+    // 'query' will be "John" in this example
+    // Perform a search and return matching users
+}
+```
+- Differences:
+1. *Source of Data*: @PathVariable extracts data from the URL path, whereas @RequestParam extracts data from the query parameters in the URL.
+2. *Usage*: @PathVariable is used when you want to capture specific parts of the URL path, such as identifiers or resource names. @RequestParam is used when you expect parameters to be included as query parameters in the URL.
+3. *Syntax*: @PathVariable is used as a method parameter annotation, while @RequestParam is also used as a method parameter annotation but requires specifying the parameter name.
+
