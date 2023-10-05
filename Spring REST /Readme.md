@@ -205,3 +205,20 @@ public ResponseEntity<List<User>> searchUsers(@RequestParam String query) {
 2. *Usage*: @PathVariable is used when you want to capture specific parts of the URL path, such as identifiers or resource names. @RequestParam is used when you expect parameters to be included as query parameters in the URL.
 3. *Syntax*: @PathVariable is used as a method parameter annotation, while @RequestParam is also used as a method parameter annotation but requires specifying the parameter name.
 
+### 8.How do you handle request and response serialization in Spring REST?
+- Spring automatically handles request and response serialization using libraries like *Jackson*.
+- When you return an object from your controller method, Spring converts it to JSON or XML (based on content negotiation) for the response. When a JSON or XML request is received, Spring deserializes it into a Java object.
+
+### 9.Why is Jackson dependency used in Spring boot?what are the important Jackson transitive dependencies?
+(not an important question in general,putting it here as I have it in my project)
+- Jackson is a popular Java library used for working with JSON data. In the context of Spring Boot, Jackson is commonly used for:
+1. *JSON Serialization and Deserialization*: Jackson is used to convert Java objects to JSON (serialization) and JSON data back to Java objects (deserialization). This is crucial when you need to send and receive JSON data in Spring Boot applications, such as when building RESTful APIs.
+2. *Data Binding*: Jackson provides powerful data binding capabilities, allowing you to map JSON data to Java objects and vice versa. It can handle complex object structures and nested data effectively.
+3. *Customization*: Jackson allows you to customize the serialization and deserialization process using annotations and custom serializers/deserializers. This flexibility is beneficial when dealing with non-standard JSON structures or specific serialization requirements.
+4. *Transitive Dependencies*: When you use Jackson in a Spring Boot application, it often brings in several transitive dependencies to handle various aspects of JSON processing, including handling different date formats, supporting Java 8 datatypes, and more.
+- Here are some important and useful Jackson transitive dependencies you may encounter in a Spring Boot project:
+1. *jackson-databind* : This is the core Jackson library responsible for data binding (serialization and deserialization). It provides classes like ObjectMapper to work with JSON data.
+2. *jackson-core*: This library contains the low-level JSON processing classes and is part of the Jackson core functionality.
+3. *jackson-annotations*: This library includes annotations like @JsonProperty, @JsonFormat, and others that you can use to customize the JSON mapping behavior.
+4. *jackson-datatype-jdk8*: If your Spring Boot application uses Java 8 features (e.g., Optional, LocalDate, LocalTime), this datatype module provides support for serializing and deserializing these Java 8 types.
+
