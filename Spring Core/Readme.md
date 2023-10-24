@@ -1,8 +1,25 @@
 # Spring-Core-Interview-Question
 
 ### 1.what is spring framework?
+- Spring Framework is a Java platform that provides comprehensive infrastructure support for developing Java applications. Spring handles the infrastructure so you can focus on your application.
+- Spring enables you to build applications from “plain old Java objects” (POJOs) and to apply enterprise services non-invasively to POJOs. This capability applies to the Java SE programming model and to full and partial Java EE.
+- Examples of how you, as an application developer, can use the Spring platform advantage:
+a. Make a Java method execute in a database transaction without having to deal with transaction APIs.
+b. Make a local Java method a remote procedure without having to deal with remote APIs.
+c. Make a local Java method a management operation without having to deal with JMX APIs.
+d. Make a local Java method a message handler without having to deal with JMS APIs.
+
 ### 2.what are the features of spring?
+1. *IoC container* - Refers to the core container that uses the DI or IoC pattern to implicitly provide an object reference in a class during runtime.
+2. *Data access framework* - Allows the developers to use persistence APIs, such as JDBC and Hibernate, for storing persistence data in database.
+3. *Spring MVC framework* - Allows you to build Web applications based on MVC architecture.
+4. *Transaction management* - Helps in handling transaction management of an application without affecting its code.
+5. *Spring Web Service* - Generates Web service endpoints and definitions based on Java classes, but it is difficult to manage them in an application..
+6. *JDBC abstraction layer* - Helps the users in handling errors in an easy and efficient manner.
+7. *Spring TestContext framework* - Provides facilities of unit and integration testing for the Spring applications.
+
 ### 3.what are the modules of spring?
+
 ### 4.What is Loose Coupling?
 ### 5.What is a Dependency?
 ### 6.What Is a Spring Bean?
