@@ -19,9 +19,54 @@ d. Make a local Java method a message handler without having to deal with JMS AP
 7. *Spring TestContext framework* - Provides facilities of unit and integration testing for the Spring applications.
 
 ### 3.what are the modules of spring?
+<img src="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/images/spring-overview.png" width="600" height="400">
+
+1. **Core Container**
+- The Core Container consists of the Core, Beans, Context, and Expression Language modules.
+- The *Core* and *Beans* modules provide the fundamental parts of the framework, including the IoC and Dependency Injection features.
+- The *Context* module builds on the solid base provided by the Core and Beans modules: it is a means to access objects in a framework-style manner that is similar to a JNDI registry. The *Context* module inherits its features from the Beans module and adds support for internationalization, event-propagation, resource-loading, and the transparent creation of contexts by, for example, a servlet container, has supports Java EE features such as EJB, JMX ,and basic remoting. The ApplicationContext interface is the focal point of the Context module.
+- The *Expression Language* module provides a powerful expression language for querying and manipulating an object graph at runtime.
+
+2. **Data Access/Integration**
+- The Data Access/Integration layer consists of the JDBC, ORM, OXM, JMS and Transaction modules.
+- The *JDBC* module provides a JDBC-abstraction layer that removes the need to do tedious JDBC coding and parsing of database-vendor specific error codes.
+- The *ORM* module provides integration layers for popular object-relational mapping APIs, including JPA, JDO, Hibernate, and iBatis.
+- The *Java Messaging Service (JMS)* module contains features for producing and consuming messages.
+- The *Transaction module* supports programmatic and declarative transaction management for classes that implement special interfaces and for all your POJOs (plain old Java objects).
+
+3. **Web**
+- The Web layer consists of the Web, Web-Servlet, Web-Struts, and Web-Portlet modules.
+- Spring's Web module provides basic web-oriented integration features such as multipart file-upload functionality and the initialization of the IoC container using servlet listeners and a web-oriented application context. It also contains the web-related parts of Spring's remoting support.
+- The *Web-Servlet* module contains Spring's model-view-controller (MVC) implementation for web applications.
+- The *Web-Portlet* module provides the MVC implementation to be used in a portlet environment and mirrors the functionality of Web-Servlet module.
+
+4. **AOP and Instrumentation**
+- Spring's *AOP* module provides an AOP Alliance-compliant aspect-oriented programming implementation allowing you to define, for example, method-interceptors and pointcuts to cleanly decouple code that implements functionality that should be separated.
+- The separate *Aspects* module provides integration with AspectJ.
+- The *Instrumentation* module provides class instrumentation support and classloader implementations to be used in certain application servers.
+
+5. **Test**
+- The Test module supports the testing of Spring components with JUnit or TestNG. It provides consistent loading of Spring ApplicationContexts and caching of those contexts. It also provides mock objects that you can use to test your code in isolation.
 
 ### 4.What is Loose Coupling?
+- Loose coupling is a concept in software engineering and system design that describes the degree to which components or modules within a system are independent of each other and interact with minimal dependencies.
+- It is a fundamental principle in designing software systems and is often associated with the goal of making systems more maintainable, flexible, and scalable.
+- Here are some key characteristics and advantages of loose coupling:
+1. *Independence*
+2. *Minimal Dependencies*
+3. *Flexibility*
+4. *Reusability*
+5. *Testability*
+6. *Scalability*
+
 ### 5.What is a Dependency?
+-In Java, a dependency refers to a situation where one class, module, or component relies on another class, module, or component in some way. 
+- Dependencies are a fundamental concept in object-oriented programming and software design, and they represent the relationships and interactions between various parts of a Java program.
+- There are different types of dependencies in Java:
+1. *Compile-Time Dependencies*
+2. *Run-Time Dependencies*
+3. *Transitive Dependencies*
+
 ### 6.What Is a Spring Bean?
 - Here’s a definition of beans in the Spring Framework documentation: \
   In Spring, the objects that form the backbone of your application and that are managed by the Spring IoC container are called beans. A bean is an object that is instantiated, assembled, and otherwise managed by a Spring IoC container.
