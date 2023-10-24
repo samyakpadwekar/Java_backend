@@ -1008,11 +1008,60 @@ Specific multiple packages:
 -----
 
 ### 24.What is Dependency Injection?
-### 25.Can you give few examples of Dependency Injection?
-### 26.How Can We Inject Beans in Spring?
-### 27.What is setter injection?
-### 28.What is constructor injection?
-### 29.Which Is the Best Way of Injecting Beans and Why?
+- Dependency injection (DI) is a process whereby objects define their dependencies (that is, the other objects with which they work) only through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method.
+- The container then injects those dependencies when it creates the bean.
+- This process is fundamentally the inverse (hence the name, Inversion of Control) of the bean itself controlling the instantiation or location of its dependencies on its own by using direct construction of classes or the Service Locator pattern.
+
+### 25.What is setter injection?
+- For setter-based DI, the container will call setter methods of our class after invoking a no-argument constructor or no-argument static factory method to instantiate the bean.
+- Let’s create this configuration using annotations:
+```
+@Bean
+public Store store() {
+    Store store = new Store();
+    store.setItem(item1());
+    return store;
+}
+```
+- We can also use XML for the same configuration of beans:
+```
+<bean id="store" class="org.baeldung.store.Store">
+    <property name="item" ref="item1" />
+</bean>
+```
+We can combine constructor-based and setter-based types of injection for the same bean. The Spring documentation recommends using constructor-based injection for mandatory dependencies, and setter-based injection for optional ones.
+
+### 26.What is constructor injection?
+- In the case of constructor-based dependency injection, the container will invoke a constructor with arguments each representing a dependency we want to set.
+- Spring resolves each argument primarily by type, followed by name of the attribute, and index for disambiguation.
+- Let’s see the configuration of a bean and its dependencies using annotations:
+```
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Item item1() {
+        return new ItemImpl1();
+    }
+
+    @Bean
+    public Store store() {
+        return new Store(item1());
+    }
+}
+```
+- The @Configuration annotation indicates that the class is a source of bean definitions. We can also add it to multiple configuration classes.
+- We use the @Bean annotation on a method to define a bean. If we don’t specify a custom name, then the bean name will default to the method name.
+- For a bean with the default singleton scope, Spring first checks if a cached instance of the bean already exists, and only creates a new one if it doesn’t. If we’re using the prototype scope, the container returns a new bean instance for each method call.
+- Another way to create the configuration of the beans is through XML configuration:
+```
+<bean id="item1" class="org.baeldung.store.ItemImpl1" /> 
+<bean id="store" class="org.baeldung.store.Store"> 
+    <constructor-arg type="ItemImpl1" index="0" name="item" ref="item1" /> 
+</bean>
+```
+
+### 27.Which Is the Best Way of Injecting Beans and Why?
 1. *All Required Dependencies Are Available at Initialization Time* - \
 We create an object by calling a constructor. 
 If the constructor expects all required dependencies as parameters,then we can be 100% sure that the class will never be instantiated without its dependencies injected.
@@ -1044,12 +1093,12 @@ Constructor injection helps in creating immutable objects because a constructor�
 Once we create a bean, we cannot alter its dependencies anymore. 
 With setter injection, it’s possible to inject the dependency after creation, thus leading to mutable objects which, among other things, may not be thread-safe in a multi-threaded environment and are harder to debug due to their mutability.
 
-### 30.What is Auto Wiring in Spring?
+### 28.What is Auto Wiring in Spring?
 - Wiring allows the Spring container to automatically resolve dependencies between collaborating beans by inspecting the beans that have been defined.
 - The Spring container detects those dependencies specified in the configuration file and @ the relationship between the beans. This is referred to as autowiring in Spring.
 - An autowired application requires fewer lines of code comparatively but at the same time, it provides very little flexibility to the programmer.
   
-### 32.What are the different modes of Autowiring in Spring?
+### 29.What are the different modes of Autowiring in Spring?
 - *No autowiring*: In this mode, you need to explicitly wire the bean properties using the <ref/> element in XML configuration or @Bean methods in Java-based configuration. \
 XML Configuration:
 ```
@@ -1149,7 +1198,7 @@ public class MyConfig {
 }
 ```
 
-### 33.What are some of the important Spring Core Annotations?
+### 30.What are some of the important Spring Core Annotations?
 Some of the spring core framework annotations are: 
 - *@Configuration*: Used to indicate that a class declares one or more @Bean methods. These classes are processed by the Spring container to generate bean definitions and service requests for those beans at runtime.
 - *@Bean*: Indicates that a method produces a bean to be managed by the Spring container. This is one of the most used and important spring annotation. @Bean annotation also can be used with parameters like name, initMethod and destroyMethod.
@@ -1200,14 +1249,13 @@ public class Computer {
 - *@Repository*: Indicates that an annotated class is a “Repository”. This annotation serves as a specialization of @Component and advisable to use with DAO classes.
 - *@Autowired*: Spring @Autowired annotation is used for automatic injection of beans. Spring @Qualifier annotation is used in conjunction with Autowired to avoid confusion when we have two of more bean configured for same type.
 
-### 34.How do you debug problems with Spring Framework?
-### 35.How do you solve NoUniqueBeanDefinitionException?
+### 31.How do you solve NoUniqueBeanDefinitionException?
 > public class NoUniqueBeanDefinitionException extends NoSuchBeanDefinitionException
 - Exception thrown when a BeanFactory is asked for a bean instance for which multiple matching candidates have been found when only one matching bean was expected.
 - There are two simple ways you can resolve the *NoUniqueBeanDefinitionException* exception in Spring. You can use the *@Primary* annotation, which will tell Spring when all other things are equal to select the primary bean over other instances of that type for the autowire requirement.
 - The second way, is to use the *@Qualifier* annotation. Through the use of this annotation, you can give Spring hints about the name of the bean you want to use. By default, the reference name of the bean is typically the lower case class name.
   
-### 36.How do you solve NoSuchBeanDefinitionException?
+### 32.How do you solve NoSuchBeanDefinitionException?
 > public class NoSuchBeanDefinitionException extends BeansException
 - Exception thrown when a BeanFactory is asked for a bean instance for which it cannot find a definition. This may point to a non-existing bean, a non-unique bean, or a manually registered singleton instance without an associated bean definition. \
 Reasons to cause NoSuchBeanDefinitionException and their solution :
@@ -1218,29 +1266,29 @@ Reasons to cause NoSuchBeanDefinitionException and their solution :
 3. *Using wrong bean name*
 - Check for bean name as exception suggests
 
-### 37.What is @Primary?
+### 33.What is @Primary?
 - *@Primary* annotation in Spring is used to indicate the primary bean when multiple beans of the same type are present for auto wiring. When multiple beans are eligible for auto wiring the @Primary annotation will help to determine which bean should be given preference. 
 - By applying @Primary annotation to a specific bean we are specifying that it is a primary bean for its respective type. When auto-wiring the dependencies if we are having multiple beans then the bean which is annotated with @Primary annotation will be given high preference compared to other beans.
    
 For more info refer <a href="https://www.geeksforgeeks.org/spring-primary-annotation/" target="_blank">gfg</a>
 
-### 38.What is @Qualifier?
+### 34.What is @Qualifier?
 - There may be a situation when you create more than one bean of the same type and want to wire only one of them with a property. In such cases, you can use the *@Qualifier* annotation along with @Autowired to remove the confusion by specifying which exact bean will be wired.
 
 For more info refer <a href="https://www.baeldung.com/spring-qualifier-annotation" target="_blank">baeldung</a>
 
-### 39.What is CDI (Contexts and Dependency Injection)?
+### 35.What is CDI (Contexts and Dependency Injection)?
 - CDI stands for "context and dependency injection", while Spring is a complete ecosystem around a dependency injection container.
 - Dependency injection is handled by both containers. The main difference is the fact that CDI handles DI in a dynamic (aka: stateful) way - this means that dependencies are resolved at execution time.
 - Spring's approach is static - this means that components are wired together at creation time. While the CDI-way might seem a bit unusual at a first glimpse, it's far superior and offers way more and advanced options (I'm writing this with the background of two productive CDI apps).
   
-### 40.What are the major features in different versions of Spring?
+### 36.What are the major features in different versions of Spring?
 - Spring 2.0 provided XML namespaces and AspectJ support.
 - Spring 2.5 made annotation-driven configuration possible.
 - Spring 3.0 made great use of the Java 5 improvements in language.
 - Spring 4.0 is the first version to fully support Java 8 features. Minimum version of Java to use Spring 4 is Java SE 6.
   
-### 41.What are new features in Spring Framework 4.0?
+### 37.What are new features in Spring Framework 4.0?
 1. spring-websocket module provides support for WebSocket-based communication in web applications.
 2. Spring Framework 4.0 is focused on Servlet 3.0+ environments
 3. @RestController annotation is introduced for use with Spring MVC applications
@@ -1248,7 +1296,7 @@ For more info refer <a href="https://www.baeldung.com/spring-qualifier-annotatio
 5. Spring 4.1 supports JCache (JSR-107) annotations using Spring’s existing cache configuration.
 6. Jackson’s@JsonViewissupporteddirectlyon@ResponseBodyandResponseEntitycontroller methods for serializing different amounts of detail for the same POJO
 
-### 42.What are new features in Spring Framework 5.0?
+### 38.What are new features in Spring Framework 5.0?
 1. Baseline Upgrades \
 To build and run Spring 5 application, you will need a minimum JDK 8 and Java EE 7.
 Similar to Java baseline, there are changes in baselines of many other frameworks as well. e.g. Hibernate 5,Jackson 2.6,JUnit 5
@@ -1259,7 +1307,7 @@ Spring 5 has baseline version 8, so it uses many new features of Java 8 and 9 as
 5. A Functional Web Framework
 6. Kotlin Support
 
-### 43.What is the simplest way of ensuring that we are using single version of all Spring related dependencies?
+### 39.What is the simplest way of ensuring that we are using single version of all Spring related dependencies?
 - Spring is made up of a number of small components (spring-core, spring-context, spring-aop, spring-beans and so on). One of the quirks of using Spring framework is the dependency management of these components. Simple way of doing this is using Maven "Bill Of Materials" Dependency.
 ```
 <dependencyManagement>
@@ -1288,9 +1336,8 @@ All spring dependencies can now be included in this and the child poms without u
 <dependencies>
 ```
 
-### 44.Name some of the design patterns used in Spring Framework?
+### 40.Name some of the design patterns used in Spring Framework?
 1. Singleton pattern
 2. Factory Method pattern
 3. Proxy pattern
 4. Template pattern
-   
