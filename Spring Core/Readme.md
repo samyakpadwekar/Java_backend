@@ -472,53 +472,15 @@ The following image shows the process flow of the bean life cycle.(Soure : Geeks
 ![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20200428011831/Bean-Life-Cycle-Process-flow3.png)
 
 ### 14.What is the difference between XML and Java Configurations for Spring?
-- Let's assume we have a simple Person class:
-```
-public class Person {
-    private String name;
-
-    public Person(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}
-```
-
-- Creating a Bean using XML Configuration:Create an XML configuration file, e.g.,
-```
-"beans.xml":<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-    <bean id="personBean" class="com.example.Person">
-        <constructor-arg value="John" />
-    </bean>
-</beans>
-```
-In this XML configuration, we define a bean with the ID "personBean" of class "com.example.Person" and provide a constructor argument to set the name to "John."
-
-- Creating a Bean using Java Configuration:Create a Java configuration class, e.g., "AppConfig.java":
-```
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-@Configuration
-public class AppConfig {
-
-    @Bean
-    public Person personBean() {
-        return new Person("Jane");
-    }
-}
-```
-In this Java configuration class, we use the @Configuration annotation to indicate that it contains Spring bean definitions. We define a bean method personBean() and return a new instance of the Person class with the name set to "Jane."
+1. **Configuration Style**:
+- *XML Configuration*: In XML configuration, you define beans and their dependencies using XML files. You configure the application context and bean definitions in XML files.
+- *Java Configuration*: In Java configuration, you use Java classes annotated with @Configuration to define beans and their relationships. You write Java code to configure the application context.
+2. **Readability**:
+- *XML Configuration*: XML configuration can be verbose and less readable, especially for complex applications with numerous beans and dependencies. XML files tend to be larger and may require more effort to understand.
+- *Java Configuration*: Java configuration tends to be more concise and readable. It leverages the features of the Java language, including method calls and annotations, which can make the configuration more intuitive and easier to follow.
+3. **Annotating Components**:
+- *XML Configuration*: In XML, you typically use the <bean> element to define beans. You don't use annotations like @Component, @Service, @Repository, etc., unless you explicitly enable component scanning.
+- *Java Configuration*: In Java configuration, you often use annotations like @Component, @Service, @Repository, and @Configuration to mark and define beans. Component scanning is more commonly used in Java configuration.
 
 ### 15.How do you choose between XML and Java Configurations for Spring?
 - Java based configuration have benefits of xml based configuration due to below reasons:
