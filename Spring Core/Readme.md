@@ -1008,53 +1008,149 @@ Specific multiple packages:
 - This process is fundamentally the inverse (hence the name, Inversion of Control) of the bean itself controlling the instantiation or location of its dependencies on its own by using direct construction of classes or the Service Locator pattern.
 
 ### 25.What is setter injection?
-- For setter-based DI, the container will call setter methods of our class after invoking a no-argument constructor or no-argument static factory method to instantiate the bean.
-- Let’s create this configuration using annotations:
+- Setter-based injection in Spring is a method of injecting dependencies into a Java class by setting their values through setter methods. This is one of the ways to achieve dependency injection in Spring.
+- Let's illustrate setter-based injection with an example:
+- Suppose you have a simple Java class representing a `Person`, and you want to inject a `Country` dependency into it using setter-based injection.
+
 ```
-@Bean
-public Store store() {
-    Store store = new Store();
-    store.setItem(item1());
-    return store;
+
+public class Country {
+    private String name;
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 }
+
 ```
-- We can also use XML for the same configuration of beans:
+
+- Here's the `Person` class that will receive the `Country` dependency through a setter method:
+
 ```
-<bean id="store" class="org.baeldung.store.Store">
-    <property name="item" ref="item1" />
-</bean>
+
+public class Person {
+    private String name;
+    private Country country;
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public Country getCountry() {
+        return country;
+    }
+    
+    // Setter method for injecting the Country dependency
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+}
+
 ```
-We can combine constructor-based and setter-based types of injection for the same bean. The Spring documentation recommends using constructor-based injection for mandatory dependencies, and setter-based injection for optional ones.
+
+- In this example, the `Person` class has a setter method `setCountry` that allows the `Country` dependency to be injected. The `Country` instance can be set using the `setCountry` method, like this:
+
+```
+
+// Create a Spring application context
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+// Retrieve the Person bean from the context
+Person person = context.getBean(Person.class);
+
+// Create a Country bean
+Country country = new Country();
+country.setName("United States");
+
+// Inject the Country dependency into the Person bean using the setter method
+person.setCountry(country);
+
+// Access the injected dependency
+System.out.println("Person Name: " + person.getName());
+System.out.println("Person's Country: " + person.getCountry().getName());
+
+```
+
+- In this example, we first create a Spring application context and retrieve the `Person` bean. Then, we create a `Country` bean and inject it into the `Person` instance using the `setCountry` setter method. This way, we establish a relationship between the `Person` and the `Country` dependency.
+
+- Setter-based injection is a common and flexible way to provide dependencies in Spring. It allows you to set individual properties or dependencies of a class through setter methods, making it easy to change or update these dependencies at runtime or during configuration.
 
 ### 26.What is constructor injection?
-- In the case of constructor-based dependency injection, the container will invoke a constructor with arguments each representing a dependency we want to set.
-- Spring resolves each argument primarily by type, followed by name of the attribute, and index for disambiguation.
-- Let’s see the configuration of a bean and its dependencies using annotations:
-```
-@Configuration
-public class AppConfig {
+- Constructor-based injection in Spring is another method of injecting dependencies into a Java class, but it relies on constructor parameters to set the dependencies during object creation.
+- This approach is particularly useful when you want to ensure that the object is in a valid state right from the moment of its creation.
 
-    @Bean
-    public Item item1() {
-        return new ItemImpl1();
+- Let's illustrate constructor-based injection with an example:
+
+- Suppose you have a `Person` class and you want to inject a `Country` dependency into it using constructor-based injection.
+
+```
+
+public class Country {
+    private String name;
+
+    public Country(String name) {
+        this.name = name;
     }
 
-    @Bean
-    public Store store() {
-        return new Store(item1());
+    public String getName() {
+        return name;
     }
 }
+
 ```
-- The @Configuration annotation indicates that the class is a source of bean definitions. We can also add it to multiple configuration classes.
-- We use the @Bean annotation on a method to define a bean. If we don’t specify a custom name, then the bean name will default to the method name.
-- For a bean with the default singleton scope, Spring first checks if a cached instance of the bean already exists, and only creates a new one if it doesn’t. If we’re using the prototype scope, the container returns a new bean instance for each method call.
-- Another way to create the configuration of the beans is through XML configuration:
+
+- Here's the modified `Person` class that will receive the `Country` dependency through its constructor:
+
 ```
-<bean id="item1" class="org.baeldung.store.ItemImpl1" /> 
-<bean id="store" class="org.baeldung.store.Store"> 
-    <constructor-arg type="ItemImpl1" index="0" name="item" ref="item1" /> 
-</bean>
+
+public class Person {
+    private String name;
+    private Country country;
+
+    public Person(String name, Country country) {
+        this.name = name;
+        this.country = country;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+}
+
 ```
+
+- In this example, the `Person` class has a constructor that accepts both the name and a `Country` instance as parameters for injection. Here's how you would use constructor-based injection:
+
+```
+
+// Create a Spring application context
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+// Retrieve the Person bean from the context and provide the dependencies through the constructor
+Person person = context.getBean(Person.class, "John Doe", new Country("United States"));
+
+// Access the injected dependencies
+System.out.println("Person Name: " + person.getName());
+System.out.println("Person's Country: " + person.getCountry().getName());
+
+```
+
+- In this example, we create the `Person` bean and provide the `name` and `Country` dependencies through the constructor. The constructor sets these dependencies immediately during the object's creation.
+- Constructor-based injection is often favored when you want to ensure that an object is constructed in a valid state with all its dependencies set.
+- It can also make your classes more immutable, as you set the dependencies only once during construction, and they cannot be changed afterward.
+- This approach is particularly useful when you have mandatory dependencies that must be present when an object is created.
 
 ### 27.Which Is the Best Way of Injecting Beans and Why?
 1. *All Required Dependencies Are Available at Initialization Time* - \
