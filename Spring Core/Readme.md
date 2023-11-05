@@ -471,7 +471,7 @@ Which basically means that,
 The following image shows the process flow of the bean life cycle.(Soure : Geeksforgeeks)
 ![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20200428011831/Bean-Life-Cycle-Process-flow3.png)
 
-### 14.What is the difference between XML and Java Configurations for Spring?
+### 14.What is the difference between XML based and Java based Configurations for Spring?
 1. **Configuration Style**:
 - *XML Configuration*: In XML configuration, you define beans and their dependencies using XML files. You configure the application context and bean definitions in XML files.
 - *Java Configuration*: In Java configuration, you use Java classes annotated with @Configuration to define beans and their relationships. You write Java code to configure the application context.
