@@ -472,47 +472,52 @@ The following image shows the process flow of the bean life cycle.(Soure : Geeks
 ![alt text](https://media.geeksforgeeks.org/wp-content/uploads/20200428011831/Bean-Life-Cycle-Process-flow3.png)
 
 ### 14.What is the difference between XML and Java Configurations for Spring?
-- Spring web-mvc config in xml
+- Let's assume we have a simple Person class:
 ```
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
-    <context:component-scan base-package="controller" />
-    <context:component-scan base-package="dao" />
-    <context:component-scan base-package="service" />
+public class Person {
+    private String name;
 
-    <mvc:annotation-driven />
+    public Person(String name) {
+        this.name = name;
+    }
 
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix">
-            <value>/WEB-INF/pages/</value>
-        </property>
-        <property name="suffix">
-            <value>.jsp</value>
-        </property>
-    </bean>
-</beans>  
-```
-and same config in java based style
-```
-@Configuration
-@EnableWebMvc
+    public String getName() {
+        return name;
+    }
 
-@ComponentScans({
-        @ComponentScan("controller"),
-        @ComponentScan("dao"),
-        @ComponentScan("service")      
-})
-public class WebMVCConfig implements WebMvcConfigurer {
-
-    @Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/pages/");
-        viewResolver.setSuffix(".jsp");
-        return viewResolver;
+    public void setName(String name) {
+        this.name = name;
     }
 }
 ```
+
+- Creating a Bean using XML Configuration:Create an XML configuration file, e.g.,
+```
+"beans.xml":<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="personBean" class="com.example.Person">
+        <constructor-arg value="John" />
+    </bean>
+</beans>
+```
+In this XML configuration, we define a bean with the ID "personBean" of class "com.example.Person" and provide a constructor argument to set the name to "John."
+
+- Creating a Bean using Java Configuration:Create a Java configuration class, e.g., "AppConfig.java":import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+```
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Person personBean() {
+        return new Person("Jane");
+    }
+}
+```
+In this Java configuration class, we use the @Configuration annotation to indicate that it contains Spring bean definitions. We define a bean method personBean() and return a new instance of the Person class with the name set to "Jane."
 
 ### 15.How do you choose between XML and Java Configurations for Spring?
 - Java based configuration have benefits of xml based configuration due to below reasons:
