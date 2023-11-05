@@ -810,7 +810,7 @@ Note: It is because of these additional features, developers prefer to use Appli
 
 **Container 1: AnnotationConfigApplicationContext**
 
-AnnotationConfigApplicationContext class was introduced in Spring 3.0. It accepts classes annotated with @Configuration, @Component, and JSR-330 compliant classes. The constructor of AnnotationConfigApplicationContext accepts one or more classes. \
+*Use*: This class is used to create a Spring application context based on Java-based configuration classes annotated with annotations like @Configuration.Typical *Scenario*: When you prefer configuring your Spring application using Java-based configuration and annotations rather than XML.\
 For example, in the below declaration, two Configuration classes Appconfig and AppConfig1 are passed as arguments to the constructor. The beans defined in later classes will override the same type and name beans in earlier classes when passed as arguments. \
 For example, AppConfig and AppConfig1 have the same bean declaration. The bean defined in AppConfig1 overrides the bean in AppConfig.
 
@@ -825,7 +825,8 @@ spring.main.allow-bean-definition-overriding=true
 
 **Container 2: AnnotationConfigWebApplicationContext**
 
-AnnotationConfigWebApplicationContext class was introduced in Spring 3.0. It is similar to AnnotationConfigApplicationContext for a web environment. It accepts classes annotated with @Configuration, @Component, and JSR-330 compliant classes. These classes can be registered via register() method or passing base packages to scan() method. This class may be used when we configure ContextLoaderListener servlet listener or a DispatcherServlet in a web.xml. From Spring 3.1, this class can be instantiated and injected to DispatcherServlet using java code by implementing WebApplicationInitializer, an alternative to web.xml.
+*Use*: Similar to AnnotationConfigApplicationContext, this class is designed for web applications and is often used in a Spring MVC environment. It can be configured using Java-based configuration for the web layer.
+*Typical Scenario*: When you're building a web application and want to use Java-based configuration for your Spring MVC components.
  ```
 // Class
 // Implementing WebApplicationInitializer
@@ -845,7 +846,8 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
 **Container 3: XmlWebApplicationContext**
 
-Spring MVC Web-based application can be configured completely using XML or Java code. Configuring this container is similar to the AnnotationConfigWebApplicationContext container, which implies we can configure it in web.xml or using java code.
+*Use*: This class is used to create a Spring application context based on XML configuration files specifically tailored for web applications. It can load configuration from web-specific XML files.
+*Typical Scenario*: When you're working on a web application and prefer to configure your Spring context using XML files designed for web-related settings, like servlet mappings and web-specific beans.
 ```
 // Class
 // Implementing WebApplicationInitializer
@@ -864,7 +866,8 @@ public class MyXmlWebApplicationInitializer implements WebApplicationInitializer
 
 **Container 4: FileSystemXmlApplicationContext**
 
-FileSystemXmlApplicationContext is used to load XML-based Spring Configuration files from the file system or from URL. We can get the application context using Java code. It is useful for standalone environments and test harnesses. The following code shows how to create a container and use the XML as metadata information to load the beans.
+*Use*: This class creates a Spring application context based on XML configuration files located in the file system. You specify the file path(s) to the XML configuration files.
+*Typical Scenario*: When you need to load Spring configuration from XML files stored on the local file system rather than from the classpath. This is less common in modern applications, as most configurations are bundled with the application.
 
 Illustration:
 ```
@@ -876,7 +879,8 @@ AccountService accountService = context.getBean("studentService", StudentService
 
 **Container 5: ClassPathXmlApplicationContext**
 
-FileSystemXmlApplicationContext is used to load XML-based Spring Configuration files from the classpath. We can get the application context using Java code. It is useful for standalone environments and test harnesses. The following code shows how to create a container and use the XML as metadata information to load the beans.
+*Use*: This class is used to create a Spring application context based on XML configuration files located on the classpath. You specify the classpath resource location(s) for the XML files.
+*Typical Scenario*: When your Spring application relies on XML-based configuration and you want to load configuration files from the classpath. This is a common choice for traditional Spring applications using XML configuration.
 
 Illustration:
 ```
