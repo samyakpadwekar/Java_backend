@@ -505,9 +505,10 @@ public class Person {
 ```
 In this XML configuration, we define a bean with the ID "personBean" of class "com.example.Person" and provide a constructor argument to set the name to "John."
 
-- Creating a Bean using Java Configuration:Create a Java configuration class, e.g., "AppConfig.java":import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+- Creating a Bean using Java Configuration:Create a Java configuration class, e.g., "AppConfig.java":
 ```
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfig {
 
