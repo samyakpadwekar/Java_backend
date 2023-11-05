@@ -385,6 +385,10 @@ service hashcode=678984726
 newService hashcode=678984726
 ```
 
+- *Points to remember*
+- If you're using @Bean to define beans in a configuration class, you do need the configuration class. In this case, the configuration class serves as a central place to define and configure your beans. It's a common approach for customizing bean creation and wiring.
+- When you use annotations like @Service, @Controller, or @Repository, you typically don't need a separate configuration class. Component scanning, enabled through @ComponentScan, automatically detects and registers classes with these annotations as Spring beans. Component scanning simplifies bean registration without requiring explicit configurations.
+
 ---
 ### 8.How to Define the Scope of a Bean?
 - In *XML Based Spring Bean Configuration*,Scope is defined as 
