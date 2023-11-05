@@ -484,13 +484,29 @@ The following image shows the process flow of the bean life cycle.(Soure : Geeks
 
 ### 15.How do you choose between XML and Java Configurations for Spring?
 - Java based configuration have benefits of xml based configuration due to below reasons:
-1. Java is type safe. Compiler will report issues if you are configuring right bean class qualifiers.
-2. XML based on configuration can quickly grow big. [Yes we can split and import but still]
-3. Search is much simpler, refactoring will be bliss. Finding a bean definition will be far easier.
+1. *Type Safety*: Java-based configurations are written in Java code, which is statically typed. This means that the compiler can catch type-related errors at compile time, providing better type safety. In contrast, XML configurations are inherently dynamic and can only be validated at runtime.
+2. *Easy to maintain*: XML based on configuration can quickly grow big. [Yes we can split and import but still]
+3. *Refactoring*: When you refactor your code, such as renaming a class or package, Java-based configurations are automatically updated by the IDE, ensuring that your configuration remains in sync with your code. In XML configurations, you would need to manually update references, which can lead to errors.
+4. *Conditional Configuration*: Java-based configurations allow you to use conditional logic to configure beans based on specific conditions, such as the presence of certain properties or environment variables. This flexibility is challenging to achieve with XML.
 
 ### 16.How do you define a component scan in XML and Java Configurations?
-- Using the @Component annotation and its sub-classes in which case Spring searches all the packages and sub-packages containing these annotation.
-- Using XML configuration with <context:component-scan> tag specifying the base package.
+**XML Configuration**:
+- In XML-based configuration, you typically define component scanning using the <context:component-scan> element within your Spring application context XML file. Here's an example:
+```
+<context:component-scan base-package="com.example.myapp" />
+```
+In this example, the base-package attribute specifies the base package(s) to scan for components. Spring will scan all classes in the specified package(s) and its sub-packages for classes annotated with annotations like @Component, @Service, @Repository, and @Controller. These annotated classes will be automatically registered as Spring beans.
+
+**Java Configuration (using @ComponentScan)**: 
+- In Java-based configuration, you can use the @ComponentScan annotation to achieve the same result. Here's an example:
+```
+@Configuration
+@ComponentScan(basePackages = "com.example.myapp")
+public class AppConfig {
+    // Additional configuration and bean definitions can be placed here
+}
+```
+This Java configuration class is annotated with @Configuration and @ComponentScan, specifying the base package to scan for components.
 
 ### 17.What is IOC (Inversion of Control)?
 - Inversion of Control is a principle in software engineering which transfers the control of objects or portions of a program to a container or framework, often used it in the context of object-oriented programming.
