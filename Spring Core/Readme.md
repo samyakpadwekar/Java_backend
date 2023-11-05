@@ -422,7 +422,7 @@ public class MyConfiguration {
 
 ### 10.What are the other scopes available?
 There are five scopes defined for Spring Beans.
-- *singleton* - Only one instance of the bean will be created for each container. This is the default scope for the spring beans. While using this scope, make sure bean doesn’t have shared instance variables otherwise it might lead to data inconsistency issues.
+- *singleton* - Only one instance of the bean will be created for each container. This is the default scope for the spring beans. While using this scope, make sure bean doesn’t have shared instance variables otherwise it might lead to data inconsistency issues.(refer ans to que.12)
 - *prototype* - A new instance will be created every time the bean is requested.
 - *request* - This is same as prototype scope, however it’s meant to be used for web applications. A new instance of the bean will be created for each HTTP request.
 - *session* - A new bean will be created for each HTTP session by the container.
