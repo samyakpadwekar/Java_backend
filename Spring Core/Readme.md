@@ -161,6 +161,9 @@ Spring Framework provides three ways to configure beans to be used in the applic
 *XML Based Configuration* - By creating Spring Configuration XML file to configure the beans. If you are using Spring MVC framework, the xml based configuration can be loaded automatically by writing some boiler plate code in web.xml file. \
 *Java Based Configuration* - Starting from Spring 3.0, we can configure Spring beans using java programs. Some important annotations used for java based configuration are @Configuration, @ComponentScan and @Bean.
 
+- When using @Bean, you have to register the bean explicitly in a configuration class.
+- When using @Controller, @Service, or @Repository, Spring will automatically detect and register those annotated classes as beans during component scanning, and you don't need to provide separate bean registrations.
+
 -----
 *Example to understand topic easily* 
 
