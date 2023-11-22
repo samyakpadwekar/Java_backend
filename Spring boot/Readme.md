@@ -770,13 +770,13 @@ public class MyCommandLineRunner implements CommandLineRunner {
 ```
 These explanations and examples should help you understand Spring Boot concepts and features in a practical and straightforward way for your interview preparation.
 
-### 36. What is a EnableTransactionManagement and Transactional annotation?
+### 37. What is a EnableTransactionManagement and Transactional annotation?
 - The *@EnableTransactionManagement* annotation and *@Transactional* annotation work together to manage transactions in a Spring application, but they serve different purposes:
 - **@EnableTransactionManagement**: This annotation is used at the configuration level (typically on a @Configuration class) to enable Spring's annotation-driven transaction management capability within the application. It activates Spring's ability to interpret @Transactional annotations and manage transactions accordingly.
 - **@Transactional**: This annotation is applied at the method level or on a class, indicating that the methods (or all methods within the annotated class) should be wrapped in a transaction. It defines the scope of a single database transaction. This annotation provides metadata that Spring uses to create a transactional proxy around the annotated method or class to manage transactional behavior.
 - In essence, @EnableTransactionManagement enables Spring to recognize @Transactional annotations within the application and manage transactions based on the specified semantics.
 
-### 37.Explain what isolation & propagation parameters are for in the @Transactional annotation via real-world example?
+### 38.Explain what isolation & propagation parameters are for in the @Transactional annotation via real-world example?
 - **Propagation**
 Defines how transactions relate to each other. Common options:
 - *REQUIRED*: Code will always run in a transaction. Creates a new transaction or reuses one if available.
