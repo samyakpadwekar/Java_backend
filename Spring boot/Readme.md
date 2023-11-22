@@ -769,3 +769,66 @@ public class MyCommandLineRunner implements CommandLineRunner {
 }
 ```
 These explanations and examples should help you understand Spring Boot concepts and features in a practical and straightforward way for your interview preparation.
+
+### 36. What is a EnableTransactionManagement and Transactional annotation?
+- The *@EnableTransactionManagement* annotation and *@Transactional* annotation work together to manage transactions in a Spring application, but they serve different purposes:
+- **@EnableTransactionManagement**: This annotation is used at the configuration level (typically on a @Configuration class) to enable Spring's annotation-driven transaction management capability within the application. It activates Spring's ability to interpret @Transactional annotations and manage transactions accordingly.
+- **@Transactional**: This annotation is applied at the method level or on a class, indicating that the methods (or all methods within the annotated class) should be wrapped in a transaction. It defines the scope of a single database transaction. This annotation provides metadata that Spring uses to create a transactional proxy around the annotated method or class to manage transactional behavior.
+- In essence, @EnableTransactionManagement enables Spring to recognize @Transactional annotations within the application and manage transactions based on the specified semantics.
+
+### 37.Explain what isolation & propagation parameters are for in the @Transactional annotation via real-world example?
+- **Propagation**
+Defines how transactions relate to each other. Common options:
+- *REQUIRED*: Code will always run in a transaction. Creates a new transaction or reuses one if available.
+- *REQUIRES_NEW*: Code will always run in a new transaction. Suspends the current transaction if one exists.
+The default value for @Transactional is REQUIRED, and this is often what you want.
+
+- **Isolation**
+Defines the data contract between transactions.
+- *ISOLATION_READ_UNCOMMITTED*: Allows dirty reads.
+- *ISOLATION_READ_COMMITTED*: Does not allow dirty reads.
+- *ISOLATION_REPEATABLE_READ*: If a row is read twice in the same transaction, the result will always be the same.
+- *ISOLATION_SERIALIZABLE*: Performs all transactions in a sequence.
+  
+- The different levels have different performance characteristics in a multi-threaded application. I think if you understand the dirty reads concept you will be able to select a good option.
+
+----
+*for better understanding*
+
+A practical example of where a new transaction will always be created when entering the provideService routine and completed when leaving:
+```
+public class FooService {
+    private Repository repo1;
+    private Repository repo2;
+
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    public void provideService() {
+        repo1.retrieveFoo();
+        repo2.retrieveFoo();
+    }
+}
+```
+
+- Had we instead used REQUIRED, the transaction would remain open if the transaction was already open when entering the routine. Note also that the result of a rollback could be different as several executions could take part in the same transaction.
+
+- We can easily verify the behaviour with a test and see how results differ with propagation levels:
+
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath:/fooService.xml")
+public class FooServiceTests {
+
+    private @Autowired TransactionManager transactionManager;
+    private @Autowired FooService fooService;
+
+    @Test
+    public void testProvideService() {
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        fooService.provideService();
+        transactionManager.rollback(status);
+        // assert repository values are unchanged ... 
+}
+```
+With a propagation level of
+- *REQUIRES_NEW*: we would expect fooService.provideService() was NOT rolled back since it created its own sub-transaction.
+- *REQUIRED*: we would expect everything was rolled back and the backing store was unchanged.
