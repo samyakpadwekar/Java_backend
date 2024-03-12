@@ -914,7 +914,7 @@ With a propagation level of
 @RequestMapping("/books")
 public class SimpleBookController {
     @GetMapping(value = "/abc.do")
-    public ModelAndView getBook(@RequestParam(value = "xyz",required = true) int id,HttpServletRequest request) {
+    public ModelAndView getBook(@RequestParam(value = "xyz",required = true) String xyz,HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView("login");
         // logic
         return modelAndView;
