@@ -226,11 +226,60 @@ public class MyApplication {
 }
 ```
 
-### 7.Explain @Configuration, @EnableAutoConfiguration, @ComponentScan,their use and why are they required.
-1. *@Configuration* Annotation:
+### 7.Explain @Component, @Service, @Repository, @Configuration, @EnableAutoConfiguration, @ComponentScan, @EntityScan, @Transient, @Bean.
+1. *@Component* :
+- generic stereotype annotation for any spring-managed component.
+- indicates that a class is a Spring component and it can be auto-detected during classpath scanning.
+- tyically used for creating beans without any specific stereotype (e.g.@Service,@Repository) or to marka custom class as a Spring bean.
+```
+@Component
+ public class ComponentDemo {
+    public void demoFunction()
+    {
+        System.out.println("Hello GeeksForGeeks");
+    }
+}
+```
+2. *@Service* :
+- specialization of @Component and is typically used to annotate service classes.
+- these classes hold the business logic and are often used in the service layers of an application.
+- automatically discovered and registered as Spring beans
+```
+@Service
+@Transactional
+public class UserServiceImpl implements IUserService {
+	@Autowired
+	private SellerRepository sellerRepo;
+
+	public Seller findSellerByBuisenessName(String businessName) {
+		return sellerRepo.findByBusinessName(businessName)
+				.orElseThrow(() -> new UserHandlingException("Invalid Buiseness Name..!"));
+	}
+}
+```
+3. *@Repository* :
+- another specialization of @Compoent and is typically used to annotate repository (data access) classes.
+- used to indicate that the class provides the mechanism for storage, retrieval, update, delete and search operation on objects.
+- often work with databases and Spring's Data Access/Integration technologies.
+```
+ @Repository
+public interface CartRepository extends JpaRepository<Cart, Integer> {
+
+	Optional<Cart> findByUserIdAndProductId(Integer userId, Integer productId);
+	
+	@Query("select distinct c.sellerId from Cart c")
+    int[] findDistinctSellerId();
+	
+	@Query("select c from Cart c where c.userId=:uid and c.sellerId=:sid")
+	List<Cart> findAllByUserIdAndSellerId(@Param("uid") Integer userId, @Param("sid") int sellerId);
+	
+    List<Cart> findAllByUserIdOrderByCreatedDateDesc(Integer userId);
+}
+``` 
+4. *@Configuration* :
 - The @Configuration annotation is a Spring framework annotation that indicates that a class defines one or more Spring beans or configuration methods.
-- Use: It is used to define configuration classes that provide bean definitions or configuration for the Spring container.
-- Why it's required: Without @Configuration, the Spring container may not recognize the class as a configuration source, and you won't be able to define beans or configure components within it.
+- It is used to define configuration classes that provide bean definitions or configuration for the Spring container.
+- Without @Configuration, the Spring container may not recognize the class as a configuration source, and you won't be able to define beans or configure components within it.
 ```
 @Configuration
 public class MyConfiguration {
@@ -242,10 +291,10 @@ public class MyConfiguration {
 ```
 In this example, MyConfiguration is marked as a configuration class, and it defines a bean named myBean using the @Bean annotation.
 
-2. *@EnableAutoConfiguration* Annotation:
+5. *@EnableAutoConfiguration* :
 - The @EnableAutoConfiguration annotation is a Spring Boot-specific annotation that enables Spring Boot's auto-configuration feature.
-- Use: It automatically configures various components and settings based on the project's dependencies, reducing manual configuration efforts.
-- Why it's required: Spring Boot's auto-configuration simplifies the setup of a Spring Boot application by providing sensible defaults. Without it, you would need to configure many components manually.
+- It automatically configures various components and settings based on the project's dependencies, reducing manual configuration efforts.
+- Spring Boot's auto-configuration simplifies the setup of a Spring Boot application by providing sensible defaults. Without it, you would need to configure many components manually.
 ```
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -259,19 +308,38 @@ public class MyApplication {
 ```
 In this example, @EnableAutoConfiguration is used to enable Spring Boot's auto-configuration for the application.
 
-3. *@ComponentScan* Annotation:
-- The @ComponentScan annotation is a Spring framework annotation used to specify the base packages for component scanning.
-- Use: It tells Spring where to look for components, such as controllers, services, and repositories, to be automatically registered as Spring beans.
-- Why it's required: Without @ComponentScan, Spring wouldn't know where to search for components, and you'd need to manually configure each bean.
+6. *@EntityScan* :
+- When writing our Spring application we will usually have entity classes – those annotated with @Entity annotation. We can consider two approaches to placing our entity classes:
+a. Under the application main package or its sub-packages.
+b. Use a completely different root package .
+- In the first scenario, we could use @EnableAutoConfiguration to enable Spring to auto-configure the application context.
+- In the second scenario, we would provide our application with the information where these packages could be found. For this purpose, we would use @EntityScan.
+- @EntityScan annotation is used when entity classes are not placed in the main application package or its sub-packages. In this situation, we would declare the package or list of packages in the main configuration class within @EntityScan annotation.
+- This will tell Spring where to find entities used in our application:
 ```
 @Configuration
-@ComponentScan(basePackages = "com.example")
-public class MyConfiguration {
-    // Configuration and bean definitions
+@EntityScan("com.baeldung.demopackage")
+public class EntityScanDemo {
+    // ...
 }
 ```
-In this example, @ComponentScan is used to specify that Spring should scan the com.example package and its sub-packages for components.
-4. Together, these annotations work harmoniously to simplify Spring application configuration, enable automatic component discovery, and leverage Spring Boot's auto-configuration capabilities. They make it easier to set up and develop Spring applications while following the principles of convention over configuration.
+- We should be aware that using @EntityScan will disable Spring Boot auto-configuration scanning for entities.
+
+7. *@ComponentScan* :
+- Similar to @EntityScan and entities, if we want Spring to use only a specific set of bean classes, we would use @ComponentScan annotation.
+- It’ll point to the specific location of bean classes we would want Spring to initialize.
+- This annotation could be used with or without parameters. Without parameters, Spring will scan the current package and its sub-packages, while, when parameterized, it’ll tell Spring where exactly to search for packages.
+- Concerning parameters, we can provide a list of packages to be scanned (using basePackages parameter) or we can name specific classes where packages they belong to will also be scanned (using basePackageClasses parameter).
+```
+@Configuration
+@ComponentScan(
+  basePackages = {"com.baeldung.demopackage"}, 
+  basePackageClasses = DemoBean.class)
+public class ComponentScanExample {
+    // ...
+}
+```
+In this example, @ComponentScan is used to specify that Spring should scan the com.baeldung.demopackage package and its sub-packages for components.
 
 ### 8. What is Auto Configuration?
 - Auto Configuration is a fundamental feature of Spring Boot. 
@@ -832,3 +900,73 @@ public class FooServiceTests {
 With a propagation level of
 - *REQUIRES_NEW*: we would expect fooService.provideService() was NOT rolled back since it created its own sub-transaction.
 - *REQUIRED*: we would expect everything was rolled back and the backing store was unchanged.
+
+### 39.Difference between @Controller and @RestController?
+- Spring 4.0 introduced the @RestController annotation in order to simplify the creation of RESTful web services. It’s a convenient annotation that combines @Controller and @ResponseBody, which eliminates the need to annotate every request handling method of the controller class with the @ResponseBody annotation.
+1. @Controller -
+- a specialization of the @Component class, which allows us to auto-detect implementation classes through the classpath scanning.
+- common annotation used to create Spring MVC controllers that are responsible for processing web requests.
+- typically used in traditional web appls where the response is usually a web page (HTML view).
+- these controllers generally return views(HTML pages) that are rendered by a templating engine (e.g.,Thymeleaf,JSP) and sent to the client's web browser.
+- We typically use @Controller in combination with a @RequestMapping annotation for request handling methods.
+```
+@Controller
+@RequestMapping("/books")
+public class SimpleBookController {
+    @GetMapping(value = "/abc.do")
+    public ModelAndView getBook(@RequestParam(value = "xyz",required = true) int id,HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView("login");
+        // logic
+        return modelAndView;
+    }
+}
+```
+```
+@Controller
+@RequestMapping("books")
+public class SimpleBookController {
+
+    @GetMapping("/{id}", produces = "application/json")
+    public @ResponseBody Book getBook(@PathVariable int id) {
+        return findBookById(id);
+    }
+
+    private Book findBookById(int id) {
+        // ...
+    }
+}
+```
+- We annotated the request handling method with @ResponseBody. This annotation enables automatic serialization of the return object into the HttpResponse.
+
+2. @RestController -
+- @RestController is a specialized version of the controller.
+- It is a combination of behaviours of a Controller and ResponseBody.
+- When we use this Annotation, the response is JSON or XML. Because of this, the Controller is not in charge of providing any viewpoint to the user.
+- Every request handling method of the controller class automatically serializes return objects into HttpResponse.
+```
+@RestController
+@RequestMapping("books-rest")
+public class SimpleBookRestController {
+    
+    @GetMapping("/{id}", produces = "application/json")
+    public Book getBook(@PathVariable int id) {
+        return findBookById(id);
+    }
+
+    private Book findBookById(int id) {
+        // ...
+    }
+}
+```
+
+### 40.How does @Compoent and @Service annotation works internally?what difference will it make if we use @Component instead of @Service or vice versa?
+- Internally when Spring scans the components in application context,it identifies classed annotated with @Component, @Service, @Repository etc. and registers them as beans in the Spring IOC container.
+- These beans can then be injected into other components,and their lifecycle is managed by the container.
+
+ *Differences* :
+ 1. Expressiveness and Semantic Clarity : @Service provides a more expressive and semantic meaning to a class, indicating that it is a service component.This can improve code readability and make the purpose of the class more apparent.
+ 2. Component Scannig : Both annotations trigger component scanning, and, from a functionality standpoint, there is no difference between using @Component and @Service.The difference lies in the intended use and the clarity of the code.
+ 3. Consideration for the layered architecture : @Service is often used in the service layer of a typical layered architecture (like MVC),making it a good fit for services with business logic.@Component is more generic and can be used for any component.
+
+- Both annotation work similarly and using one over the other doesn't affect the core functionality of the Spring.The choice between both annoation depends on your preference for semantic clarity and the intended use of annotated class in your application architecture.
+- They are interchangeable from a functional standpoint,and use of one above other is matter of convention and redability.
