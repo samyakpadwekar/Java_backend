@@ -1190,104 +1190,15 @@ With setter injection, it’s possible to inject the dependency after creation, 
 - An autowired application requires fewer lines of code comparatively but at the same time, it provides very little flexibility to the programmer.
   
 ### 29.What are the different modes of Autowiring in Spring?
-- *No autowiring*: In this mode, you need to explicitly wire the bean properties using the <ref/> element in XML configuration or @Bean methods in Java-based configuration. \
-XML Configuration:
-```
-<bean id="myBean" class="com.example.MyBean">
-    <property name="myDependency" ref="myDependencyBean"/>
-</bean>
-<bean id="myDependencyBean" class="com.example.MyDependency"/>
-```
-Java-based Configuration:
-```
-@Configuration
-public class MyConfig {
-    @Bean
-    public MyBean myBean() {
-        MyBean bean = new MyBean();
-        bean.setMyDependency(myDependency());
-        return bean;
-    }
-
-    @Bean
-    public MyDependency myDependency() {
-        return new MyDependency();
-    }
-}
-```
-
-- *Autowiring by name*: In this mode, properties of the autowired bean are wired by searching for a bean with the same name or ID in the configuration file. \
-XML Configuration:
-```
-<bean id="myBean" class="com.example.MyBean" autowire="byName"/>
-<bean id="myDependency" class="com.example.MyDependency"/>
-```
-Java-based Configuration:
-```
-@Configuration
-public class MyConfig {
-    @Autowired
-    private MyDependency myDependency;
-
-    @Bean
-    public MyBean myBean() {
-        return new MyBean();
-    }
-
-    @Bean
-    public MyDependency myDependency() {
-        return new MyDependency();
-    }
-}
-```
-- *Autowiring by type*: In this mode, properties of the autowired bean are wired by searching for a bean whose type is compatible with the property’s type. \
-XML Configuration:
-```
-<bean id="myBean" class="com.example.MyBean" autowire="byType"/>
-<bean id="myDependency" class="com.example.MyDependency"/>
-```
-Java-based Configuration:
-```
-@Configuration
-public class MyConfig {
-    @Autowired
-    private MyDependency myDependency;
-
-    @Bean
-    public MyBean myBean() {
-        return new MyBean();
-    }
-
-    @Bean
-    public MyDependency myDependency() {
-        return new MyDependency();
-    }
-}
-```
-- *Autowiring by constructor*: In this mode, wiring is done using the constructor of the autowired bean by looking for a bean whose type is compatible with the constructor argument. \
-XML Configuration:
-```
-<bean id="myBean" class="com.example.MyBean" autowire="constructor"/>
-<bean id="myDependency" class="com.example.MyDependency"/>
-```
-Java-based Configuration:
-```
-@Configuration
-public class MyConfig {
-    @Autowired
-    private MyDependency myDependency;
-
-    @Bean
-    public MyBean myBean() {
-        return new MyBean(myDependency);
-    }
-
-    @Bean
-    public MyDependency myDependency() {
-        return new MyDependency();
-    }
-}
-```
+- In Spring Framework, autowiring is a feature that allows Spring to automatically inject dependencies into Spring-managed beans without explicitly specifying them in the bean configuration. Spring provides several modes of autowiring to facilitate this dependency injection process. The different modes of autowiring in Spring are as follows:
+1. *No Autowiring (no)*:
+In this mode, autowiring is disabled, and dependencies must be explicitly configured using <property> or <constructor-arg> elements in XML configuration, or through @Autowired annotation in Java configuration.
+2. *Autowiring by Type (byType)*:
+With this mode, Spring automatically injects a bean into another if there's exactly one bean of the same type in the application context. If there are multiple beans of the same type, Spring throws an exception, as it can't determine which bean to inject.
+3. *Autowiring by Name (byName)*:
+In this mode, Spring matches beans by their names. If a bean property has the same name as a bean definition within the container, Spring automatically injects the corresponding bean. This mode is less common than autowiring by type and often requires careful naming conventions to work effectively.
+4. *Autowiring by Constructor (constructor)*:
+This mode is similar to autowiring by type, but it applies specifically to constructor arguments. Spring attempts to match and inject dependencies into a bean's constructor parameters based on their types. If there are multiple beans of the same type, Spring uses the constructor with the most arguments that can be satisfied.
 
 ### 30.What are some of the important Spring Core Annotations?
 Some of the spring core framework annotations are: 
