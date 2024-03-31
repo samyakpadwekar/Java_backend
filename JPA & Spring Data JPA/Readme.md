@@ -286,10 +286,11 @@ first_name	varchar(50) \
 last_name	  varchar(50) \
 email	      varchar(255)
 - Write a code to select all users whose email ends with 'gmail.com' and whose name is 'Alice'. Order the result by 'lastName'." \
+
 a. *JPQL*
-This option is available out of the box and is probably the oldest way to fetch data.
-JPQL is a SQL-like query language created specifically for JPA.
-EntityManager is responsible for JPQL execution. Here is the task implementation:
+- This option is available out of the box and is probably the oldest way to fetch data.
+- JPQL is a SQL-like query language created specifically for JPA.
+- EntityManager is responsible for JPQL execution. Here is the task implementation:
 ```
 entityManager.getTransaction().begin(); 
 
