@@ -18,7 +18,7 @@ Some essential features of Spring Boot include:
 6. *Externalized Configuration*: Easy management of application properties.
 
 ### 4. Compare Spring Boot vs Spring?
-1. *Configuration*: \
+1. *Configuration*: 
 ```
 package ComponentAnnotation;
  
@@ -90,7 +90,7 @@ public class MyApplication {
     }
 }
 ```
-In Spring boot,there is no need of AppConfig class and dependency can directly be injected using Autowired and @SpringBootApplication will do auto-configuration.
+In Spring boot,there is no need of AppConfig class and dependency can directly be injected using Autowired and @SpringBootApplication will do auto-configuration.\
 2. Dependency Management: \
 a. Spring: 
 In a standard Spring application, you need to manually manage dependencies and versions, which can lead to compatibility issues. \
