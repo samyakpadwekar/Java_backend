@@ -19,20 +19,63 @@ Some essential features of Spring Boot include:
 
 ### 4. Compare Spring Boot vs Spring?
 1. *Configuration*: \
+```
+package ComponentAnnotation;
+ 
+// Class
+@Component
+public class College {
+ 
+    // Method
+    public void test()
+    {
+        // Print statement
+        System.out.println("Test College Method");
+    }
+}
+```
 a. Spring:
 In a traditional Spring application, you need to configure your application using XML files or Java-based configuration classes.
 ```
 <!-- Example of XML configuration -->
-<bean id="myBean" class="com.example.MyBean" />
+<context:component-scan base-package="ComponentAnnotation"/>
 ```
 java
 ```
 // Example of Java-based configuration
 @Configuration
 public class AppConfig {
-    @Bean
-    public MyBean myBean() {
-        return new MyBean();
+@Bean
+// Here the method name is the
+// bean id/bean name
+public College collegeBean(){
+	// Return the College object
+	return new College();
+}
+}
+```
+now to fetch bean
+```
+public class Main {
+ 
+    // Main driver method
+    public static void main(String[] args)
+    {
+ 
+        // Use AnnotationConfigApplicationContext
+        // instead of ClassPathXmlApplicationContext
+        // because we are not using XML Configuration
+        ApplicationContext context
+            = new AnnotationConfigApplicationContext(
+                CollegeConfig.class);
+ 
+        // Getting the bean
+        College college
+            = context.getBean("collegeBean", College.class);
+ 
+        // Invoking the method
+        // inside main() method
+        college.test();
     }
 }
 ```
@@ -47,6 +90,7 @@ public class MyApplication {
     }
 }
 ```
+In Spring boot,there is no need of AppConfig class and dependency can directly be injected using Autowired and @SpringBootApplication will do auto-configuration.
 2. Dependency Management: \
 a. Spring: 
 In a standard Spring application, you need to manually manage dependencies and versions, which can lead to compatibility issues. \
