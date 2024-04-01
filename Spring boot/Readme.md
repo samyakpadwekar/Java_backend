@@ -115,7 +115,7 @@ Spring Boot simplifies property configuration by providing application.propertie
 a. Spring:
 In Spring, you need to configure many components manually, such as data sources, security, and view resolvers. \
 b. Spring Boot:
-Spring Boot's auto-configuration feature automatically configures many common components based on the dependencies you include in your project. For example, adding spring-boot-starter-data-jpa automatically configures a data source and entity manager.
+Spring Boot's auto-configuration feature automatically configures many common components based on the dependencies you include in your project. For example, *adding spring-boot-starter-data-jpa automatically configures a data source and entity manager*.
 
 7. Convention Over Configuration: \
 a. Spring:
