@@ -35,7 +35,8 @@ public class College {
 }
 ```
 a. Spring:
-In a traditional Spring application, you need to configure your application using XML files or Java-based configuration classes.
+In a traditional Spring application, you need to configure your application using XML files or Java-based configuration classes.\
+xml
 ```
 <!-- Example of XML configuration -->
 <context:component-scan base-package="ComponentAnnotation"/>
