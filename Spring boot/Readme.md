@@ -18,7 +18,7 @@ Some essential features of Spring Boot include:
 6. *Externalized Configuration*: Easy management of application properties.
 
 ### 4. Compare Spring Boot vs Spring?
-1. *Configuration*: 
+1. *Configuration*
 ```
 package ComponentAnnotation;
  
@@ -98,31 +98,31 @@ In a standard Spring application, you need to manually manage dependencies and v
 b. Spring Boot:
 Spring Boot uses a "Starter" mechanism to manage dependencies. Starters are pre-packaged sets of dependencies that are commonly used together. Spring Boot's "parent" POM enforces consistent dependency versions.
 
-3. Embedded Server: \
+4. Embedded Server: \
 a. Spring:
 In traditional Spring applications, you need to deploy your application to an external web server like Tomcat, Jetty, or WildFly. \
 b. Spring Boot:
 Spring Boot includes an embedded web server (e.g., Tomcat, Jetty, or Undertow) by default, making your application self-contained and reducing the need for external server deployment.
 
-4. Configuration Properties: \
+5. Configuration Properties: \
 a. Spring:
 In Spring, you manage configuration properties through XML or @PropertySource annotations. \
 b. Spring Boot:
 Spring Boot simplifies property configuration by providing application.properties or application.yml files. You can easily define properties and override them based on profiles or external configuration.
 
-5. Auto-Configuration: \
+6. Auto-Configuration: \
 a. Spring:
 In Spring, you need to configure many components manually, such as data sources, security, and view resolvers. \
 b. Spring Boot:
 Spring Boot's auto-configuration feature automatically configures many common components based on the dependencies you include in your project. For example, adding spring-boot-starter-data-jpa automatically configures a data source and entity manager.
 
-6. Convention Over Configuration: \
+7. Convention Over Configuration: \
 a. Spring:
 Spring follows the principle of "explicit configuration," where you need to provide explicit configuration details for most components. \
 b. Spring Boot:
 Spring Boot follows the principle of "convention over configuration." It provides sensible defaults, making it easy to get started without extensive configuration.
 
-7. Application Entry Point: \
+8. Application Entry Point: \
 a. Spring:
 In a standard Spring application, you need to manually create a main class and set up an application context. \
 ```
