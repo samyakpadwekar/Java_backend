@@ -10,8 +10,8 @@ The key goals of Spring Boot are:
 
 ### 3. What are the important Features of Spring Boot?
 Some essential features of Spring Boot include:
-1. *Auto Configuration*: Automatically configures common components based on project dependencies.
-2. *Starter Projects*: Pre-configured templates for various types of applications.
+1. *Auto Configuration*: Automatically configures common components based on project dependencies. ex. @EnableAutoConfiguration or @SpringBootApplication annotated class.
+2. *Starter Projects*: Pre-configured templates for various types of applications.(starter dependencies)
 3. *Embedded Servers*: Support for embedding web servers like Tomcat or Jetty.
 4. *Spring Boot Actuator*: Built-in tools for monitoring and managing applications.
 5. *Spring Initializr*: A web-based tool for generating Spring Boot projects.
