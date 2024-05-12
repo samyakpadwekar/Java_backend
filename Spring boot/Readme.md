@@ -2195,7 +2195,7 @@ The findByAuthor part of the URL corresponds to your custom search method, and a
 -----
 
 
-### 4.What is Spring REST controller?how is it beneficial?
+### 4.What is Spring boot Rest Controller?how is it beneficial?
 - The @RestController annotation in Spring is used to declare a class as a RESTful controller.
 - It tells Spring that this class will handle incoming HTTP requests and send HTTP responses, typically in JSON or XML format. In simple terms, it makes your Java class act like a web service.
 ```
@@ -2207,307 +2207,107 @@ public class MyRestController {
 1. *Simplified Development*: @RestController simplifies the development of RESTful web services in Spring. It combines @Controller and @ResponseBody annotations, making it easier to create web services that directly return data, typically in JSON or XML, without needing to annotate each method with @ResponseBody.
 2. *Automatic Serialization*: It automatically serializes the response data into JSON or XML format. This means you can return regular Java objects from your methods, and Spring takes care of converting them into the appropriate format for the HTTP response.
 
-### 5.Explain the purpose of the @RequestMapping,@PostMapping,@PutMapping,@GetMapping annotation in Spring REST.
-- @RequestMapping is a general-purpose annotation for mapping any HTTP method, whereas @PostMapping, @PutMapping, and @GetMapping are specialized annotations for mapping POST, PUT, and GET requests, respectively.
-- The specialized annotations make the code more expressive and easier to understand because they clearly indicate the intended HTTP method.
-- Using specialized annotations helps in code readability and can also help prevent mistakes where the wrong HTTP method is inadvertently used.
-1. *@RequestMapping*:
-- The @RequestMapping annotation is a general-purpose annotation used to map HTTP requests to methods. It can be used for any HTTP method (GET, POST, PUT, DELETE, etc.) by specifying the method attribute.
-```
-@RequestMapping(value = "/resource", method = RequestMethod.GET)
-public ResponseEntity<String> getResource() {
-    // Handle GET request for /resource
-}
-```
 
-2. *@PostMapping*:
-- The @PostMapping annotation is specifically used for mapping HTTP POST requests to methods. It's used when you want a method to handle data submission or resource creation via a POST request.
-```
-@PostMapping("/create")
-public ResponseEntity<String> createResource() {
-    // Handle POST request for creating a resource
-}
-```
-
-3. *@PutMapping*:
-- The @PutMapping annotation is used for mapping HTTP PUT requests to methods. It's typically used for updating an existing resource with new data.
-```
-@PutMapping("/update/{id}")
-public ResponseEntity<String> updateResource(@PathVariable Long id, @RequestBody Resource resource) {
-    // Handle PUT request for updating a resource with the given ID
-}
-```
-
-4. *@GetMapping*:
-- The @GetMapping annotation is specifically used for mapping HTTP GET requests to methods. It's used when you want to retrieve data or perform read-only operations without changing the server's state.
-```
-@GetMapping("/user/{id}")
-public ResponseEntity<User> getUserById(@PathVariable Long id) {
-    // Retrieve user with the given ID
-}
-```
-
-### 6.What HTTP methods are commonly used in RESTful web services, and how does Spring support them?
-- Common HTTP methods in REST are GET, POST, PUT, DELETE, etc. Spring supports these methods through the @RequestMapping annotation. By specifying the method in the annotation, you can control which HTTP method should trigger your method.
+### Q.What HTTP methods are commonly used in RESTful web services, and how does Spring boot support them?
+- Common HTTP methods are GET, POST, PUT, DELETE, etc. Spring supports these methods by directly using HTTP specific annotation (@GetMapping, @PostMapping, @PutMapping, @DeleteMapping) or through the @RequestMapping annotation, by specifying the method in the annotation, you can control which HTTP method should trigger your method.
 ```
 @RequestMapping(value = "/create", method = RequestMethod.POST)
 public ResponseEntity<String> createResource() {
     // Create a resource here
 }
+
+---
+
+@GetMapping("/students") 
+public List<Student> getAllStudents() { 
+return studentRepository.findAll(); 
+} 
+
 ```
 
-### 7.What is the purpose of the @PathVariable annotation in Spring REST, and how is it used?how is it different from @RequestParam?
-- The *@PathVariable* and *@RequestParam* annotations in Spring REST are both used to extract data from the URL of an HTTP request, but they serve slightly different purposes and are used in different scenarios. Here's an explanation of each with code examples and their differences:
-
-1. *@PathVariable*:
-- Purpose: The @PathVariable annotation is used to extract values from the URI (the part of the URL that comes after the base URL). It's commonly used to capture parts of the URL and use them as parameters in your controller method.
-- Usage: You annotate a method parameter with @PathVariable and specify the variable name within curly braces {} in the @RequestMapping annotation, matching the variable name to the one in the URL.
-```
-@GetMapping("/users/{userId}")
-public ResponseEntity<User> getUserById(@PathVariable Long userId) {
-    // Extracts the value from the URL, e.g., /users/123
-    // userId will be 123 in this example
-    // Retrieve and return user by userId
-}
-```
-
-2. *@RequestParam*:
-- Purpose: The @RequestParam annotation is used to extract query parameters from the URL. Query parameters are the key-value pairs added to the URL after a **?** symbol.
-- Usage: You annotate a method parameter with @RequestParam and specify the name of the query parameter you want to extract.
-```
-@GetMapping("/search")
-public ResponseEntity<List<User>> searchUsers(@RequestParam String query) {
-    // Extracts the 'query' parameter from the URL, e.g., /search?query=John
-    // 'query' will be "John" in this example
-    // Perform a search and return matching users
-}
-```
-- Differences:
-1. *Source of Data*: @PathVariable extracts data from the URL path, whereas @RequestParam extracts data from the query parameters in the URL.
-2. *Usage*: @PathVariable is used when you want to capture specific parts of the URL path, such as identifiers or resource names. @RequestParam is used when you expect parameters to be included as query parameters in the URL.
-3. *Syntax*: @PathVariable is used as a method parameter annotation, while @RequestParam is also used as a method parameter annotation but requires specifying the parameter name.
-
-### 8.How do you handle request and response serialization in Spring REST?
+### Q.How do you handle request and response serialization in Spring REST?
 - Spring automatically handles request and response serialization using libraries like *Jackson*.
 - When you return an object from your controller method, Spring converts it to JSON or XML (based on content negotiation) for the response. When a JSON or XML request is received, Spring deserializes it into a Java object.
 
-### 9.Why is Jackson dependency used in Spring boot?what are the important Jackson transitive dependencies?
-(not an important question in general,putting it here as I have it in my project)
-- Jackson is a popular Java library used for working with JSON data. In the context of Spring Boot, Jackson is commonly used for:
-1. *JSON Serialization and Deserialization*: Jackson is used to convert Java objects to JSON (serialization) and JSON data back to Java objects (deserialization). This is crucial when you need to send and receive JSON data in Spring Boot applications, such as when building RESTful APIs.
-2. *Data Binding*: Jackson provides powerful data binding capabilities, allowing you to map JSON data to Java objects and vice versa. It can handle complex object structures and nested data effectively.
-3. *Customization*: Jackson allows you to customize the serialization and deserialization process using annotations and custom serializers/deserializers. This flexibility is beneficial when dealing with non-standard JSON structures or specific serialization requirements.
-4. *Transitive Dependencies*: When you use Jackson in a Spring Boot application, it often brings in several transitive dependencies to handle various aspects of JSON processing, including handling different date formats, supporting Java 8 datatypes, and more.
-- Here are some important and useful Jackson transitive dependencies you may encounter in a Spring Boot project:
-1. *jackson-databind* : This is the core Jackson library responsible for data binding (serialization and deserialization). It provides classes like ObjectMapper to work with JSON data.
-2. *jackson-core*: This library contains the low-level JSON processing classes and is part of the Jackson core functionality.
-3. *jackson-annotations*: This library includes annotations like @JsonProperty, @JsonFormat, and others that you can use to customize the JSON mapping behavior.
-4. *jackson-datatype-jdk8*: If your Spring Boot application uses Java 8 features (e.g., Optional, LocalDate, LocalTime), this datatype module provides support for serializing and deserializing these Java 8 types.
-
-### 10.What is JSON Binding?
+### Q.What is JSON Binding?
 - JSON data binding is the process of converting JSON data (JavaScript Object Notation) to Java objects and vice versa.
 - It allows you to seamlessly work with JSON data in your Java applications by providing mechanisms to serialize (convert Java objects to JSON) and deserialize (convert JSON to Java objects) data.
 - In Spring Boot, JSON data binding is implemented using the Jackson library, which is a popular and widely used library for JSON processing in Java.
 - Jackson provides a set of classes and annotations that allow you to map Java objects to JSON data and back.
 
------
+For detailed explanation refer <a href="https://www.geeksforgeeks.org/how-jackson-data-binding-works-in-spring-boot/" target="_blank">gfg article</a>
 
-Here's how JSON data binding is implemented in Spring Boot: 
-
-In a Spring Boot project, JSON data binding is implemented using the Jackson library, which is automatically included as a dependency when you use the spring-boot-starter-web or related starters. JSON data binding allows you to seamlessly convert JSON data to Java objects and vice versa. Here's a step-by-step explanation with a code example: 
-
-1.*Dependency in pom.xml*: Ensure that you have the spring-boot-starter-web dependency in your project's pom.xml file. This starter includes Jackson as a transitive dependency.
-```
-<dependencies>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <!-- Other dependencies -->
-</dependencies>
-```
-
-2.*Java Object*: Create a Java class that represents the structure of your JSON data. Annotate this class with Jackson annotations to specify the mapping between fields and JSON properties.
-```
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class User {
-    @JsonProperty("first_name")
-    private String firstName;
-    @JsonProperty("last_name")
-    private String lastName;
-
-    // Getters and setters
-}
-```
-
-3.*Controller*: Create a Spring Boot controller that handles JSON data. Use the @RestController annotation to indicate that this class will handle HTTP requests, and use the @PostMapping annotation to specify that a method will handle incoming JSON data.
-```
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.ResponseEntity;
-
-@RestController
-public class UserController {
-    @PostMapping("/create-user")
-    public ResponseEntity<String> createUser(@RequestBody User user) {
-        // Handle user creation based on the JSON data received
-        String message = "User created: " + user.getFirstName() + " " + user.getLastName();
-        return ResponseEntity.ok(message);
-    }
-}
-```
-
-4.*JSON to Java Object*: When a client sends a POST request with JSON data to /create-user, Spring Boot automatically uses Jackson to deserialize the JSON data into a User object. \
-Example JSON data in the request body:
-```
-{
-    "first_name": "John",
-    "last_name": "Doe"
-}
-```
-
-5.*Java Object to JSON*: In the createUser method, you can work with the User object just like any other Java object. When you return a ResponseEntity with a Java object, Spring Boot automatically uses Jackson to serialize the object into JSON for the HTTP response. \
-For example, if you return:
-```
-return ResponseEntity.ok(user);
-```
-The response will be:
-```
-{
-    "first_name": "John",
-    "last_name": "Doe"
-}
-```
-6.*Customization*: If you need to customize the JSON serialization or deserialization process, you can use additional Jackson annotations and configuration settings as needed. For example, you can use *@JsonFormat* to specify date formatting or @JsonIgnore to exclude fields from serialization.
-
------
-
-### 11.What is the role of the @RequestBody and @ResponseBody annotations in Spring REST?
-- The @RequestBody and @ResponseBody annotations in Spring REST are used to handle data in the request and response of a web service, making it easier to work with data in your Spring applications. Let's break down their roles with simple code examples:
-
-1. *@RequestBody Annotation*:
-- Role: @RequestBody is used when you want to extract data from the request body (the data sent by the client) and convert it into a Java object. It helps you receive and work with data sent by the client in a structured way.
-- Code Example: Suppose a client sends JSON data in the request body to create a user. You can use @RequestBody to map this JSON data to a Java object:
-```
-@PostMapping("/create-user")
-public ResponseEntity<String> createUser(@RequestBody User user) {
-    // The @RequestBody annotation maps the JSON data to the 'user' object
-    // Now you can work with the 'user' object like any other Java object
-    // Create the user in the system and return a response
-    return ResponseEntity.ok("User created: " + user.getName());
-}
-```
-- Explanation: In this example, the @RequestBody annotation helps Spring automatically convert the JSON data sent in the request body into a User object. You can then work with this User object within your method.
-
-2. *@ResponseBody Annotation*:
-- Role: @ResponseBody is used when you want to send data back as the response of your web service. It helps you convert a Java object into a format suitable for the client, such as JSON, XML, or HTML.
-- Code Example: Suppose you want to return a User object as JSON in the response body. You can use @ResponseBody to tell Spring to convert the User object to JSON and send it back:
-```
-@GetMapping("/get-user")
-@ResponseBody
-public ResponseEntity<User> getUser() {
-    User user = new User("John Doe");
-    // The @ResponseBody annotation converts 'user' to JSON and includes it in the response body
-    return ResponseEntity.ok(user);
-}
-```
-- Explanation: In this example, the @ResponseBody annotation tells Spring to convert the User object into JSON format and include it in the response body. This JSON data is what the client receives when they make a request to /get-user.
-
-### 12.How to retrieve POJOs in Spring rest?
-In a Spring REST application, you can retrieve Plain Old Java Objects (POJOs) from the client request using various methods, such as request parameters, path variables, and request bodies. Here, I'll provide examples for each of these methods:
-1. *Retrieving POJOs from Request Parameters*:
-In this method, you can retrieve POJOs from the query parameters of a GET request. Here's an example:
-```
-// Assuming you have a POJO class called User
-public class User {
-    private String username;
-    private int age;
-
-    // Getters and setters
-}
-
-// Controller method
-@GetMapping("/user")
-public ResponseEntity<User> getUser(@RequestParam String username, @RequestParam int age) {
-    User user = new User();
-    user.setUsername(username);
-    user.setAge(age);
-    return ResponseEntity.ok(user);
-}
-```
-In this example, the getUser method accepts username and age as request parameters. Spring automatically maps the request parameters to the corresponding fields in the User POJO.
-
-2. *Retrieving POJOs from Path Variables*:
-Path variables are used to extract values directly from the URL path. Here's an example:
-```
-// Controller method
-@GetMapping("/user/{username}/{age}")
-public ResponseEntity<User> getUser(@PathVariable String username, @PathVariable int age) {
-    User user = new User();
-    user.setUsername(username);
-    user.setAge(age);
-    return ResponseEntity.ok(user);
-}
-```
-In this example, the getUser method accepts username and age as path variables. The values are automatically mapped to the corresponding method parameters.
-
-3. *Retrieving POJOs from Request Body*:
-For non-GET requests (POST, PUT, etc.), you can retrieve POJOs from the request body. This is commonly used for creating or updating resources. Here's an example:
-```
-// Controller method
-@PostMapping("/user")
-public ResponseEntity<User> createUser(@RequestBody User user) {
-    // Process user object (save to database, etc.)
-    return ResponseEntity.ok(user);
-}
-```
-In this example, the createUser method takes a User object as the request body. Spring automatically deserializes the request body JSON (or other formats) into a User object.
-
-### 13.What is content negotiation in Spring REST, and how is it configured?
-- Content negotiation in Spring REST is the process of determining the format (e.g., JSON, XML, HTML) in which a response should be provided to a client based on the client's preferences.
-- It's like a negotiation between the server and the client to agree on the format of the data that will be sent back in the response.
-- Imagine you have a website, and some users prefer to see content in English, while others prefer Spanish.
-- Content negotiation is the server's way of figuring out which version (English or Spanish) to send to each user based on their preference.
-- Spring uses the Accept header in the client's HTTP request to understand the client's preferred content format.
+**API versioning**
 
 ### Q.Explain the concept of versioning in RESTful APIs, and how can it be implemented in Spring?
 - Versioning in RESTful APIs is a practice of providing multiple versions of your API to clients.
 - It allows you to make changes to your API while ensuring that existing clients can continue to use the older versions without disruption.
--  Versioning is essential to maintain compatibility and manage the evolution of your API over time.
+- Versioning is essential to maintain compatibility and manage the evolution of your API over time.
 - Here are a few common methods of implementing versioning in RESTful APIs:
-1. *URI Versioning*: In this approach, the API version is included in the URI path. For example:
-- /api/v1/resource for version 1.
-- /api/v2/resource for version 2.
-- Pros: Explicit and clear. Easy for clients to use.
-- Cons: Clutters the URI.
-  
-2. *Request Header Versioning*: In this approach, the API version is specified in a custom HTTP request header. For example:
-- Accept: application/vnd.myapp.v1+json for version 1.
-- Accept: application/vnd.myapp.v2+json for version 2.
-- Pros: Doesn't clutter the URI. Allows for cleaner and more readable URIs.
-- Cons: Slightly more complex for clients to set request headers.
+1. *URI Versioning*: URL path versioning involves including the version number directly in the URL path of the API endpoints. This is a common approach and makes the version explicit in the URL.
+ ```
+@RestController
+@RequestMapping("/v1/users")
+public class UserControllerV1 {
+    // Endpoint implementations...
+}
+``` 
+2. *Request Header Versioning*: In this approach, the API version is specified in a custom HTTP request header. 
+```
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    
+    @GetMapping(headers = "API-Version=1")
+    public ResponseEntity<String> getUserV1() {
+        // Endpoint implementation for version 1
+    }
+    
+    @GetMapping(headers = "API-Version=2")
+    public ResponseEntity<String> getUserV2() {
+        // Endpoint implementation for version 2
+    }
+}
+```
 
-3. *Query Parameter Versioning*: Here, the API version is specified as a query parameter in the URI. For example:
-- /api/resource?v=1 for version 1.
-- /api/resource?v=2 for version 2.
-- Pros: Doesn't clutter the URI as much as URI versioning.
-- Cons: May still be less clean compared to request header versioning.
+3. *Request Parameter Versioning*: In this approach, the version number is included as a query parameter in the URL.
+```
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    
+    @GetMapping(params = "version=1")
+    public ResponseEntity<String> getUserV1() {
+        // Endpoint implementation for version 1
+    }
+    
+    @GetMapping(params = "version=2")
+    public ResponseEntity<String> getUserV2() {
+        // Endpoint implementation for version 2
+    }
+}
+```
+4. *Media Type (Accept Header) Versioning*: In this approach, the version is specified in the Accept header of the HTTP request.
+```
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    
+    @GetMapping(produces = "application/vnd.company.app-v1+json")
+    public ResponseEntity<String> getUserV1() {
+        // Endpoint implementation for version 1
+    }
+    
+    @GetMapping(produces = "application/vnd.company.app-v2+json")
+    public ResponseEntity<String> getUserV2() {
+        // Endpoint implementation for version 2
+    }
+}
+```
+For detailed explanation refer <a href="https://medium.com/@avi.singh.iit01/a-guide-to-api-versioning-in-spring-boot-d564595bba00" target="_blank"> medium article</a>
 
-4. *Media Type Versioning*: In this approach, the API version is included in the media type (MIME type) of the content, usually in the Accept header. For example:
-- Accept: application/vnd.myapp.v1+json for version 1.
-- Accept: application/vnd.myapp.v2+json for version 2.
-- Pros: Clean URIs. Encourages the use of standardized media types.
-- Cons: Slightly more complex for clients to set request headers.
 
-5. *Custom Header Versioning*: You can define a custom HTTP header to indicate the API version. For example:
-- X-Api-Version: 1 for version 1.
-- X-Api-Version: 2 for version 2.
-- Pros: Allows for flexibility and customization.
-- Cons: Requires clients to set a custom header.
-
-**Spring boot Exception handling**
+**Exception handling**
 
 ### Q.How can you handle exceptions in a Spring REST application?
 To handle exceptions in a Spring Boot application, you can use the following strategies:
@@ -2520,7 +2320,7 @@ By implementing these strategies, you can effectively handle exceptions in a Spr
 
 For detailed explanation refer <a href="https://naveen-metta.medium.com/mastering-exception-handling-in-spring-boot-a-comprehensive-guide-fa3f916d1981#:~:text=In%20Spring%20Boot%2C%20you%20have,exceptions%2C%20managing%20specific%20HTTP%20status" target="_blank"> medium article</a>
 
-**Caching in Spring boot**
+**Caching**
 
 ### Q.Explain the concept of caching in Spring boot and how it can improve performance.
 - Caching in Spring Boot is a mechanism that stores frequently accessed data in memory to reduce the number of database queries and improve application performance.
@@ -2607,3 +2407,146 @@ public void evictCache() {
 - A REST API should not maintain a state on the server. That’s the responsibility of the client.
 - This is important because it allows for the API to be cacheable, scalable, and decoupled from the client.
 - For example, an e-commerce API might use cookies to maintain the state of a shopping cart. However, such an approach violates the key principle of RESTful APIs — they need to be stateless.
+
+**Annotations and Annotation related**
+
+1. *@RestController*:@RestController is a specialized version of the controller. It includes the @Controller and @ResponseBody annotations, and as a result, simplifies the controller implementation.Every request handling method of the controller class automatically serializes return objects into HttpResponse.
+2. *@Controller*:This annotation is used to mark a class as a web request handler. It's typically used in combination with annotated handler methods based on the @RequestMapping annotation.
+3. *@ResponseBody*:You can use the @ResponseBody annotation on a method to have the return serialized to the response body through an HttpMessageWriter. @ResponseBody is also supported at the class level, in which case it is inherited by all controller methods.
+4. *@RequestBody*:It is used to bind the HTTP request body to the parameter in the controller method.Used with POST, PUT, and PATCH requests where data is sent in the request body.
+5. *@RequestMapping*:The @RequestMapping annotation is used to map requests to controllers methods. It has various attributes to match by URL, HTTP method, request parameters, headers, and media types. You can use it at the class level to express shared mappings or at the method level to narrow down to a specific endpoint mapping.
+6. *@GetMapping, @PostMapping, @PutMapping, @DeleteMapping*:These annotations are used to map HTTP requests to specific methods in a controller class. They're variations of @RequestMapping with specific HTTP methods.
+7. *@RequestParam*:extract values from the query string. ex. http://localhost:8080/spring-mvc-basics/foos?id=abc -> ID: abc (@GetMapping("/foos"))
+8. *@PathVariable*:extract values from the URI. ex. http://localhost:8080/spring-mvc-basics/foos/abc -> ID: abc (@GetMapping("/foos/{id}"))
+
+
+### @.What is the role of the @RequestBody and @ResponseBody annotations?
+- The @RequestBody and @ResponseBody annotations are used to handle data in the request and response of a web service, making it easier to work with data in your Spring applications. Let's break down their roles with simple code examples:
+1. *@RequestBody Annotation*:
+- @RequestBody is applicable for the incoming request data, used with POST, PUT, PATCH methods to read the request body, return type is typically void or a simple type, deserialized object is passed as a method parameter, required to read JSON/XML request payloads.
+2. *@ResponseBody Annotation*:
+- @ResponseBody is typically for the outgoing response data, the object returned is automatically serialized into JSON ,used with GET methods to write the response body content, return type is typically a complex object representing the response data, serialized object is returned from the method, required to write JSON/XML response payloads.
+```
+public class EmployeeController { 
+    @Autowired
+    private EmployeeRepository employeeRepository; 
+  
+    @ResponseBody
+    @PostMapping
+    public Employee 
+    addPerson(@RequestBody Employee employee) 
+    { 
+        return employeeRepository.save(employee); 
+    } 
+  
+    @ResponseBody
+    @GetMapping
+    public List<Employee> getAllEmployee() 
+    { 
+        return employeeRepository.findAll(); 
+    } 
+  
+    @ResponseBody
+    @GetMapping("/{id}") 
+    public Employee getEmployeeById(@PathVariable Long id) 
+    { 
+        return employeeRepository.findById(id).orElse(null); 
+    } 
+}
+```
+
+### Q.What is the purpose of the @PathVariable annotation in, hos is it different from @RequestParam?
+- @RequestParam and @PathVariable can both be used to extract values from the request URI, but they are a bit different. Here's an explanation of each with code examples and their differences:
+
+1. *@PathVariable*:
+- Purpose: The @PathVariable annotation is used to extract values from the URI path. It can be made optional by using the required attribute starting with Spring 4.3.3. We should be careful when making @PathVariable optional, to avoid conflicts in paths.
+```
+http://localhost:8080/spring-mvc-basics/foos/abc
+----
+ID: abc
+
+@GetMapping("/foos/{id}")
+@ResponseBody
+public String getFooById(@PathVariable(required = false) String id) {
+    return "ID: " + id;
+}
+```
+
+2. *@RequestParam*:
+- @RequestParams extract values from the query string. Query parameters are the key-value pairs added to the URL after a **?** symbol. For @RequestParam, we can also use the required attribute.
+```
+http://localhost:8080/spring-mvc-basics/foos?id=abc
+----
+ID: abc
+
+@GetMapping("/foos")
+@ResponseBody
+public String getFooByIdUsingQueryParam(@RequestParam String id) {
+    return "ID: " + id;
+}
+```
+
+### Q.Explain the purpose of the @RequestMapping,@PostMapping,@PutMapping,@GetMapping,@DeletMapping annotation in Spring REST.
+- @RequestMapping is a general-purpose annotation for mapping any HTTP method, whereas @PostMapping, @PutMapping, and @GetMapping are specialized annotations for mapping POST, PUT, and GET requests, respectively.
+- The specialized annotations make the code more expressive and easier to understand because they clearly indicate the intended HTTP method.
+- Using specialized annotations helps in code readability and can also help prevent mistakes where the wrong HTTP method is inadvertently used.
+```
+@RequestMapping(value = "/resource", method = RequestMethod.GET)
+public ResponseEntity<String> getResource() {
+    // Handle GET request for /resource
+}
+```
+
+2. *@PostMapping*:
+- The POST method is used to create a new resource on the server. For example, if you want to create a new user, you can use a POST request to /users with the user data in the request body. In Spring Boot, you can use the @PostMapping annotation to map a method to a POST request.
+```
+@PostMapping("/users")
+  public User createUser(@RequestBody User user) {
+    return userService.createUser(user);
+  }
+```
+
+3. *@PutMapping*:
+- The PUT method is used to update a resource on the server. For example, if you want to update an existing user, you can use a PUT request to /users/{id} with the updated user data in the request body. In Spring Boot, you can use the @PutMapping annotation to map a method to a PUT request
+```
+@PutMapping("/users/{id}")
+  public User updateUser(@PathVariable Long id, @RequestBody User user) {
+    return userService.updateUser(id, user);
+  }
+```
+
+4. *@GetMapping*:
+- TThe GET method is used to retrieve a resource from the server. For example, if you want to get a list of users, you can use a GET request to /users. In Spring Boot, you can use the @GetMapping annotation to map a method to a GET request.
+```
+@GetMapping("/users")
+  public List<User> getAllUsers() {
+    return userService.getAllUsers();
+  }
+```
+
+5. *@DeleteMapping*
+- The DELETE method is used to delete a resource from the server. For example, if you want to delete an existing user, you can use a DELETE request to /users/{id}. In Spring Boot, you can use the @DeleteMapping annotation to map a method to a DELETE request.
+```
+@DeleteMapping("/users/{id}")
+  public void deleteUser(@PathVariable Long id) {
+    userService.deleteUser(id);
+  }
+```
+6. *
+- The PATCH method is used to partially update a resource on the server. For example, if you want to update only some fields of an existing user, you can use a PATCH request to /users/{id} with the modified user data in the request body. In Spring Boot, you can use the @PatchMapping annotation to map a method to a PATCH request.
+```
+@PatchMapping("/users/{id}")
+  public User patchUser(@PathVariable Long id, @RequestBody User user) {
+    return userService.patchUser(id, user);
+  }
+```
+
+**Questions as per dependency added in project**
+
+### Q.Why is Jackson dependency used in Spring boot?important jackson dependencies?
+- Jackson is one of the most used libraries of spring boot which translates JSON data to a Java POJO by itself and vice-versa. JSON stands for JavaScript-object-Notation and POJO is our plain-old-java-object class. 
+- important jackson dependencies :
+1. *jackson-databind* : General data-binding functionality for Jackson: works on core streaming API.
+2. *jackson-core*: Core Jackson processing abstractions (aka Streaming API), implementation for JSON.
+3. *jackson-annotations*: This library includes annotations like @JsonProperty, @JsonFormat, and others that you can use to customize the JSON mapping behavior.
+
