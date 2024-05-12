@@ -1,14 +1,14 @@
-### 1. What is Spring Boot?
+### Q. What is Spring Boot?
 - Spring Boot is an open-source framework designed to simplify the setup, configuration, and development of production-ready Spring applications.
 - It takes away much of the boilerplate code and configuration required in traditional Spring applications, allowing developers to focus on writing business logic.
 
-### 2. What are the important Goals of Spring Boot?
+### Q. What are the important Goals of Spring Boot?
 The key goals of Spring Boot are:
 - To provide a quick and efficient way to create standalone, production-ready Spring applications.
 - To eliminate the need for extensive configuration by using sensible defaults.
 - To enable a microservices-based architecture with built-in support for embedded servers and cloud integration.
 
-### 3. What are the important Features of Spring Boot?
+### Q. What are the important Features of Spring Boot?
 Some essential features of Spring Boot include:
 1. *Auto Configuration*: Automatically configures common components based on project dependencies. ex. @EnableAutoConfiguration or @SpringBootApplication annotated class.
 2. *Starter Projects*: Pre-configured templates for various types of applications.(starter dependencies)
@@ -17,7 +17,7 @@ Some essential features of Spring Boot include:
 5. *Spring Initializr*: A web-based tool for generating Spring Boot projects.
 6. *Externalized Configuration*: Easy management of application properties.
 
-### 4. Compare Spring Boot vs Spring?
+### Q. Compare Spring Boot vs Spring?
 1. *Configuration*
 ```
 package ComponentAnnotation;
@@ -66,9 +66,7 @@ public class Main {
         // Use AnnotationConfigApplicationContext
         // instead of ClassPathXmlApplicationContext
         // because we are not using XML Configuration
-        ApplicationContext context
-            = new AnnotationConfigApplicationContext(
-                CollegeConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(CollegeConfig.class);
  
         // Getting the bean
         College college
@@ -2588,23 +2586,18 @@ In this example, the getUserById method retrieves a user by ID from a database, 
 3. *Configure Cache Providers*: By default, Spring uses an in-memory cache provider (e.g., Caffeine or EhCache) that comes with Spring Boot. However, you can configure other cache providers like Redis or Memcached for distributed caching.
 4. *Cache Eviction*: You can use the @CacheEvict annotation to manually remove items from the cache when data changes or expires.
 
-### 18.What are some best practices for designing and implementing RESTful APIs in Spring?
-Designing and implementing RESTful APIs in Spring requires careful planning and adherence to best practices to create APIs that are easy to use, maintain, and understand. Here are some best practices for designing and implementing RESTful APIs in Spring:
-1. *Follow REST Principles*:
-Adhere to RESTful principles, including the use of HTTP methods (GET, POST, PUT, DELETE) and resource-based URLs.
-Use nouns for resource names in URLs (e.g., /users instead of /getUsers).
-2. *Use Clear and Consistent Naming Conventions*:
-Use clear and consistent naming conventions for endpoints, request parameters, and response fields.
-Use lowercase letters and hyphens (kebab-case) or underscores (snake_case) for URLs and resource names.
+### Q.What are some best practices for designing and implementing RESTful APIs in Spring boot? or REST Api best practice?
+1. *Use descriptive and meaningful resource names*:
+Instead of generic or ambiguous names, choose resource names that accurately represent the entities they represent. (e.g., /api/customers/123 instead of /api/users/123).
+2. *Use HTTP methods correctly*:
+Use the appropriate HTTP methods (GET, POST, PUT, DELETE, PATCH, etc.) for different operations.
 3. *Version Your API*:
-Include versioning information in your API to manage changes and provide backward compatibility.
+Use versioning to ensure backward compatibility and allow for future enhancements without breaking existing clients.
 Consider using URI versioning (e.g., /api/v1/resource) or request header versioning (e.g., Accept: application/vnd.myapp.v1+json).
 4. *Use HTTP Status Codes Correctly*:
-Use appropriate HTTP status codes to indicate the result of an API request (e.g., 200 for success, 201 for resource creation, 400 for client errors, 500 for server errors).
-Provide informative error messages in response bodies for error cases.
-5. *Implement Proper Authentication and Authorization*:
-Secure your API with proper authentication mechanisms, such as Basic Authentication, Token-based Authentication (JWT), or OAuth 2.0.
-Implement authorization to restrict access to resources based on user roles or permissions.
+Use appropriate HTTP status codes to indicate the result of an API request (e.g., 200 for success, 201 for resource creation, 400 for client errors, 500 for server errors).Provide informative error messages in response bodies for error cases.
+5. *Pick your JSON field naming convention (and stick to it)*:
+JSON standard doesn’t impose a field naming convention, but it’s a best practice to pick one and stick with it.(example : snake_case, camelCase, PascalCase, kekab-Case).
 6. *Document Your API*:
 Create clear and comprehensive documentation for your API using tools like Swagger, Spring REST Docs, or API Blueprint.
 Include information about endpoints, request/response formats, error handling, and usage examples.
