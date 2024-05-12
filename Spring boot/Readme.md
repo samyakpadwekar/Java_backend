@@ -1,3 +1,5 @@
+### Interview questions for Spring boot,Spring Data (JPA and REST)
+
 ### Q. What is Spring Boot?
 - Spring Boot is an open-source framework designed to simplify the setup, configuration, and development of production-ready Spring applications.
 - It takes away much of the boilerplate code and configuration required in traditional Spring applications, allowing developers to focus on writing business logic.
