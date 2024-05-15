@@ -2009,60 +2009,23 @@ GET /books?projection=titleAuthor
 -----
 
 ### 12.How can you restrict the HTTP methods allowed on a Spring Data REST endpoint?
-- You can restrict HTTP methods using the @RepositoryRestResource annotation's *collectionResourceRel* and *itemResourceRel* attributes along with the exported attribute to control which HTTP methods are allowed.
+- assume we want to hide the delete method from third parties while being able to use it internally.Then, we can use the annotation @RestResource(exported = false), which will configure Spring to skip this method when triggering the HTTP method exposure:
+
 ```
-@RepositoryRestResource(
-    collectionResourceRel = "users",
-    itemResourceRel = "user",
-    exported = false
-)
-public interface UserRepository extends CrudRepository<User, Long> {
-}
+@Override
+@RestResource(exported = false)
+void deleteById(Long aLong);
+```
+- The @RestResource annotation also gives us the ability to customize the URL path mapped to a repository method and the link id in the JSON returned by the HATEOAS resource discovery. To do that, we use the optional parameters of the annotation:
+- **path for the URL path**
+- **rel for the link id**
+If we don’t like the default path, instead of changing the repository method, we can simply add the @RestResource annotation:
+```
+@RestResource(path = "byEmail", rel = "customFindMethod")
+WebsiteUser findByEmail(@Param("email") String email);
 ```
 
------
-*For better understanding* \
-
-In Spring Data REST, you can restrict the HTTP methods allowed on an endpoint using the @RepositoryRestResource annotation and its exported attribute. \
-This allows you to control which HTTP methods (e.g., GET, POST, PUT, DELETE) are allowed for a particular repository endpoint. \
-
-Let's explain this with a simple code example in layman's terms: \
-Suppose you have a Spring Data JPA repository for a Book entity, and you want to restrict certain HTTP methods on the /books endpoint. \
-You can do this using the @RepositoryRestResource annotation. \
-
-Here's how you can restrict methods in code: 
-```
-@RepositoryRestResource(path = "books")
-public interface BookRepository extends JpaRepository<Book, Long> {
-
-    // By default, all CRUD methods are "exported," meaning they are allowed.
-    // You can restrict specific methods using the `exported` attribute.
-
-    @RestResource(exported = false) // This restricts the method.
-    Book save(Book book);
-
-    // Other repository methods...
-}
-```
-In this example:
-- We have a BookRepository interface that extends JpaRepository. By default, all CRUD methods like save, findById, findAll, delete, etc., are considered "exported," which means they are allowed to be accessed via HTTP.
-- To restrict a specific method, such as save, from being accessible via HTTP, we use the @RestResource annotation on that method and set its exported attribute to false. This tells Spring Data REST not to expose the save method through HTTP. \
-
-So, with this configuration:
-
-- GET /books (Retrieve all books) is allowed by default.
-- GET /books/{id} (Retrieve a specific book by ID) is allowed by default.
-- DELETE /books/{id} (Delete a specific book by ID) is allowed by default. \
-But:
-- POST /books (Create a new book) is allowed by default.
-- PUT /books/{id} (Update a specific book by ID) is allowed by default.
-- POST /books/{id} (Update a specific book by ID) is allowed by default because it maps to the save method. \
-
-By setting @RestResource(exported = false) on the save method, we have restricted the creation and updating of books via HTTP. Clients can still create and update books programmatically by calling the save method within your application, but they won't be able to do so via HTTP requests.
-
------
-
-### 13.What is the purpose of event handlers in Spring Data REST, and how can you define them?
+### Q.What is the purpose of event handlers in Spring Data REST, and how can you define them?
 - Event handlers in Spring Data REST allow you to intercept and customize repository events (e.g., before save, after delete). You can define them by creating a bean that implements ApplicationListener.
 ```
 @Component
@@ -2074,64 +2037,7 @@ public class MyEventHandler implements ApplicationListener<BeforeSaveEvent> {
 }
 ```
 
-### 14.Explain how to perform custom validation in Spring Data REST.
-- Custom validation in Spring Data REST allows you to add your own validation logic to ensure that data meets specific criteria before it's persisted in your database.
-- This is useful for enforcing business rules or data integrity constraints in your RESTful API.
-- Let's break down custom validation with a code example in layman's terms and discuss what happens if you use it versus if you don't.
-- Custom Validation Example:
-Suppose you have a Book entity with a title field, and you want to ensure that every book title must start with a capital letter. You want to add custom validation to enforce this rule. \
-
-*If you use custom validation*: \
-First, you create a *custom validation annotation, say @TitleCase*, to mark fields that need to follow the capitalization rule:
-```
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
-@Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = TitleCaseValidator.class)
-public @interface TitleCase {
-    String message() default "Title must start with a capital letter";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
-}
-```
-Then, you implement the *TitleCaseValidator class*, which defines the validation logic:
-```
-public class TitleCaseValidator implements ConstraintValidator<TitleCase, String> {
-    @Override
-    public void initialize(TitleCase constraintAnnotation) {
-    }
-
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        // Your custom validation logic here: Check if the title starts with a capital letter.
-        return Character.isUpperCase(value.charAt(0));
-    }
-}
-```
-You apply the @TitleCase annotation to the title field of your Book entity:
-```
-@Entity
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @TitleCase // Custom validation annotation
-    private String title;
-
-    // Other fields, getters, setters, etc.
-}
-```
-Now, when you create or update a book via your Spring Data REST API, the custom validation will be applied automatically. \
-If the title doesn't start with a capital letter, the validation will fail, and the operation will be rejected. \
-
-*If you don't use custom validation*: \
-Without custom validation, there would be no automatic check for the capitalization rule, and any value could be saved as the book title. \
-This could lead to inconsistent or incorrect data in your database, and you might need to handle these validation checks manually in your application code, which can be error-prone and less maintainable. \
-
-- In summary, custom validation in Spring Data REST allows you to enforce specific rules or constraints on your data before it's stored in the database.
-- It helps maintain data integrity and consistency in your API. If you don't use custom validation, you would need to rely on manual validation in your application code, which can be less reliable and harder to manage.
-
-### 16.How do you secure Spring Data REST endpoints?
+### Q.How do you secure Spring Data REST endpoints?
 - Securing Spring Data REST endpoints is crucial to protect your data and restrict access to authorized users or roles.
 - You can use various security mechanisms to achieve this, such as Spring Security, to ensure that only authenticated and authorized users can perform operations on your RESTful API.
 - Why Securing Spring Data REST Endpoints is Needed:
@@ -2139,7 +2045,7 @@ This could lead to inconsistent or incorrect data in your database, and you migh
 2. *Data Integrity*: Security helps ensure that only valid and authorized changes are made to your data. Unauthorized modifications or deletions can lead to data corruption.
 3. *Compliance*: Many applications need to adhere to security and privacy regulations (e.g., GDPR, HIPAA). Implementing security measures is essential to meet these requirements.
 
-### 17.What is a custom search method in Spring Data REST, and how do you define one?
+### Q.What is a custom search method in Spring Data REST, and how do you define one?
 - A custom search method in Spring Data REST allows you to define your own search criteria and expose it as an HTTP endpoint in your RESTful API.
 - This is useful when you need to perform complex searches on your data that go beyond simple CRUD operations.
 - Custom search methods give you the flexibility to query your data based on specific requirements.
@@ -2149,53 +2055,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findByLastName(String lastName);
 }
 ```
------
 
-*Step 1: Define the Repository Interface* \
-
-First, create a repository interface for your entity, extending JpaRepository or a similar Spring Data repository interface. \
-In this example, we'll assume you have an entity called Book: \
-```
-@RepositoryRestResource(path = "books")
-public interface BookRepository extends JpaRepository<Book, Long> {
-
-    // Define custom search methods here
-
-}
-```
-*Step 2: Define the Custom Search Method* \
-
-Define a custom search method within your repository interface. \
-You can use the @Query annotation to specify the JPQL (Java Persistence Query Language) query for your custom search. \
-JPQL is a query language similar to SQL but used for querying JPA (Java Persistence API) entities.
-```
-@RepositoryRestResource(path = "books")
-public interface BookRepository extends JpaRepository<Book, Long> {
-
-    @Query("SELECT b FROM Book b WHERE b.author = :authorName")
-    List<Book> findByAuthor(@Param("authorName") String authorName);
-
-}
-```
-
-In this example, we've defined a custom search method findByAuthor that retrieves a list of books by a specific author's name. \
-It uses the @Query annotation to specify the JPQL query. :authorName is a parameter that will be replaced with the value passed to the method. \
-
-*Step 3: Use the Custom Search Method* \
-
-Once you've defined the custom search method, you can use it in your REST API. \
-When you send an HTTP request to the endpoint associated with the custom search, it will execute the custom query and return the results. \
-
-For example, to search for books by a specific author's name, you can make a GET request to: \
-```
-GET /books/search/findByAuthor?authorName=John Doe
-```
-The findByAuthor part of the URL corresponds to your custom search method, and authorName=John Doe is a query parameter that you can use to filter the results.
-
------
-
-
-### 4.What is Spring boot Rest Controller?how is it beneficial?
+### Q.What is Spring boot Rest Controller?how is it beneficial?
 - The @RestController annotation in Spring is used to declare a class as a RESTful controller.
 - It tells Spring that this class will handle incoming HTTP requests and send HTTP responses, typically in JSON or XML format. In simple terms, it makes your Java class act like a web service.
 ```
