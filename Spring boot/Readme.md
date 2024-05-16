@@ -199,7 +199,7 @@ public DataSource devDataSource() {
 4. *Operational Insights*: It collects and exposes metrics and statistics about your application, which can help operations teams gain insights into resource usage, bottlenecks, and overall system health.
 5. *Integration with Monitoring Tools*: Spring Boot Actuator seamlessly integrates with popular monitoring and management tools like Prometheus, Grafana, and Spring Cloud Sleuth, making it easier to manage your application in a larger ecosystem.
 
-### 32.How to implement Spring boot actuator?
+### Q.How to implement Spring boot actuator?
 - using Spring Boot Actuator is as simple as adding a dependency to your project and enabling it with a few configurations. Here's an example:
 1. *Add the Spring Boot Actuator dependency to your pom.xml (if you're using Maven) or build.gradle (if you're using Gradle)*:
 ```
@@ -215,19 +215,16 @@ management.endpoints.web.exposure.include=*
 ```
 This configuration allows all management endpoints to be exposed over the web.
 
-### 33. How do you monitor web services using Spring Boot Actuator?
-- You can use Actuator's built-in endpoints to monitor web services. For example, the /actuator/health endpoint provides information about the application's health, and /actuator/metrics offers various metrics.
-
-### 34. How do you find more information about your application environment using Spring Boot?
-- Spring Boot Actuator provides the /actuator/env endpoint, which displays environment properties, including application properties and system properties.
-
-### 35.How to enable debugging log in the spring boot application?
+### Q. How do you monitor web services using Spring Boot Actuator?
+- You can use Actuator's built-in endpoints to monitor web services. For example, the /actuator/health endpoint provides information about the application's health, /actuator/metrics offers various metrics and /actuator/env displays environment properties, including application properties and system properties..
+ 
+### Q.How to enable debugging log in the spring boot application?
 - Debugging logs can be enabled in three ways -
 1. We can start the application with --debug switch.
 2. We can set the logging.level.root=debug property in application.property file.
 3. We can set the logging level of the root logger to debug in the supplied logging configuration file.
 
-### 36. What is a CommandLineRunner?
+### 3Q. What is a CommandLineRunner?
 - A CommandLineRunner is an interface in Spring Boot that allows you to execute code when the application starts. It's often used for tasks like database initialization or data loading.
 - Here's a simple example of a CommandLineRunner:
 ```
@@ -240,15 +237,14 @@ public class MyCommandLineRunner implements CommandLineRunner {
     }
 }
 ```
-These explanations and examples should help you understand Spring Boot concepts and features in a practical and straightforward way for your interview preparation.
 
 ### 37. What is a EnableTransactionManagement and Transactional annotation?
 - The *@EnableTransactionManagement* annotation and *@Transactional* annotation work together to manage transactions in a Spring application, but they serve different purposes:
-- **@EnableTransactionManagement**: This annotation is used at the configuration level (typically on a @Configuration class) to enable Spring's annotation-driven transaction management capability within the application. It activates Spring's ability to interpret @Transactional annotations and manage transactions accordingly.
+- **@EnableTransactionManagement**: This annotation is used at the configuration level (typically on a @Configuration class) to enable Spring's annotation-driven transaction management capability within the application. It activates Spring's ability to interpret @Transactional annotations and manage transactions accordingly. This is used to have more control over Transaction management as it allows you to specify the TransactionManager to be used for transactional methods, while @Transactional uses the default transaction manager.
 - **@Transactional**: This annotation is applied at the method level or on a class, indicating that the methods (or all methods within the annotated class) should be wrapped in a transaction. It defines the scope of a single database transaction. This annotation provides metadata that Spring uses to create a transactional proxy around the annotated method or class to manage transactional behavior.
-- In essence, @EnableTransactionManagement enables Spring to recognize @Transactional annotations within the application and manage transactions based on the specified semantics.
+- The @Transactional annotation will work without @EnableTransactionManagement as long as you have spring-tx and a transactional resource (e.g. DataSource) in your application. Spring will detect the @Transactional annotation and configure a PlatformTransactionManager (e.g. JpaTransactionManager) for you.
 
-### 38.Explain what isolation & propagation parameters are for in the @Transactional annotation via real-world example?
+### Q.Explain what isolation & propagation parameters are for in the @Transactional annotation via real-world example?
 - **Propagation**
 Defines how transactions relate to each other. Common options:
 - *REQUIRED*: Code will always run in a transaction. Creates a new transaction or reuses one if available.
@@ -264,48 +260,7 @@ Defines the data contract between transactions.
   
 - The different levels have different performance characteristics in a multi-threaded application. I think if you understand the dirty reads concept you will be able to select a good option.
 
-----
-*for better understanding*
-
-A practical example of where a new transaction will always be created when entering the provideService routine and completed when leaving:
-```
-public class FooService {
-    private Repository repo1;
-    private Repository repo2;
-
-    @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public void provideService() {
-        repo1.retrieveFoo();
-        repo2.retrieveFoo();
-    }
-}
-```
-
-- Had we instead used REQUIRED, the transaction would remain open if the transaction was already open when entering the routine. Note also that the result of a rollback could be different as several executions could take part in the same transaction.
-
-- We can easily verify the behaviour with a test and see how results differ with propagation levels:
-
-```
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="classpath:/fooService.xml")
-public class FooServiceTests {
-
-    private @Autowired TransactionManager transactionManager;
-    private @Autowired FooService fooService;
-
-    @Test
-    public void testProvideService() {
-        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        fooService.provideService();
-        transactionManager.rollback(status);
-        // assert repository values are unchanged ... 
-}
-```
-With a propagation level of
-- *REQUIRES_NEW*: we would expect fooService.provideService() was NOT rolled back since it created its own sub-transaction.
-- *REQUIRED*: we would expect everything was rolled back and the backing store was unchanged.
-
-### 39.Difference between @Controller and @RestController?
+### Q.Difference between @Controller and @RestController?
 - Spring 4.0 introduced the @RestController annotation in order to simplify the creation of RESTful web services. It’s a convenient annotation that combines @Controller and @ResponseBody, which eliminates the need to annotate every request handling method of the controller class with the @ResponseBody annotation.
 1. @Controller -
 - a specialization of the @Component class, which allows us to auto-detect implementation classes through the classpath scanning.
@@ -313,57 +268,14 @@ With a propagation level of
 - typically used in traditional web appls where the response is usually a web page (HTML view).
 - these controllers generally return views(HTML pages) that are rendered by a templating engine (e.g.,Thymeleaf,JSP) and sent to the client's web browser.
 - We typically use @Controller in combination with a @RequestMapping annotation for request handling methods.
-```
-@Controller
-@RequestMapping("/books")
-public class SimpleBookController {
-    @GetMapping(value = "/abc.do")
-    public ModelAndView getBook(@RequestParam(value = "xyz",required = true) String xyz,HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView("login");
-        // logic
-        return modelAndView;
-    }
-}
-```
-```
-@Controller
-@RequestMapping("books")
-public class SimpleBookController {
-
-    @GetMapping("/{id}", produces = "application/json")
-    public @ResponseBody Book getBook(@PathVariable int id) {
-        return findBookById(id);
-    }
-
-    private Book findBookById(int id) {
-        // ...
-    }
-}
-```
-- We annotated the request handling method with @ResponseBody. This annotation enables automatic serialization of the return object into the HttpResponse.
 
 2. @RestController -
 - @RestController is a specialized version of the controller.
 - It is a combination of behaviours of a Controller and ResponseBody.
 - When we use this Annotation, the response is JSON or XML. Because of this, the Controller is not in charge of providing any viewpoint to the user.
 - Every request handling method of the controller class automatically serializes return objects into HttpResponse.
-```
-@RestController
-@RequestMapping("books-rest")
-public class SimpleBookRestController {
-    
-    @GetMapping("/{id}", produces = "application/json")
-    public Book getBook(@PathVariable int id) {
-        return findBookById(id);
-    }
 
-    private Book findBookById(int id) {
-        // ...
-    }
-}
-```
-
-### 40.How does @Compoent and @Service annotation works internally?what difference will it make if we use @Component instead of @Service or vice versa?
+### Q.How does @Compoent and @Service annotation works internally?what difference will it make if we use @Component instead of @Service or vice versa?
 - Internally when Spring scans the components in application context,it identifies classed annotated with @Component, @Service, @Repository etc. and registers them as beans in the Spring IOC container.
 - These beans can then be injected into other components,and their lifecycle is managed by the container.
 
@@ -375,8 +287,9 @@ public class SimpleBookRestController {
 - Both annotation work similarly and using one over the other doesn't affect the core functionality of the Spring.The choice between both annoation depends on your preference for semantic clarity and the intended use of annotated class in your application architecture.
 - They are interchangeable from a functional standpoint,and use of one above other is matter of convention and redability.
 
+### Spring Data JPA
 
-### 1. Can you explain the difference between JPA and JDBC?
+### Q. Can you explain the difference between JPA and JDBC?
 1. *JDBC (Java DataBase Connectivity)* – is an API for Java applications that defines how a client may communicate with a database.
 - The API uses abstractions close to the relational database domain: Connection, Statement, ResultSet.
 - It is a low-level database access framework that allows developers to execute SQL statements and fetch results in a table-like format – ResultSet.
