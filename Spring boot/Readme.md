@@ -260,33 +260,6 @@ Defines the data contract between transactions.
   
 - The different levels have different performance characteristics in a multi-threaded application. I think if you understand the dirty reads concept you will be able to select a good option.
 
-### Q.Difference between @Controller and @RestController?
-- Spring 4.0 introduced the @RestController annotation in order to simplify the creation of RESTful web services. It’s a convenient annotation that combines @Controller and @ResponseBody, which eliminates the need to annotate every request handling method of the controller class with the @ResponseBody annotation.
-1. @Controller -
-- a specialization of the @Component class, which allows us to auto-detect implementation classes through the classpath scanning.
-- common annotation used to create Spring MVC controllers that are responsible for processing web requests.
-- typically used in traditional web appls where the response is usually a web page (HTML view).
-- these controllers generally return views(HTML pages) that are rendered by a templating engine (e.g.,Thymeleaf,JSP) and sent to the client's web browser.
-- We typically use @Controller in combination with a @RequestMapping annotation for request handling methods.
-
-2. @RestController -
-- @RestController is a specialized version of the controller.
-- It is a combination of behaviours of a Controller and ResponseBody.
-- When we use this Annotation, the response is JSON or XML. Because of this, the Controller is not in charge of providing any viewpoint to the user.
-- Every request handling method of the controller class automatically serializes return objects into HttpResponse.
-
-### Q.How does @Compoent and @Service annotation works internally?what difference will it make if we use @Component instead of @Service or vice versa?
-- Internally when Spring scans the components in application context,it identifies classed annotated with @Component, @Service, @Repository etc. and registers them as beans in the Spring IOC container.
-- These beans can then be injected into other components,and their lifecycle is managed by the container.
-
- *Differences* :
- 1. Expressiveness and Semantic Clarity : @Service provides a more expressive and semantic meaning to a class, indicating that it is a service component.This can improve code readability and make the purpose of the class more apparent.
- 2. Component Scannig : Both annotations trigger component scanning, and, from a functionality standpoint, there is no difference between using @Component and @Service.The difference lies in the intended use and the clarity of the code.
- 3. Consideration for the layered architecture : @Service is often used in the service layer of a typical layered architecture (like MVC),making it a good fit for services with business logic.@Component is more generic and can be used for any component.
-
-- Both annotation work similarly and using one over the other doesn't affect the core functionality of the Spring.The choice between both annoation depends on your preference for semantic clarity and the intended use of annotated class in your application architecture.
-- They are interchangeable from a functional standpoint,and use of one above other is matter of convention and redability.
-
 ### JPA and Spring Data JPA
 
 ### Q. Can you explain the difference between JPA and JDBC?
@@ -957,6 +930,18 @@ public void evictCache() {
 - In the provided example, the getUserById method is annotated with @Cacheable("users"). When this method is called with a specific id, Spring will check the cache named "users" for the result associated with that id.
 - If the result is cached, it will be returned from the cache. If not, the method will be executed, and the result will be stored in the cache for future access.
 
+
+### Rest API
+
+### Q.Why use RESTful web service?
+1. Minimizes coupling between client and server
+2. Ideal for multiple, independent clients
+3. Supports frequent server updates without affecting clients
+4. Uses standard HTTP protocols for easy client development
+5. Stateless connections simplify load balancing and service partitioning
+6. Adheres to HTTP rules, enabling effective use of tools like debuggers and caching proxies
+7. Provides a robust, scalable, and flexible architecture for distributed applications
+
 ### Q.What are some best practices for designing and implementing RESTful APIs in Spring boot? or REST Api best practice?
 1. *Use descriptive and meaningful resource names*:
 - Instead of generic or ambiguous names, choose resource names that accurately represent the entities they represent. (e.g., /api/customers/123 instead of /api/users/123).
@@ -996,7 +981,8 @@ public void evictCache() {
 - This is important because it allows for the API to be cacheable, scalable, and decoupled from the client.
 - For example, an e-commerce API might use cookies to maintain the state of a shopping cart. However, such an approach violates the key principle of RESTful APIs — they need to be stateless.
 
-**Annotations and Annotation related**
+
+**Annotations**
 
 1. *@RestController*:@RestController is a specialized version of the controller. It includes the @Controller and @ResponseBody annotations, and as a result, simplifies the controller implementation.Every request handling method of the controller class automatically serializes return objects into HttpResponse.
 2. *@Controller*:This annotation is used to mark a class as a web request handler. It's typically used in combination with annotated handler methods based on the @RequestMapping annotation.
@@ -1120,7 +1106,7 @@ public ResponseEntity<String> getResource() {
     userService.deleteUser(id);
   }
 ```
-6. *
+6. *@PatchMapping*
 - The PATCH method is used to partially update a resource on the server. For example, if you want to update only some fields of an existing user, you can use a PATCH request to /users/{id} with the modified user data in the request body. In Spring Boot, you can use the @PatchMapping annotation to map a method to a PATCH request.
 ```
 @PatchMapping("/users/{id}")
@@ -1128,6 +1114,45 @@ public ResponseEntity<String> getResource() {
     return userService.patchUser(id, user);
   }
 ```
+
+### Q.Difference between @Controller and @RestController?
+- Spring 4.0 introduced the @RestController annotation in order to simplify the creation of RESTful web services. It’s a convenient annotation that combines @Controller and @ResponseBody, which eliminates the need to annotate every request handling method of the controller class with the @ResponseBody annotation.
+1. @Controller -
+- a specialization of the @Component class, which allows us to auto-detect implementation classes through the classpath scanning.
+- common annotation used to create Spring MVC controllers that are responsible for processing web requests.
+- typically used in traditional web appls where the response is usually a web page (HTML view).
+- these controllers generally return views(HTML pages) that are rendered by a templating engine (e.g.,Thymeleaf,JSP) and sent to the client's web browser.
+- We typically use @Controller in combination with a @RequestMapping annotation for request handling methods.
+
+2. @RestController -
+- @RestController is a specialized version of the controller.
+- It is a combination of behaviours of a Controller and ResponseBody.
+- When we use this Annotation, the response is JSON or XML. Because of this, the Controller is not in charge of providing any viewpoint to the user.
+- Every request handling method of the controller class automatically serializes return objects into HttpResponse.
+
+### Q.How does @Compoent and @Service annotation works internally?what difference will it make if we use @Component instead of @Service or vice versa?
+- Internally when Spring scans the components in application context,it identifies classed annotated with @Component, @Service, @Repository etc. and registers them as beans in the Spring IOC container.
+- These beans can then be injected into other components,and their lifecycle is managed by the container.
+
+ *Differences* :
+ 1. Expressiveness and Semantic Clarity : @Service provides a more expressive and semantic meaning to a class, indicating that it is a service component.This can improve code readability and make the purpose of the class more apparent.
+ 2. Component Scannig : Both annotations trigger component scanning, and, from a functionality standpoint, there is no difference between using @Component and @Service.The difference lies in the intended use and the clarity of the code.
+ 3. Consideration for the layered architecture : @Service is often used in the service layer of a typical layered architecture (like MVC),making it a good fit for services with business logic.@Component is more generic and can be used for any component.
+
+- Both annotation work similarly and using one over the other doesn't affect the core functionality of the Spring.The choice between both annoation depends on your preference for semantic clarity and the intended use of annotated class in your application architecture.
+- They are interchangeable from a functional standpoint,and use of one above other is matter of convention and redability.
+
+### Q.Why use @Valid and @RequestBody annotation?
+- **@Valid**
+1. Ensures that incoming request data is validated against specified constraints.
+2. Improves data integrity by automatically checking for validation errors.
+3. Simplifies error handling by leveraging built-in validation mechanisms.
+
+- **@RequestBody**
+1. Maps the body of an HTTP request to a Java object.
+2. Simplifies data binding by automatically deserializing JSON/XML into the application's model.
+3. Facilitates the handling of incoming data in a structured and consistent manner.
+
 
 ### Questions as per dependency added in project
 
