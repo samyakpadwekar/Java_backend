@@ -224,3 +224,12 @@
 - Use an API Gateway to route requests to different versions of a service.
 - This allows for seamless version management and migration.
 - > By implementing these versioning strategies, you can manage breaking changes effectively and ensure smooth transitions between service versions.
+
+### Q. if multiple services are doing read and write operation on a single database, how to ensure consitency?
+1. Database Transactions
+Description: Use database transactions to ensure that a series of operations either all succeed or all fail.
+How to Implement: Utilize transaction management mechanisms provided by the database or the framework. For example, in Spring, you can use the @Transactional annotation.
+2. Optimistic Locking
+Description: Use versioning to ensure that data has not changed since it was last read before performing a write.
+How to Implement: Add a version field to your entity and leverage optimistic locking mechanisms provided by your ORM framework. For instance, in Spring Data JPA, you can use the @Version annotation.
+- These approaches are widely used due to their effectiveness, simplicity, and compatibility with most microservices architectures. They provide a balance between consistency and performance, making them suitable for many scenarios.
