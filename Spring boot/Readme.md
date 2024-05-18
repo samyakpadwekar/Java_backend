@@ -44,41 +44,6 @@ Some essential features of Spring Boot include:
 - *@ComponentScan*: enable @Component scan on the package where the application is located.
 - *@Configuration*: allow to register extra beans in the context or import additional configuration classes.
 
-### Q.Explain @Component, @Service, @Repository, @Configuration, @EnableAutoConfiguration, @ComponentScan, @EntityScan, @Transient, @Bean.
-1. *@Component* :
-- generic stereotype annotation for any spring-managed component.
-- indicates that a class is a Spring component and it can be auto-detected during classpath scanning.
-- tyically used for creating beans without any specific stereotype (e.g.@Service,@Repository) or to mark a custom class as a Spring bean.
-2. *@Service* :
-- specialization of @Component and is typically used to annotate service classes.
-- these classes hold the business logic and are often used in the service layers of an application.
-- automatically discovered and registered as Spring beans
-3. *@Repository* :
-- another specialization of @Compoent and is typically used to annotate repository (data access) classes.
-- used to indicate that the class provides the mechanism for storage, retrieval, update, delete and search operation on objects.
-- often work with databases and Spring's Data Access/Integration technologies.
-4. *@Configuration* :
-- The @Configuration annotation is a Spring framework annotation that indicates that a class defines one or more Spring beans or configuration methods.
-- It is used to define configuration classes that provide bean definitions or configuration for the Spring container.
-5. *@EnableAutoConfiguration* :
-- The @EnableAutoConfiguration annotation is a Spring Boot-specific annotation that enables Spring Boot's auto-configuration feature.
-- It automatically configures various components and settings based on the project's dependencies, reducing manual configuration efforts.
-- Spring Boot's auto-configuration simplifies the setup of a Spring Boot application by providing sensible defaults. Without it, you would need to configure many components manually.
-6. *@EntityScan* :
-- When writing our Spring application we will usually have entity classes – those annotated with @Entity annotation. We can consider two approaches to placing our entity classes:
-a. Under the application main package or its sub-packages.
-b. Use a completely different root package .
-- In the first scenario, we could use @EnableAutoConfiguration to enable Spring to auto-configure the application context.
-- In the second scenario, we would provide our application with the information where these packages could be found. For this purpose, we would use @EntityScan.
-- @EntityScan annotation is used when entity classes are not placed in the main application package or its sub-packages. In this situation, we would declare the package or list of packages in the main configuration class within @EntityScan annotation.
-- This will tell Spring where to find entities used in our application.
-- We should be aware that using @EntityScan will disable Spring Boot auto-configuration scanning for entities.
-7. *@ComponentScan* :
-- Similar to @EntityScan and entities, if we want Spring to use only a specific set of bean classes, we would use @ComponentScan annotation.
-- It’ll point to the specific location of bean classes we would want Spring to initialize.
-- This annotation could be used with or without parameters. Without parameters, Spring will scan the current package and its sub-packages, while, when parameterized, it’ll tell Spring where exactly to search for packages.
-- Concerning parameters, we can provide a list of packages to be scanned (using basePackages parameter) or we can name specific classes where packages they belong to will also be scanned (using basePackageClasses parameter).
-
 ### Q. What is Auto Configuration?
 - Auto Configuration is a fundamental feature of Spring Boot. 
 - It is a mechanism that automatically configures various components and settings within your Spring Boot application based on the libraries and dependencies you have in your project. 
@@ -110,14 +75,14 @@ b. Use a completely different root package .
 - It serves as a template for your project's POM file, allowing you to inherit and reuse common configurations without duplicating them in each individual project.
 - The Spring Boot Parent POM is specifically designed for Spring Boot applications and includes default configurations, dependency management, and plugin settings that are commonly used in Spring Boot projects.
 
-### 15. What are the different things that are defined in Starter Parent?
+### Q. What are the different things that are defined in Starter Parent?
 - Starter Parent defines the Spring Boot version, plugin configurations, and common dependencies. It ensures that all Starter projects have compatible versions and configurations.
 
-### 16. What is Depenednecy management?How does Spring Boot enforce common dependency management for all its Starter projects?
+### Q. What is Depenednecy management?How does Spring Boot enforce common dependency management for all its Starter projects?
 - Spring Boot dependency management is used to manage dependencies and configuration automatically without you specifying the version for any of that dependencies.
 - Spring Boot enforces common dependency management by specifying a version for all dependencies in the Parent POM. This ensures that all Starter projects use the same versions of Spring Boot and related libraries.
 
-### 17. What is Spring Initializer?
+### Q. What is Spring Initializer?
 - Spring Initializer is a user-friendly web-based tool that helps developers create the initial structure and setup for Spring Boot applications without having to do it manually.
 - It simplifies the process of setting up a Spring Boot project by generating a basic project structure with all the necessary dependencies and configuration files.
 - [*Visit the Spring Initializer Website*](https://start.spring.io/)
@@ -164,6 +129,23 @@ public class ServerProperties {
 })
 ```
 
+### Q. What is a CommandLineRunner?
+- A CommandLineRunner is an interface in Spring Boot that allows you to execute code when the application starts. It's often used for tasks like database initialization or data loading.
+- Here's a simple example of a CommandLineRunner:
+```
+@Component
+public class MyCommandLineRunner implements CommandLineRunner {
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Your startup code here
+    }
+}
+```
+
+
+### Profiling in spring boot
+
 ### Q. What is a Profile and why is it used?
 - A profile in Spring Boot allows you to define different sets of configurations for different environments or scenarios. It helps manage application behavior in various contexts (e.g., development, production).
 - While developing the application we deal with multiple environments such as dev, QA, Prod, and each environment requires a different configuration.
@@ -187,6 +169,11 @@ public DataSource devDataSource() {
 - For the dev profile, create a file named application-dev.properties or application-dev.yml (if you prefer YAML configuration).
 - For the prod profile, create a file named application-prod.properties or application-prod.yml.
 - These files should be located in the same directory as your application.properties or application.yml file.
+
+ - For more explanation refer <a href="https://medium.com/javarevisited/getting-started-with-spring-boot-profiles-1e00159f0542#:~:text=Profiles%20in%20Spring%20Boot%20are,configurations%20for%20your%20production%20environment." target="_blank">medium article</a>
+
+
+### Spring boot actuator
 
 ### Q. What is Spring Boot Actuator?
 - Spring Boot Actuator is a set of production-ready features and tools provided by Spring Boot for monitoring and managing your application in a production environment.
@@ -217,48 +204,10 @@ This configuration allows all management endpoints to be exposed over the web.
 
 ### Q. How do you monitor web services using Spring Boot Actuator?
 - You can use Actuator's built-in endpoints to monitor web services. For example, the /actuator/health endpoint provides information about the application's health, /actuator/metrics offers various metrics and /actuator/env displays environment properties, including application properties and system properties..
+
+ - For video explanation refer <a href="https://www.youtube.com/watch?v=sATuxP_qC-4" target="_blank">utube video</a>
+ - For documentation refer <a href="https://spring.io/guides/gs/actuator-service" target="_blank">spring guide</a>
  
-### Q.How to enable debugging log in the spring boot application?
-- Debugging logs can be enabled in three ways -
-1. We can start the application with --debug switch.
-2. We can set the logging.level.root=debug property in application.property file.
-3. We can set the logging level of the root logger to debug in the supplied logging configuration file.
-
-### 3Q. What is a CommandLineRunner?
-- A CommandLineRunner is an interface in Spring Boot that allows you to execute code when the application starts. It's often used for tasks like database initialization or data loading.
-- Here's a simple example of a CommandLineRunner:
-```
-@Component
-public class MyCommandLineRunner implements CommandLineRunner {
-
-    @Override
-    public void run(String... args) throws Exception {
-        // Your startup code here
-    }
-}
-```
-
-### Q. What is a EnableTransactionManagement and Transactional annotation?
-- The *@EnableTransactionManagement* annotation and *@Transactional* annotation work together to manage transactions in a Spring application, but they serve different purposes:
-- **@EnableTransactionManagement**: This annotation is used at the configuration level (typically on a @Configuration class) to enable Spring's annotation-driven transaction management capability within the application. It activates Spring's ability to interpret @Transactional annotations and manage transactions accordingly. This is used to have more control over Transaction management as it allows you to specify the TransactionManager to be used for transactional methods, while @Transactional uses the default transaction manager.
-- **@Transactional**: This annotation is applied at the method level or on a class, indicating that the methods (or all methods within the annotated class) should be wrapped in a transaction. It defines the scope of a single database transaction. This annotation provides metadata that Spring uses to create a transactional proxy around the annotated method or class to manage transactional behavior.
-- The @Transactional annotation will work without @EnableTransactionManagement as long as you have spring-tx and a transactional resource (e.g. DataSource) in your application. Spring will detect the @Transactional annotation and configure a PlatformTransactionManager (e.g. JpaTransactionManager) for you.
-
-### Q.Explain what isolation & propagation parameters are for in the @Transactional annotation via real-world example?
-- **Propagation**
-Defines how transactions relate to each other. Common options:
-- *REQUIRED*: Code will always run in a transaction. Creates a new transaction or reuses one if available.
-- *REQUIRES_NEW*: Code will always run in a new transaction. Suspends the current transaction if one exists.
-The default value for @Transactional is REQUIRED, and this is often what you want.
-
-- **Isolation**
-Defines the data contract between transactions.
-- *ISOLATION_READ_UNCOMMITTED*: Allows dirty reads.
-- *ISOLATION_READ_COMMITTED*: Does not allow dirty reads.
-- *ISOLATION_REPEATABLE_READ*: If a row is read twice in the same transaction, the result will always be the same.
-- *ISOLATION_SERIALIZABLE*: Performs all transactions in a sequence.
-  
-- The different levels have different performance characteristics in a multi-threaded application. I think if you understand the dirty reads concept you will be able to select a good option.
 
 ### JPA and Spring Data JPA
 
@@ -277,37 +226,14 @@ Defines the data contract between transactions.
 5. Apart from this, some of them usually provide vendor-specific APIs not described in the spec.
 
 ### Q.Name the main JPA objects
-In the JPA specification, there are the following main objects:
-1. *Entity*
-– a class that is mapped to a database table. Its fields correspond to the columns of the table.
-
-2. *MappedSuperclass*
-– a class that declares common attributes for entities. We use this class to build an entity hierarchy to reuse common attributes.
-- Each table associated with an entity from the hierarchy in the database will contain all fields from the MappedSuperclass entity and its descendants.
-
-3. *Embeddable*
-– a class that we can embed into other entities.
-- If we need to treat a pack of fields as one entity and reuse it in various entities, then an embeddable class is what we need.
-- use @Embeddable/@Embedded when you have a value object that is tightly coupled to its parent entity. Use regular entity mapping when you have independent objects with their own identity.
-
-4. *EntityManager*
-– a facility that allows us to manage the lifecycle of the JPA entity instance.
-- EntityManager API is a part of the JPA specification.
-- We can create, read, update or delete an entity from a database by using it.
-- EntityManager allows us to execute SQL queries to select entities.
-- Also, we can use a special query language - JPQL – to fetch data.
-*JPQL is similar to SQL but uses classes and attributes in queries instead of tables and columns*.
-
-5. *Session*
-– the Hibernate-specific interface that extends the EntityManager.
-- All methods defined by the EntityManager are available in the Hibernate Session.
-- Many other methods in it are unique to Hibernate, e.g., isDirty(), evict(), cancelQuery() and so on...
-  
-- Then, you may have a reasonable question: "In which cases is it better to use EntityManager, and in which cases is Session"?
-- I will quote Emmanuel Bernard, a data architect on the JBoss Hibernate team. He gives the following answer:
-"We encourage people to use the EntityManager. From a team point of view, we wish we had only one API. We are trying to push into the standard as much as we can.
-If we could somehow merge or deprecate the Session in the future, we would do it, but people still use some stuff that is not in the EntityManager, and we don't want to just break everybody's application just for the fun of it."
-- So, try to use EntityManager whenever it's possible, and when you have no choice but to use Session, unwrap it from the EntityManager:
+- *Entity*: Represents a class that is mapped to a database table.
+- *EntityManagerFactory* : Produces EntityManager instances, representing a single persistence unit.
+- *EntityManager*: Interface used to interact with the persistence context, managing entity lifecycle and performing CRUD operations.
+- *PersistenceContext*: Represents a set of managed entities within a persistence context. It acts as a cache for entities, tracking changes and synchronizing them with the database during transaction commits.
+- *PersistenceUnit*: Defines a set of entity classes and configuration settings managed as a unit in the persistence.xml file.
+- *Query*: Interface for executing JPQL or native SQL queries against the database.
+- *CriteriaQuery*: Used to create type-safe queries dynamically at runtime, without writing JPQL or native SQL.
+- *Transaction*: Represents a unit of work that is performed against the database. Transactions ensure data integrity by providing ACID properties (Atomicity, Consistency, Isolation, Durability).
 
 ### Q. Which association types and mappings could you specify?
 - Like in the relational database model, there are four association types in JPA: one-to-one, one-to-many, many-to-one, and many-to-many.
@@ -353,47 +279,30 @@ public class Post {
     //... 
 }
 ```
-- In the relational databases, we have only unidirectional relations (defined as foreign keys).
-- ORM engine gives us more flexibility by providing bi-directional ones.
-- For the latter, we should always keep in mind the limitations of the database side.Thus, when we define a bi-directional association, we should know which side of it is the "owning" one.
-- An association's "owning" side is responsible for keeping the reference.The corresponding table will have the reference column and foreign key constraint.
-- The "owning" side reference must be populated. Otherwise, the association will not be stored.
-- For the example above, if we add a Post instance to the User,posts collection and save the User entity, the association won't be saved. But if we assign the Post.user field, everything will be OK.(as Poat is the owning side)
+- In relational databases, we typically have unidirectional relations through foreign keys.
+- However, ORM engines like JPA provide bi-directional relations for more flexibility.
+- When defining bi-directional associations, it's crucial to identify the "owning" side, responsible for maintaining the reference in the corresponding table.
+- The owning side must populate the reference for the association to be stored properly.
+- For instance, if we add a Post instance to the posts set collection and save the User entity, the association won't be saved unless we also assign the user field to Post entity(since Post is the owning side).
 
 NOTE: To quickly figure out which side is the "owning" one, just look at the annotation on the reference field. \
 If there is the *mappedBy* attribute – this is the inverse side of the association; otherwise – the owning one.
 
 ### Q. Entity ID, what is it?
-- According to the JPA specification, Entity is a Java class that meets the following requirements:
-1. Annotated with @Entity annotation;
-2. Has no-args constructor;
-3. Is not final;
-4. Has an ID field (or fields).
-- As you can see, ID is required.The reason is simple - ORM engines use the ID to identify each entity instance stored in the database uniquely.
-- In 99% of cases, IDs are generated. To avoid issues with uniqueness, it is important to choose the right way to generate an ID.
-- We can use a client- or database-generation ID strategy. Which, in its turn, are divided into several more sub-strategies.
-- When choosing ID type and generation strategy, the rule of thumb is: for the single DB instance, and monolithic application, the server-side ID generation using sequence is the best choice in most cases.
-- If we have microservice architecture and distributed databases, it is better to use UUIDs generated on the client.
-- In some cases, we can use composite IDs consisting of several attributes.
-- One of these attributes is often a reference to another entity.
-- Composite keys are common, especially when we build an application over the existing database.
+- An entity ID in JPA is a unique identifier assigned to each instance of an entity class, allowing ORM engines to distinguish entities in the database.
+- IDs are crucial for data management. They're often generated automatically to ensure uniqueness. Different strategies like client- or database-generation can be employed. 
 
 ### Q. What does the hbm2ddl.auto/ddl-auto property stand for?
-- In fact, it is a single property, but it has two names. The first one – hibernate.hbm2ddl.auto is used by "pure" Hibernate, while the second one – spring.jpa.hibernate.ddl-auto is a Spring wrapper over the first one.
-- This property instructs ORM on what to do with the database schema.
-- There are five possible values for it:
-1. create – first, Hibernate will drop the database tables mapped to the entities. Then, it will generate and execute a DDL to create a DB schema that complies with the JPA model.
-2. create-drop – will do the same as the previous one, but Hibernate will drop the database tables mapped to the entities after the application shuts down.
-3. update – Hibernate will generate DDL scripts only for new tables/columns in this mode. Even though the value is called update, it does not create scripts to change or drop existing columns.
-4. validate – in this mode, Hibernate will not generate any DDL statements and won't touch your database. It will only check for full compliance of your JPA model with the database.
-5. none – will do nothing.
-- Indeed, all you need to know about the ddl-auto property is that it's not a good idea to use any of the above values except validate on the production stand.
-- For testing, create/create-drop may be an OK choice.
-- And if you don't want to re-fill the database every time while testing, you can use the update option.
-- For better development experience, prefer specialized solutions to manage database changes like Liquibase or Flyway. Even simple .sql files written by hand or automatically generated by the JPA Buddy in conjunction with spring.sql.init.mode would do better because you:
-1. have complete control over the DDL before its execution;
-2. can set up proper Java to Database types mapping;
-3. have no issues using the attribute converters and Hibernate types.
+- The hbm2ddl.auto or ddl-auto property configures how Hibernate manages the database schema.
+- Five options: create, create-drop, update, validate, none.
+- Use validate for production, create/create-drop for testing.
+
+### Q. Use of each option of hbm2ddl.auto/ddl-auto property?
+1. *create*: Hibernate drops existing tables, then generates and executes DDL to create a schema matching the JPA model.
+2. *create-drop*: Similar to 'create', but tables are dropped when the application shuts down.
+3. *update*: Generates DDL only for new tables/columns; does not modify or drop existing columns.
+4. *validate*: Hibernate checks JPA model against the database for compliance without making any changes.
+5. *none*: Hibernate takes no action regarding schema management.
 
 ### Q. Ways to fetch data from the database using JPA?
 a. *JPQL*
@@ -403,74 +312,22 @@ d.*Spring Data JPA @Query/Derived methods*
 e. *Native Queries*
 
 ### 8. What are the states of an entity in JPA?
-JPA specifies four different object states:
-1. *Transient* – All new entities have never been associated with an opened database session (Persistence Context) and do not have corresponding rows in the database yet;
-2. *Managed* – All entities fetched from the database and associated with a Persistence Context. ORM tracks all the changes made to entities in this state. When we close the session without transaction rollback, ORM automatically submits all changes to the database;
-3. *Detached* – Entities transit to this state when the database session is closed. The ORM no longer tracks any changes made to them. To save entities, we need to make them managed again by "attaching" them to the session. The simplest way is to invoke EntityManager's merge() method. Some frameworks (like Spring Data JPA) can do it automatically.
-4. *Removed* – entities get into this state after we call the remove() method. They will only be removed from the database after we flush session changes or close it.
+- JPA specifies four different object states:
+- *Transient*: These are new entities that haven't been saved to the database yet and aren't tracked by the session.
+- *Managed*: These entities are fetched from the database and are tracked by the session. Any changes to them are automatically saved to the database when the session ends.
+- *Detached*: When the session closes, entities become detached, meaning changes to them are no longer tracked.
+- *Removed*: These entities are marked for deletion after calling the remove() method. They will be deleted from the database once the session changes are saved or the session closes.
 
-### Q. What does @Transactional annotation do? What are the ways to configure it?
-- A database transaction is a sequence of actions treated as a single unit of work.
-- In other words, either all actions will be executed or none.
-- Spring provides a powerful mechanism for managing transactions.
-- Simply annotating a method with @Transactional, we automatically open a database transaction when the method execution starts and close the transaction when it finishes.
-- 
-
-
-## 11. Have you ever stumbled upon the LazyInitException? If so, how did you get rid of it?
-- The LazyInitializationException is probably one of the most common exceptions in the JPA world.
-- Hibernate throws it when you refer to the association that was not loaded from the database, and the entity is detached. Here is a simple example:
-```
-entityManager.getTransaction().begin();   
-
-TypedQuery<User> query = entityManager.createQuery(  
-    "SELECT u FROM User u",  
-    User.class);  
-List<User> users = query.getResultList();  
-
-entityManager.getTransaction().commit();  
-entityManager.close();  
-
-for (User user : users) {  
-    int size = user.getProfiles().size(); //Here we are stumbling upon LazyInitializationException. 
-}
-``` 
-- Hibernate cannot load the required field from the database when an entity is detached. If we look at the error message, we'll see something like this.
-``` 
-Exception in thread "main" org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: entities.User.profiles: could not initialize proxy - no Session ...  
-```
-- For lazy loaded attribute values, Hibernate creates proxy classes that use the existing session to load actual values at the first read attempt.
-- Therefore, if the session is closed, the loading fails.
-- You might think that the most straight-to-the-point way to fix it – execute all the code inside the transaction context.
-- In fact, it is. But in this case, you'll get rid of LazyInitException but get an N+1 problem.
-- So, the right way to fix it - fetch all the required data in one query using a join clause.
-- For example:
-```
-entityManager.getTransaction().begin();
-
-TypedQuery<User> query = entityManager.createQuery(  
-    "SELECT u FROM User u join fetch u.profiles",  
-    User.class);  
-List<User> users = query.getResultList();  
-
-entityManager.getTransaction().commit();  
-entityManager.close();  
-
-for (User user : users) {  
-    int size = user.getProfiles().size();  
-    log.info(String.format("User with id=%d has %d profiles", user.getId(), size));  
-}  
-```
-
-### 12. Apart from JPQL, what are the other ways to select associated entities from the database? (EntityGraph, DTO, Projection)
-- To avoid the N+1 problem and LazyInitException, we can use the join statement in the JPQL. 
-- But there are other options to specify the attributes and associations we want to select. They are:
-1. Entity graph – specified in JPA standard;
-2. DTOs and projections – used by Spring Data JPA library.
-- Let's have a look at them in detail.
+## Q. Have you ever stumbled upon the LazyInitException? If so, how did you get rid of it?
+1. Access to a lazily loaded property after the session is closed
+2. Accessing a lazily loaded property outside of a transaction
+- In general, a LazyInitializationException means that the data of the related entity are not accessible because the main entity is no longer connected to the database, or, to put it in terms of the lifecycle stages, is Detached.
+- To avoid LazyInitializationException in Hibernate, the optimal solution is to use *JPQL or HQL queries with JOIN FETCH* and *Entity Graphs* to manage the loading of related data.
+- Avoid forcing eager loading, as this can lead to performance issues. Proper session and transaction management is critical for successful access to lazily loaded properties.
+ 
+### Q. Apart from JPQL, what are the other ways to select associated entities from the database? (EntityGraph, DTO, Projection)
+- To avoid the N+1 problem and LazyInitException, we can use *JPQL or HQL queries with JOIN FETCH* and *Entity Graphs*. 
 1. *Entity Graph*
-- The entity graph feature has been introduced in JPA 2.1.
-- It has been one of the most awaited features for a long time.
 - Entity Graphs give us another layer of control over data that needs to be fetched.
 - In Spring Data JPA, we can specify the required data right above the @Query declaration.
 - The example below shows how to fetch the User entity along with its profiles attribute:
@@ -478,215 +335,19 @@ for (User user : users) {
 @EntityGraph(attributePaths = {"profiles"}) 
 List<User> findUserByEmailAndName(String email, String firstName);
 ``` 
-Also, we can specify a named entity graph for an entity and reuse it in different places. For example, we can use the graph with the entity manager:
-```
-@NamedEntityGraph (name = "user-with-profiles", 
-  attributeNodes = {@NamedAttributeNode("profiles")} 
-) 
-@Entity 
-public class User { 
-    //... 
-} 
-//... 
 
-EntityGraph entityGraph = entityManager.getEntityGraph("user-with-profiles"); 
-Map<String, Object> properties = new HashMap<>(); 
-properties.put("javax.persistence.fetchgraph", entityGraph); 
-Post post = entityManager.find(User.class, id, properties);
-```
-- In Spring Data JPA, it will look like this:
-```
-@EntityGraph(value = "user-with-profiles") 
-List<User> findUserByEmailAndName(String email, String firstName);
-``` 
-2. *DTO and Projection*
-- DTO (data transfer object) is an object that carries data between processes.
-- DTOs for JPA entities generally contain a subset of entity attributes.
-- Spring Data JPA allows us to specify DTOs as a method return type in repositories.
-- Under the hood, Spring Data optimizes the query to fetch only attributes defined in the DTO.
-- We can specify DTO as a class:
-```
-public class UserDto implements Serializable { 
-    private final String firstName; 
-    private final String email; 
+### Q. What is better for *-to-many associations: List<> or Set<>?
+- For *-to-many associations, deciding between `List<>` and `Set<>` depends on your specific use case.
+- **List<>**: Use a list when you need to maintain the order of elements or when duplicate elements are allowed. Lists are indexed, meaning you can access elements by their index. They're suitable when the order in which elements are added matters, such as preserving the order of comments on a post.
+- **Set<>**: Use a set when you want to ensure uniqueness of elements and don't care about their order. Sets do not allow duplicate elements and do not maintain insertion order. They're ideal for ensuring uniqueness, such as storing unique tags associated with a post.
+- In summary, use a `List<>` when you need to maintain order or allow duplicates, and use a `Set<>` when you need uniqueness and order doesn't matter.
 
-    public UserDto(String firstName, String email) { 
-        this.firstName = firstName; 
-        this.email = email; 
-    } 
+### Spring Data REST
 
-    //getters and setters are omitted   
-}
-``` 
-… or as an interface. 
-- Spring Data JPA derives attribute names from the interface's method names.
-- So, for the following definition, it is assumed that the entity has attributes firstName and lastName.
-```
-public interface UserDto { 
-    String getFirstName();  
-    String getLastName(); 
-}
-```
-The use of DTO does not differ in any way from the repository methods:
-```
-List<UserDto> findUserByEmailAndName(String email, String firstName); 
-```
-As a result, we improve queries efficiency because only specific fields are retrieved from the database. For the repository definition above, the query will be:
-```
-    select u1_0.first_name, u1_0.last_name from "user" u1_0
-```
+#### Q.What is Spring Data REST?Why we need it?
+- Spring Data REST is a framework that simplifies the development of RESTful APIs by automatically exposing CRUD operations on Spring Data repositories as RESTful endpoints. It eliminates the need to write custom controllers and mappings by providing a simple way to expose CRUD operations over HTTP. It also promotes consistency and standardization in API design across projects.
 
-### 13. What is Lombok library? How is it useful for JPA, and how can it harm?
-- Lombok is a library targeted to replacing boilerplate code writing with annotations and bytecode instrumentation.
-- For example, we don't need to write getters and setters, all we need to do is to annotate class with @Getter and @Setter and these methods will be generated automatically in runtime.
-- It looks like an ideal library to clean up JPA entities code, but to use lombok right, we need to deeply understand which exactly methods are generated and what is inside.
-- Classic example: generated equals() and hashCode() methods may cause LazyInitException. By default, they use all fields, including associations.
-- Associations in their turn, may be lazily initialized.
-- When we add detached entities into a collection, the collection class invokes the equals() method under the hood... so, we get the exception.
-- For attached entities, we get an extra query that loads associated entities. Anyway, it is definitely what we expect from the method invocation.
-- To avoid it, we should explicitly exclude associations from those methods by annotating correspondent fileds by @ToString.Exclude.
-
-### 14. What is better for *-to-many associations: List<> or Set<>?
-- In JPA, efficiency is not about data structures being used for entities, but about queries.
-- Both List and Set can cause N+1 problem, that can be resolved by using JPQL, entity graph, or projections in Spring Data JPA.
-- In contrast to List, Set cannot contain duplicate elements.
-- It means that we need to define equals() and hashCode() methods for the child entity, which is good practice anyway.
-- List is more common in JPA world, but we need to remember one thing.
-- Let's have a look at the following entity and related repository which selects an owner with all their pets:
-```
-@Entity 
-public class Owner { 
-    //id, name 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true) 
-    private List<Dog> dogs = new ArrayList<>(); 
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true) 
-    private List<Cat> cats = new ArrayList<>(); 
-
-    //setters, getters 
-} 
-
-public interface OwnerRepository extends JpaRepository<Owner, Long> { 
-    @EntityGraph(attributePaths = {"dogs", "cats"}) 
-    List<Owner> findByNameLikeIgnoreCase(String name); 
-} 
-```
-- If we use two one-to-many associations with List collection and try to fetch both eagerly, we will get MultipleBagFetchException on the application start.
-- The reason why Hibernate throws this exception is that duplicates can occur with two associations.
-- The List is implemented by the PersistentBag in Hibernate and the latter cannot deal with duplicates.
-- In this case, replacing Lists to Sets can help, but there is a big drawback – we will get cartesian product in the query.
-- It can greatly impact the query performance. We'll get the following SQL
-```
-    select 
-        ...  
-    from 
-        owner owner0_  
-    left outer join 
-        dog dogs1_  
-            on owner0_.id=dogs1_.owner_id  
-    left outer join 
-        cat cats2_  
-            on owner0_.id=cats2_.owner_id  
-    where 
-        upper(owner0_.name) like upper(?) escape ?
-```
-- To fix this for good, we need to split data fetching into two queries and fetch the owner two times with two collections separately in one transaction as recommended in this article.
-- The L1 cache will help us to merge the second collection into the existing Owner entities.
-```
-public interface OwnerRepository extends JpaRepository<Owner, Long> { 
-    @EntityGraph(attributePaths = {"cats"}) 
-    List<Owner> findWithCatsByNameLikeIgnoreCase(String name); 
-  
-    @EntityGraph(attributePaths = {"dogs"}) 
-    List<Owner> findWithDogsByNameLikeIgnoreCase(String name); 
- 
-    @Transactional 
-    default List<Owner> findByNameLikeIgnoreCase (String name) { 
-        List<Owner> ownersWithCats = findWithCatsByNameLikeIgnoreCase(name); 
-        List<Owner> ownersWithDogs = findWithDogsByNameLikeIgnoreCase(name); 
-        return ownersWithDogs; //or cats, they are the same in L1 cache 
-    } 
-
-} 
-```
-
-#### 1.What is Spring Data REST?
-- Spring Data REST is a part of the Spring Data project that simplifies the creation of RESTful web services for your data repositories.
-- It allows you to expose your Spring Data repositories as RESTful endpoints with minimal configuration, reducing the amount of code required to create a fully functional REST API.
-- Spring Data REST is built on top of Spring Data JPA, Spring Data MongoDB, Spring Data Cassandra, and other Spring Data modules.
-
-#### 2.Why We Need Spring Data REST?
-1 .*Rapid API Development*: Spring Data REST allows you to create a RESTful API quickly, often with minimal custom code. It automates many common tasks such as CRUD operations, query methods, and pagination. \
-2. *Consistency and Best Practices*: Spring Data REST enforces best practices for building RESTful APIs, ensuring that your API follows standard conventions and is consistent in its design. \
-3. *Reduced Boilerplate Code*: You can avoid writing repetitive code for common REST API features like URL mapping, request/response handling, and pagination. \
-4. *Flexibility and Customization*: While Spring Data REST provides automatic endpoints, you can customize and extend these endpoints as needed to add business logic or control the API's behavior. \
-
------
-let's walk through an example of implementing Spring Data JPA and then enhancing it with Spring Data REST. We'll use a simplified "Book" entity and repository for this demonstration. \
-
-*Step 1: Implement Spring Data JPA* \
-First, let's set up Spring Data JPA to manage our "Book" entity. We'll create an entity class, a repository interface, and a service class to handle business logic. \
-*Book Entity*:
-```
-@Entity
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String title;
-    private String author;
-
-    // Constructors, getters, setters, etc.
-}
-```
-*Book Repository*: 
-```
-public interface BookRepository extends JpaRepository<Book, Long> {
-    // Spring Data JPA provides CRUD methods
-    List<Book> findByAuthor(String author);
-}
-```
-*Book Service (optional, for business logic)*: \
-```
-@Service
-public class BookService {
-    @Autowired
-    private BookRepository bookRepository;
-
-    // Business logic methods
-}
-```
-Now, we have a basic Spring Data JPA setup where you can create, read, update, and delete books using repository methods. \
-
-*Step 2: Enhance with Spring Data REST* \
-Now, let's enhance our application by adding Spring Data REST to expose our "Book" repository as a RESTful API with minimal code changes. \
-
-*BookRepository Configuration*: \
-```
-@RepositoryRestResource(collectionResourceRel = "books", path = "books")
-public interface BookRepository extends JpaRepository<Book, Long> {
-    List<Book> findByAuthor(String author);
-}
-```
-We added the @RepositoryRestResource annotation to our repository interface. This annotation customizes the REST endpoint for books by specifying the collectionResourceRel (plural name of the resource) and the path (endpoint path). This tells Spring Data REST how to expose the repository as a REST API. \
-
-*Main Application Class*: \
-```
-@SpringBootApplication
-public class MyApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(MyApplication.class, args);
-    }
-}
-```
-With these minimal changes, you have enhanced your Spring Data JPA application with Spring Data REST. Pagination and sorting are also supported out of the box. \
-Spring Data REST also supports more advanced features like custom queries, projections, validation, and event handling. These can be configured and extended based on your application's specific needs.
-
-In summary, Spring Data REST simplifies the process of creating RESTful APIs for your data repositories by providing automatic CRUD endpoints, adhering to RESTful conventions, and reducing the amount of boilerplate code required for API development. It's a powerful tool for quickly exposing your data to the web.
-
------
-
-### 3.How do you enable Spring Data REST in a Spring Boot application?
+### Q.How do you enable Spring Data REST in a Spring Boot application?
 - To enable Spring Data REST in a Spring Boot application, you typically need to include the spring-boot-starter-data-rest dependency in your project's pom.xml (for Maven) or build.gradle (for Gradle).
 ```
 <!-- For Maven -->
@@ -696,7 +357,7 @@ In summary, Spring Data REST simplifies the process of creating RESTful APIs for
 </dependency>
 ```
 
-### 4.What is a Repository in Spring Data REST?
+### Q.What is a Repository in Spring Data REST?
 - A Repository in Spring Data REST is an interface that extends CrudRepository or PagingAndSortingRepository and is automatically exposed as a RESTful resource.
 - It provides CRUD operations for an entity.
 ```
@@ -705,12 +366,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 }
 ```
 
-### 5.How do you expose a repository as a RESTful resource in Spring Data REST?
-- Spring Data REST automatically exposes repositories as RESTful resources.
-- You only need to include the repository interface in your project, and it becomes accessible via HTTP.
-
 ### Q.What is Sorting and Pagination in spring boot,how to do it?
-
+- For explanation refer <a href="https://medium.com/shoutloudz/pagination-and-sorting-using-spring-boot-103bba7bc4d7" target="_blank"> medium article</a>
 
 ### Q.How can you restrict the HTTP methods allowed on a Spring Data REST endpoint, also how can this endpoints customised?
 - assume we want to hide the delete method from third parties while being able to use it internally.Then, we can use the annotation @RestResource(exported = false), which will configure Spring to skip this method when triggering the HTTP method exposure:
@@ -798,6 +455,7 @@ return studentRepository.findAll();
 
 For detailed explanation refer <a href="https://www.geeksforgeeks.org/how-jackson-data-binding-works-in-spring-boot/" target="_blank">gfg article</a>
 
+
 **API versioning**
 
 ### Q.Explain the concept of versioning in RESTful APIs, and how can it be implemented in Spring?
@@ -879,8 +537,6 @@ To handle exceptions in a Spring Boot application, you can use the following str
 - *Logging and Monitoring* : Use logging and monitoring tools to track and analyze exceptions for debugging and improvement. \
 By implementing these strategies, you can effectively handle exceptions in a Spring Boot application, providing a better user experience and improving application reliability.
 
-For detailed explanation refer <a href="https://naveen-metta.medium.com/mastering-exception-handling-in-spring-boot-a-comprehensive-guide-fa3f916d1981#:~:text=In%20Spring%20Boot%2C%20you%20have,exceptions%2C%20managing%20specific%20HTTP%20status" target="_blank"> medium article</a>
-
 **Caching**
 
 ### Q.Explain the concept of caching in Spring boot and how it can improve performance.
@@ -888,47 +544,7 @@ For detailed explanation refer <a href="https://naveen-metta.medium.com/masterin
 - It acts as a bridge between the server and the end-user, delivering data on-demand in real-time.
 - By caching data, applications can avoid redundant database calls, reducing latency and improving scalability.
 
-### Q.How Cache is implemented in Spring boot?
-- Spring provides caching support through its caching abstraction, which allows you to easily enable caching for specific methods in your application. Here's how to do it:
-1. *Enable Caching*: To use caching in a Spring application, you need to enable it in your configuration. In a Spring Boot application, this is often done by simply adding the @EnableCaching annotation to your main application class.
-```
-@SpringBootApplication
-@EnableCaching
-public class MyApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(MyApplication.class, args);
-    }
-}
-```
-2. *Annotate Methods*: To cache the results of specific methods, you can use annotations like @Cacheable, @CachePut from the Spring Framework. These annotations allow you to control when and how caching is applied.
-```
-@Service
-public class MyService {
-    @Cacheable("users")
-    public User getUserById(Long userId) {
-        // This method's result will be cached with the "users" cache name
-        return userRepository.findById(userId);
-    }
-}
-```
-In this example, the getUserById method retrieves a user by ID from a database, and the result is cached with the name "users."
-3. *Configure Cache Providers*: By default, Spring uses an in-memory cache provider (e.g., Caffeine or EhCache) that comes with Spring Boot. However, you can configure other cache providers like Redis or Memcached for distributed caching.
-4. *Cache Eviction*: The @CacheEvict annotation is used to trigger cache eviction, which removes entries from the cache.
-Specify the cache names from which you want to remove entries and set allEntries = true to remove all entries from the specified caches.
-```
-@CacheEvict(cacheNames = {"users", "address"}, allEntries = true)
-public void evictCache() {
-    LOG.info("Evict all cache entries...");
-}
-```
-- In the provided example, the evictCache() method is annotated with @CacheEvict to remove all entries from the caches named "users" and "address".
-- When this method is invoked, all entries in the specified caches will be removed, ensuring that stale or unnecessary data is cleared from the cache.
-
-- *Accessing cached data*
-- To access the cached data, you can invoke the method that is annotated with @Cacheable. When this method is called with the same arguments, Spring will check the cache for the result before executing the method.
-- If the result is found in the cache, it will be returned directly without executing the method again, improving performance by avoiding redundant computations.
-- In the provided example, the getUserById method is annotated with @Cacheable("users"). When this method is called with a specific id, Spring will check the cache named "users" for the result associated with that id.
-- If the result is cached, it will be returned from the cache. If not, the method will be executed, and the result will be stored in the cache for future access.
+For detailed explanation refer <a href="https://medium.com/vedity/spring-boot-caching-mechanism-8ef901147e60" target="_blank">Spring Boot Caching Mechanism</a>
 
 
 ### Rest API
@@ -943,56 +559,145 @@ public void evictCache() {
 7. Provides a robust, scalable, and flexible architecture for distributed applications
 
 ### Q.What are some best practices for designing and implementing RESTful APIs in Spring boot? or REST Api best practice?
-1. *Use descriptive and meaningful resource names*:
-- Instead of generic or ambiguous names, choose resource names that accurately represent the entities they represent. (e.g., /api/customers/123 instead of /api/users/123).
-2. *Use HTTP methods correctly*:
-- Use the appropriate HTTP methods (GET, POST, PUT, DELETE, PATCH, etc.) for different operations.
-3. *Version Your API*:
-- Use versioning to ensure backward compatibility and allow for future enhancements without breaking existing clients.
-- Consider using URI versioning (e.g., /api/v1/resource) or request header versioning (e.g., Accept: application/vnd.myapp.v1+json).
-4. *Use HTTP Status Codes Correctly*:
--Use appropriate HTTP status codes to indicate the result of an API request (e.g., 200 for success, 201 for resource creation, 400 for client errors, 500 for server errors).
-5. *Pick your JSON field naming convention (and stick to it)*:
-- JSON standard doesn’t impose a field naming convention, but it’s a best practice to pick one and stick with it.(example : snake_case, camelCase, PascalCase, kekab-Case).
-6. *Document Your API*:
-- Provide comprehensive documentation for your APIs, including endpoint details, request/response examples, and usage guidelines.
-- SWAGGER/OPENAPI DOCUMENTATION
-- MARKDOWN-BASED DOCUMENTATION (E.G., USING TOOLS LIKE SWAGGER UI OR REDOC)
-7. *Use consistent error messages*:
-- In most cases, HTTP status codes are not enough to explain what went wrong.
-- To help your API consumers, include a structured JSON error message.
-- The response should include the following information-
-- *Error code*: A machine-readable error code that identifies the specific error condition.
-- *Error message*: A human-readable message that provides a detailed explanation of the error.
-- *Error context*: Additional information related to the error, such as the request ID, the request parameters that caused the error, or the field(s) in the request that caused the error.
-- *Error links*: URLs to resources or documentation that provide additional information about the error and how it can be resolved.
-- *Timestamp*: The time when the error occurred.
-8. *Use query parameters for filtering, sorting, and searching*:
-- Query parameters allow you to provide additional information in the URL of an HTTP request to control the response returned by the server.
-- Filter : Returns only relevant result for specific request. Example : /users?name={name}
-- Sort : Order result in specific manner. Example : /users?sort_by=age
-- Paginate : Divide results into mangeable parts or pages. Example : /users?page={page_number}&per_page={results_per_page}
-9. *Implement authentication and authorization*:
-- Secure your APIs by implementing proper authentication and authorization mechanisms.
-- USE API KEYS, TOKENS, OR OAUTH 2.0 FOR AUTHENTICATION
-- APPLY ROLE-BASED ACCESS CONTROL (RBAC) FOR AUTHORIZATION
-10. *Do not maintain state*:
-- A REST API should not maintain a state on the server. That’s the responsibility of the client.
-- This is important because it allows for the API to be cacheable, scalable, and decoupled from the client.
-- For example, an e-commerce API might use cookies to maintain the state of a shopping cart. However, such an approach violates the key principle of RESTful APIs — they need to be stateless.
+- *Use descriptive and meaningful resource names*: Choose resource names that accurately represent the entities they represent, like /api/customers/123 instead of /api/users/123.
+- *Version Your API*: Use versioning to ensure backward compatibility and allow for future enhancements without breaking existing clients.
+- *Document Your API*: Provide comprehensive documentation for your APIs, including endpoint details, request/response examples, and usage guidelines.
+- *Implement authentication and authorization:* Secure your APIs by implementing proper authentication and authorization mechanisms, like using API keys or tokens and applying role-based access control (RBAC).
 
 
 **Annotations**
 
-1. *@RestController*:@RestController is a specialized version of the controller. It includes the @Controller and @ResponseBody annotations, and as a result, simplifies the controller implementation.Every request handling method of the controller class automatically serializes return objects into HttpResponse.
-2. *@Controller*:This annotation is used to mark a class as a web request handler. It's typically used in combination with annotated handler methods based on the @RequestMapping annotation.
-3. *@ResponseBody*:You can use the @ResponseBody annotation on a method to have the return serialized to the response body through an HttpMessageWriter. @ResponseBody is also supported at the class level, in which case it is inherited by all controller methods.
-4. *@RequestBody*:It is used to bind the HTTP request body to the parameter in the controller method.Used with POST, PUT, and PATCH requests where data is sent in the request body.
-5. *@RequestMapping*:The @RequestMapping annotation is used to map requests to controllers methods. It has various attributes to match by URL, HTTP method, request parameters, headers, and media types. You can use it at the class level to express shared mappings or at the method level to narrow down to a specific endpoint mapping.
-6. *@GetMapping, @PostMapping, @PutMapping, @DeleteMapping*:These annotations are used to map HTTP requests to specific methods in a controller class. They're variations of @RequestMapping with specific HTTP methods.
-7. *@RequestParam*:extract values from the query string. ex. http://localhost:8080/spring-mvc-basics/foos?id=abc -> ID: abc (@GetMapping("/foos"))
-8. *@PathVariable*:extract values from the URI. ex. http://localhost:8080/spring-mvc-basics/foos/abc -> ID: abc (@GetMapping("/foos/{id}"))
+**Web Layer Annotations**
+1. *@RestController*:
+- Combines @Controller and @ResponseBody for simplifying controller implementations.
+- Automatically serializes return objects into HttpResponse.
+2. *@Controller* :
+- Marks a class as a web request handler.
+- Typically used with annotated handler methods (e.g., @RequestMapping).
+3. *@ResponseBody* :
+- Serializes return values of methods to the response body.
+- Can be used at both method and class levels.
+4. *@RequestBody* :
+- Binds the HTTP request body to a method parameter.
+- Commonly used with POST, PUT, and PATCH requests.
+5. *@RequestMapping* :
+- Maps web requests to specific handler methods.
+- Can specify URL patterns, HTTP methods, request parameters, headers, and media types.
+6. *@GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping* :
+- Shortcut annotations for @RequestMapping with specific HTTP methods (GET, POST, PUT, DELETE, PATCH).
+7. *@RequestParam* :
+- Extracts query string parameters from the URL.
+- Example: http://localhost:8080/foos?id=abc -> ID: abc (@GetMapping("/foos"))
+8. *@PathVariable* :
+- Extracts values from the URI path.
+- Example: http://localhost:8080/foos/abc -> ID: abc (@GetMapping("/foos/{id}"))
+9. *@CrossOrigin* :
+- Allows cross-origin requests from specified origins.
+- Can be applied to methods or classes to control CORS policy.
+10. *@ExceptionHandler* :
+- Defines a method to handle exceptions thrown by request handling methods.
+- Can be used at the method level within a @Controller or @RestController.
 
+**Component and Bean Annotations**
+1. *@Component* :
+- Generic annotation for Spring-managed components.
+- Facilitates auto-detection during classpath scanning.
+2. *@Service* :
+- Specialized @Component for service layer classes.
+- Holds business logic and is auto-registered as a Spring bean.
+3. *@Repository* :
+- Specialized @Component for data access classes.
+- Manages storage, retrieval, and search operations for entities and is auto-registered as a Spring bean.
+4. *@Configuration* :
+- Indicates a class defines one or more Spring beans or configuration methods.
+- Used for setting up Spring application configurations.
+5. *@Bean* :
+- Declares a method as a bean provider within a Spring application context.
+- Allows custom initialization and dependency injection.
+6. *@Primary* :
+- Indicates a primary bean when multiple beans of the same type exist.
+- Used to resolve ambiguity in dependency injection.
+7. *@Scope* :
+- Specifies the scope of a bean (e.g., singleton, prototype).
+- Controls bean instantiation lifecycle.
+8. *@Lazy* :
+- Indicates that a bean should be lazily initialized.
+- Helps improve startup performance by delaying bean creation until needed.
+
+**Spring Boot Annotations**
+1. *@EnableAutoConfiguration* :
+- Enables Spring Boot's auto-configuration feature.
+- Reduces manual setup by configuring components based on project dependencies.
+2. *@ComponentScan* :
+- Configures package locations for Spring component scanning.
+- Can specify base packages for scanning Spring-managed components.
+3. *@EntityScan* :
+- Specifies where to find entity classes in a Spring application.
+- Useful when entities are not placed in the main application package.
+4. *@SpringBootApplication* :
+- Combines @Configuration, @EnableAutoConfiguration, and @ComponentScan.
+- Marks the main class of a Spring Boot application.
+5. *@SpringBootTest* :
+- Used for testing Spring Boot applications.
+- Configures an application context for integration tests.
+
+**Data Persistence Annotations**
+1. *@Entity* :
+- Specifies that a class is an entity and is mapped to a database table.
+- Defines a persistent domain object.
+2. *@Table* :
+- Specifies the table in the database associated with an entity.
+- Can customize table name, schema, and unique constraints.
+3. *@Id* :
+- Indicates the primary key of an entity.
+- Used in conjunction with @GeneratedValue for automatic ID generation.
+4. *@GeneratedValue* :
+- Specifies the primary key generation strategy (e.g., AUTO, IDENTITY, SEQUENCE).
+- Automatically generates IDs for primary key fields.
+5. *@Column* :
+- Specifies the mapping between a field and a column in a database table.
+- Can customize column name, data type, and constraints.
+6. *@JoinColumn* :
+- Specifies the foreign key column for a relationship.
+- Used with @ManyToOne, @OneToMany, and other relationship annotations.
+7. *@OneToOne, @OneToMany, @ManyToOne, @ManyToMany* :
+- Define relationships between entities.
+- Specify cardinality and ownership of relationships.
+8. *@Transient* :
+- Indicates that a field should not be persisted to the database.
+- Used for non-persistent fields in an entity class.
+9. *@Embeddable* :
+- Specifies a class whose instances are stored as intrinsic parts of an owning entity.
+- Typically used for composite keys or value types.
+10. *@Embedded* :
+- Specifies that an embeddable class is to be embedded in an entity.
+- Used to include non-entity classes as part of an entity.
+
+**Validation Annotations**
+1. *@Valid* :
+- Ensures incoming request data is validated against specified constraints.
+- Improves data integrity by automatically checking for validation errors.
+2. *@NotNull, @NotEmpty, @NotBlank* :
+- Ensure that a field is not null, empty, or blank.
+- Used to enforce non-null constraints.
+3. *@Size* :
+- Specifies the size constraints for a field.
+- Ensures a field's value length falls within a specified range.
+4. *@Min, @Max* :
+- Specify the minimum and maximum value constraints for a numeric field.
+- Used for range validation.
+5. *@Pattern* :
+Specifies a regular expression that a field's value must match.
+Used for pattern validation.
+6. *@Email*:
+- Ensures that a field's value is a valid email address.
+- Used for email validation.
+7. *@Past, @Future* :
+- Ensure that a date field's value is in the past or future.
+- Used for date validation.
+8. *@AssertTrue, @AssertFalse* :
+- Ensure that a boolean field's value is true or false.
+- Used for boolean validation.
 
 ### @.What is the role of the @RequestBody and @ResponseBody annotations?
 - The @RequestBody and @ResponseBody annotations are used to handle data in the request and response of a web service, making it easier to work with data in your Spring applications. Let's break down their roles with simple code examples:
@@ -1153,13 +858,26 @@ public ResponseEntity<String> getResource() {
 2. Simplifies data binding by automatically deserializing JSON/XML into the application's model.
 3. Facilitates the handling of incoming data in a structured and consistent manner.
 
+### Q. What is a EnableTransactionManagement and Transactional annotation?
+- *@EnableTransactionManagement* enables Spring's annotation-driven transaction management capability within a Spring application. It's used at the configuration level to activate Spring's interpretation of *@Transactional* annotations and manage transactions.
+- Use this annotation when you need more control over transaction management, such as specifying the TransactionManager to be used for transactional methods.
+- *@Transactional* is applied at the method level or on a class to indicate that the methods (or all methods within the annotated class) should be wrapped in a transaction, defining the scope of a single database transaction.
+- Apply this annotation when you want to define transactional behavior at the method level, or when you want Spring to automatically manage transactions using default configuration, such as using the default transaction manager.
+- If you're using @Transactional without @EnableTransactionManagement, Spring will automatically configure a PlatformTransactionManager based on the transactional resource (e.g., DataSource) in your application.
 
-### Questions as per dependency added in project
+### Q. What does @Transactional annotation do? What are the ways to configure it?
+- A database transaction is a sequence of actions treated as a single unit of work.
+- In other words, either all actions will be executed or none.
+- Simply annotating a method with @Transactional, we automatically open a database transaction when the method execution starts and close the transaction when it finishes.
 
-### Q.Why is Jackson dependency used in Spring boot?important jackson dependencies?
-- Jackson is one of the most used libraries of spring boot which translates JSON data to a Java POJO by itself and vice-versa. JSON stands for JavaScript-object-Notation and POJO is our plain-old-java-object class. 
-- important jackson dependencies :
-1. *jackson-databind* : General data-binding functionality for Jackson: works on core streaming API.
-2. *jackson-core*: Core Jackson processing abstractions (aka Streaming API), implementation for JSON.
-3. *jackson-annotations*: This library includes annotations like @JsonProperty, @JsonFormat, and others that you can use to customize the JSON mapping behavior.
 
+### Important dependencies used in project
+
+1. *Apache Commons*: Libraries from Apache Commons provide reusable components, utilities, and helper classes for various tasks such as string manipulation, collections, and I/O operations.(StringUtils, ArrayUtils, BeanUtils, CommandLineParser)
+2. *Slf4j (Simple Logging Facade for Java)*: An abstraction layer for various logging frameworks, allowing developers to plug in the desired logging framework at deployment time without changing the application code.
+3. *JUnit*: A widely-used testing framework for Java applications, providing annotations and APIs for writing unit and integration tests to ensure the correctness of the application's behavior.
+4. *Mockito*: A mocking framework for Java that allows developers to create mock objects for testing, simulate behavior, and verify interactions between objects in unit tests.
+5. *Jackson-Databind* : A core component of the Jackson library used for JSON serialization and deserialization in Java applications, providing support for mapping JSON data to Java objects and vice versa.
+6. *Tomcat Embed* : An embedded servlet container provided by Apache Tomcat, which is the default embedded container used by Spring Boot for running web applications.
+7. *Oracle JDBC Driver (ojdbc8)*: A JDBC driver for Oracle databases, enabling Spring Boot applications to connect and interact with Oracle databases.
+8. *Lombok*: A library that helps reduce boilerplate code in Java by automatically generating common methods like getters, setters, and constructors.
