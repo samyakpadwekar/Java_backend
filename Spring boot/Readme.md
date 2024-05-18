@@ -541,7 +541,7 @@ For detailed explanation refer <a href="https://medium.com/vedity/spring-boot-ca
 - *Implement authentication and authorization:* Secure your APIs by implementing proper authentication and authorization mechanisms, like using API keys or tokens and applying role-based access control (RBAC).
 
 
-**Annotations**
+### Annotations
 
 **Web Layer Annotations**
 1. *@RestController*:
