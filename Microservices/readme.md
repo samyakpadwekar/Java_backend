@@ -12,12 +12,15 @@
 
 ### Q.Describe a situation where you faced a challenge in maintaining data consistency across multiple microservices. How did you address it?
 - Maintaining data consistency in a distributed system can be complex.
-- Implementing distributed transactions using tools like Sagas or compensating transactions can help ensure eventual consistency.
+- Implementing <a href="https://medium.com/@billa.anudeep143/distributed-transactions-in-spring-boot-microservices-simplified-guide-ce1e3a9191c0" target="_blank">distributed transactions</a> using tools like Sagas or compensating transactions can help ensure eventual consistency.
 - Using event sourcing or CQRS patterns can also aid in managing data consistency across microservices.
+- <a href="https://www.linkedin.com/advice/0/how-do-you-handle-distributed-transactions-microservices#:~:text=One%20of%20the%20most%20widely,any%20failures%20along%20the%20way." target="_blank">More info</a>
 
 ### Q.How would you handle a scenario where one microservice experiences a sudden surge in traffic, impacting the overall system performance?
-- To handle sudden traffic spikes in a microservices architecture, implementing auto-scaling mechanisms based on metrics like CPU utilization or request rate can dynamically adjust resources.
-- Utilizing circuit breakers to isolate failing services and implementing caching strategies can also help mitigate performance issues during traffic surges.
+- To handle sudden traffic spikes in a microservices architecture, implementing <a href="https://www.springboottutorial.com/introduction-to-auto-scaling-or-dynamic-scaling-in-cloud" target="_blank">auto-scaling</a> mechanisms based on metrics like CPU utilization or request rate can dynamically adjust resources.
+- Utilizing <a href="https://blog.bitsrc.io/circuit-breaker-pattern-in-microservices-26bf6e5b21ff" target="_blank">circuit breakers</a> to isolate failing services and implementing caching strategies can also help mitigate performance issues during traffic surges.
+
+- Detailed explanation on <a href="https://medium.com/must-know-computer-science/system-design-caching-acbd1b02ca01" target="_blank">caching</a>
 
 ### Q.Explain a scenario where service discovery and load balancing play a crucial role in ensuring system reliability.
 - In a microservices environment, service discovery tools like Eureka or Consul help dynamically register and discover services.
