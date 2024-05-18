@@ -170,7 +170,7 @@ public DataSource devDataSource() {
 - For the prod profile, create a file named application-prod.properties or application-prod.yml.
 - These files should be located in the same directory as your application.properties or application.yml file.
 
- - For more explanation refer <a href="https://medium.com/javarevisited/getting-started-with-spring-boot-profiles-1e00159f0542#:~:text=Profiles%20in%20Spring%20Boot%20are,configurations%20for%20your%20production%20environment." target="_blank">medium article</a>
+- --> For more explanation on spring boot profiling <a href="https://medium.com/javarevisited/getting-started-with-spring-boot-profiles-1e00159f0542#:~:text=Profiles%20in%20Spring%20Boot%20are,configurations%20for%20your%20production%20environment." target="_blank">medium article</a>
 
 
 ### Spring boot actuator
@@ -205,8 +205,8 @@ This configuration allows all management endpoints to be exposed over the web.
 ### Q. How do you monitor web services using Spring Boot Actuator?
 - You can use Actuator's built-in endpoints to monitor web services. For example, the /actuator/health endpoint provides information about the application's health, /actuator/metrics offers various metrics and /actuator/env displays environment properties, including application properties and system properties..
 
- - For video explanation refer <a href="https://www.youtube.com/watch?v=sATuxP_qC-4" target="_blank">utube video</a>
- - For documentation refer <a href="https://spring.io/guides/gs/actuator-service" target="_blank">spring guide</a>
+ - --> For video explanation on spring boot actuator <a href="https://www.youtube.com/watch?v=sATuxP_qC-4" target="_blank">utube video</a>
+ - --> For documentation <a href="https://spring.io/guides/gs/actuator-service" target="_blank">spring guide</a>
  
 
 ### JPA and Spring Data JPA
@@ -452,8 +452,7 @@ return studentRepository.findAll();
 - It allows you to seamlessly work with JSON data in your Java applications by providing mechanisms to serialize (convert Java objects to JSON) and deserialize (convert JSON to Java objects) data.
 - In Spring Boot, JSON data binding is implemented using the Jackson library, which is a popular and widely used library for JSON processing in Java.
 - Jackson provides a set of classes and annotations that allow you to map Java objects to JSON data and back.
-
-For detailed explanation refer <a href="https://www.geeksforgeeks.org/how-jackson-data-binding-works-in-spring-boot/" target="_blank">gfg article</a>
+- For more explanation <a href="https://www.geeksforgeeks.org/how-jackson-data-binding-works-in-spring-boot/" target="_blank">gfg article</a>
 
 
 **API versioning**
@@ -464,66 +463,43 @@ For detailed explanation refer <a href="https://www.geeksforgeeks.org/how-jackso
 - Versioning is essential to maintain compatibility and manage the evolution of your API over time.
 - Here are a few common methods of implementing versioning in RESTful APIs:
 1. *URI Versioning*: URL path versioning involves including the version number directly in the URL path of the API endpoints. This is a common approach and makes the version explicit in the URL.
- ```
+```
 @RestController
 @RequestMapping("/v1/users")
 public class UserControllerV1 {
-    // Endpoint implementations...
+}
+
+@RestController
+@RequestMapping("/v2/users")
+public class UserControllerV2 {
 }
 ``` 
 2. *Request Header Versioning*: In this approach, the API version is specified in a custom HTTP request header. 
 ```
-@RestController
-@RequestMapping("/users")
-public class UserController {
-    
     @GetMapping(headers = "API-Version=1")
-    public ResponseEntity<String> getUserV1() {
-        // Endpoint implementation for version 1
-    }
+    public ResponseEntity<String> getUserV1() 
     
     @GetMapping(headers = "API-Version=2")
-    public ResponseEntity<String> getUserV2() {
-        // Endpoint implementation for version 2
-    }
-}
+    public ResponseEntity<String> getUserV2()
 ```
 
 3. *Request Parameter Versioning*: In this approach, the version number is included as a query parameter in the URL.
 ```
-@RestController
-@RequestMapping("/users")
-public class UserController {
-    
     @GetMapping(params = "version=1")
-    public ResponseEntity<String> getUserV1() {
-        // Endpoint implementation for version 1
-    }
-    
+    public ResponseEntity<String> getUserV1()
+
     @GetMapping(params = "version=2")
-    public ResponseEntity<String> getUserV2() {
-        // Endpoint implementation for version 2
-    }
-}
+    public ResponseEntity<String> getUserV2() 
 ```
 4. *Media Type (Accept Header) Versioning*: In this approach, the version is specified in the Accept header of the HTTP request.
 ```
-@RestController
-@RequestMapping("/users")
-public class UserController {
-    
     @GetMapping(produces = "application/vnd.company.app-v1+json")
-    public ResponseEntity<String> getUserV1() {
-        // Endpoint implementation for version 1
-    }
+    public ResponseEntity<String> getUserV1()
     
     @GetMapping(produces = "application/vnd.company.app-v2+json")
-    public ResponseEntity<String> getUserV2() {
-        // Endpoint implementation for version 2
-    }
-}
+    public ResponseEntity<String> getUserV2() 
 ```
-For detailed explanation refer <a href="https://medium.com/@avi.singh.iit01/a-guide-to-api-versioning-in-spring-boot-d564595bba00" target="_blank"> medium article</a>
+- --> For more explanation on api versioning refer <a href="https://medium.com/@avi.singh.iit01/a-guide-to-api-versioning-in-spring-boot-d564595bba00" target="_blank"> medium article</a>
 
 
 **Exception handling**
