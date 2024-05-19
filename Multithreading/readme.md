@@ -601,6 +601,7 @@ public class Main {
 
 - [Detailed explanation](https://medium.com/@adam.rizk9/demystifying-java-wait-notify-and-join-methods-for-multithreading-an-in-depth-look-ffb43a514bbc)
 
+
 ### Thread priority
 - Thread priority in Java is a crucial concept that helps in determining the order in which threads are scheduled for execution.
 - In Java, thread priorities range from MIN_PRIORITY (1) to MAX_PRIORITY (10), with NORM_PRIORITY (5) being the default for every thread.
@@ -623,5 +624,47 @@ public class PriorityExample {
     }
 }
 ```
+
+### Thread scheduling and scheduler
+- **Thread scheduling** in Java is typically preemptive. This means the thread scheduler can suspend the currently running thread to allow another thread to run. The decision is based on thread priorities and the state of the threads. However, the actual behavior can vary depending on the JVM implementation and the underlying operating system.
+- A component of Java that decides which thread to run or execute and which thread to wait is called a **thread scheduler** in Java. In Java, a thread is only chosen by a thread scheduler if it is in the runnable state. However, if there is more than one thread in the runnable state, it is up to the thread scheduler to pick one of the threads and ignore the other ones. There are some criteria that decide which thread will execute first. There are two factors for scheduling a thread i.e. Priority and Time of arrival.
+1. Priority: Priority of each thread lies between 1 to 10. If a thread has a higher priority, it means that thread has got a better chance of getting picked up by the thread scheduler.
+2. Time of Arrival: Suppose two threads of the same priority enter the runnable state, then priority cannot be the factor to pick a thread from these two threads. In such a case, arrival time of thread is considered by the thread scheduler. A thread that arrived first gets the preference over the other threads.
+
+**Thread Scheduling Algorithms**
+1. Fixed Priority Scheduling:
+- Threads are scheduled based on their priority. Higher priority threads are given preference over lower priority ones. If multiple threads have the same priority, they are scheduled in a round-robin manner.
+2. Time-Slicing (Round-Robin Scheduling):
+- Each thread is given a fixed time slice or quantum to run. After its time slice expires, the thread is moved to the back of the queue, and the next thread is given a chance to run. This ensures that all runnable threads get a fair share of the CPU time.
+3. First-Come-First-Served (FCFS):
+- Threads are scheduled in the order they arrive in the runnable state. The first thread to arrive is the first to be scheduled.
+
+- [Detailed explanation](https://www.javatpoint.com/thread-scheduler-in-java)
+
+
+### Deadlock,Livelock,Startvation and Race condition
+1. Deadlock
+- Definition: A situation where two or more threads are unable to proceed because each is waiting for the other to release a resource.
+- Example: Thread A holds Lock 1 and waits for Lock 2, while Thread B holds Lock 2 and waits for Lock 1.
+- Impact: The threads remain blocked indefinitely.
+2. Livelock
+- Definition: A situation where two or more threads keep changing their state in response to each other without making any progress.
+- Example: Two threads repeatedly yielding to each other in an attempt to avoid deadlock.
+- Impact: The threads continue running but do not perform useful work.
+3. Starvation
+- Definition: A situation where a thread is perpetually denied access to resources, preventing it from making progress.
+- Example: A low-priority thread never gets CPU time because high-priority threads keep running.
+- Impact: The starved thread cannot complete its task.
+4. Race Condition
+- Definition: A situation where the behavior of a program depends on the relative timing of threads executing, leading to unpredictable results.
+- Example: Two threads simultaneously incrementing a shared counter without proper synchronization.
+- Impact: Leads to inconsistent or incorrect data.
+- [Detailed explanation](https://pradeesh-kumar.medium.com/deadlock-livelock-race-condition-and-starvation-c225018bbae6)
+
+
+- [thread pool and executer service](https://medium.com/@erayaraz10/a-comprehensive-guide-to-thread-pools-in-java-75a06657fda)
+
+- [reentrant-locks](https://medium.com/@greekykhs/reentrant-locks-163ee3d6f9a5)
+
 
 ## Read about Executor Service and Threadpool, Reentrant lock
