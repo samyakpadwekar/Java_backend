@@ -1,4 +1,21 @@
-### Implementing runnable interface
+### Thread and it's type
+- A thread is the smallest unit of execution within a process. Threads allow concurrent execution of multiple tasks within a single process, enabling efficient utilization of CPU resources. Mainly there are two types:
+1. User Threads
+These threads are created and managed by the application or user-level libraries, rather than the operating system. User threads provide flexibility and are usually more lightweight than kernel threads. However, they rely on the underlying kernel threads for execution.
+2. Daemon Threads
+Daemon threads are background threads that run in the background and provide services to user threads or perform tasks such as garbage collection, monitoring, etc. They automatically terminate when all non-daemon threads have finished execution.
+
+### Thread Transition
+- Thread transition refers to the movement of a thread between different states during its lifecycle. Here's a [brief explanation](https://medium.com/javarevisited/thread-state-and-lifecycle-in-java-multithreading-updated-2023-8e6bf29a7666):
+1. New: The thread is in this state when it's created but not yet started.
+2. Runnable: The thread is ready to run and waiting for processor time.
+3. Running: The thread is currently executing its task.
+4. Blocked/Waiting: The thread is temporarily inactive, waiting for a resource or condition to become available.
+5. Timed Waiting: Similar to Blocked, but with a timeout period.
+6. Terminated/Dead: The thread has completed execution or been terminated.
+- Threads transition between these states depending on their execution, waiting for resources, and other factors. Efficient management of these transitions ensures effective utilization of system resources and proper synchronization in multi-threaded applications.
+
+### Thread creation implementing runnable interface
 
 - Steps to Create and Run a Thread Using the Runnable Interface
 1. Create a Class that Implements Runnable:
@@ -48,7 +65,7 @@ public class Main {
 }
 ```
 
-### Implementing runnable interface
+### Thread creation extending Thread class
 
 1. Create a Custom Thread Class:
 - Extend the Thread class.
@@ -395,6 +412,194 @@ public class Main {
 **Where exactly problem occurs** [Code](https://medium.com/@basecs101/producer-consumer-problem-in-java-multi-threading-latest-2a306f003973)
 - when the producer added an item into the buffer and the buffer is no longer empty. Then consumer thread-1 tries to remove this item but before doing this, a context switches to back consumer thread-2, now this thread removes the item from the buffer. But again context switches back to the consumer thread-1 and then this thread tries to remove the item from the buffer but there is no item in the buffer and hence ArrayIndexOutOfBoundsException exception occurred.
 - This issue occurred as the shared buffer is not synchronized, and hence all the threads are trying to add and remove from the buffer at the same time causing an exception as explained above.
+
+
+### Thread running and yielding
+- In Java, the Thread.yield() method is used to give a hint to the scheduler that the current thread is willing to pause its execution temporarily, allowing other threads of equal priority to run.
+1. Running a Thread
+- When a thread is running, it is actively executing its task or code. The scheduler allocates CPU time to the thread, and it progresses through its execution until it either completes its task or yields the CPU voluntarily or involuntarily (due to time slicing).
+2. Yielding a Thread
+- Purpose: The yield() method is called by a thread to indicate that it's willing to give up its current use of the CPU.
+- Effect: When a thread yields, it moves from the running state back to the runnable state, allowing other threads of equal priority to have a chance to run.
+- Usage: It's typically used in situations where a thread has completed a small unit of work or is in a state where it can temporarily give up the CPU without adverse effects.
+```
+public class MyRunnable implements Runnable {
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " - " + i);
+            Thread.yield(); // Yielding the CPU voluntarily
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Runnable task = new MyRunnable();
+        Thread thread1 = new Thread(task, "Thread 1");
+        Thread thread2 = new Thread(task, "Thread 2");
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+- Both Thread 1 and Thread 2 are instances of the same MyRunnable class and share the same runnable task.
+- When Thread.yield() is called inside the run() method of MyRunnable, it gives up the CPU, allowing the other thread to run.
+-This alternation between threads continues until both threads complete their execution or are interrupted.
+- When to Use Yielding
+1. Fairness: Use yielding to promote fairness among threads of equal priority.
+2. Resource Sharing: Use it when threads can temporarily give up CPU time without impacting the correctness of the program.
+
+
+### Thread Sleeping and Waking
+- In Java, the Thread.sleep() method is used to pause the execution of a thread for a specified amount of time. Here's how it works:
+1. Sleeping a Thread
+-Purpose: The sleep() method suspends the execution of the current thread for the specified duration.
+- Usage: It's commonly used to introduce delays or wait periods in a thread's execution.
+- Exception: It throws InterruptedException if the thread is interrupted while sleeping.
+2. Waking a Thread
+- Interrupt: To wake a sleeping thread prematurely, another thread can interrupt it using the interrupt() method.
+- Exception Handling: The sleeping thread should handle InterruptedException to respond appropriately to being interrupted.
+```
+public class MyRunnable implements Runnable {
+    public void run() {
+        try {
+            System.out.println(Thread.currentThread().getName() + " is starting.");
+            Thread.sleep(5000); // Sleep for 5 seconds
+            System.out.println(Thread.currentThread().getName() + " has woken up.");
+        } catch (InterruptedException e) {
+            System.out.println(Thread.currentThread().getName() + " was interrupted while sleeping.");
+            // Handle the interruption gracefully
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Thread thread = new Thread(new MyRunnable(), "WorkerThread");
+        thread.start();
+        
+        // Interrupt the thread after 2 seconds
+        try {
+            Thread.sleep(2000);
+            thread.interrupt(); // Interrupt the sleeping thread
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+- Is Interrupting a Sleeping Thread a Good Choice?
+1.Complexity: In complex applications, interrupting a sleeping thread can introduce unexpected behavior or lead to synchronization issues.
+2. Graceful Handling: Sleeping threads should handle interruptions gracefully to ensure that resources are released properly and the application remains responsive.
+3. Alternative Approaches: Consider using other synchronization mechanisms or higher-level concurrency utilities for better control over thread interruption and coordination.
+- [Java sleep and interruption](https://samedesilva.medium.com/java-thread-sleep-and-interrupt-methods-3850e6201169)
+
+
+### Thread wait,notify,notifyAll
+```
+import java.util.LinkedList;
+
+public class SharedResource {
+    private LinkedList<Integer> items = new LinkedList<>();
+    private final int MAX_SIZE = 5; // Maximum capacity of the shared resource
+
+    public synchronized void produce(int item) {
+        while (items.size() >= MAX_SIZE) {
+            try {
+                System.out.println("Producer is waiting as the resource is full...");
+                wait(); // Wait if the resource is full
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        items.add(item);
+        System.out.println("Producer produced item: " + item);
+        notify(); // Notify the consumer that an item is available
+    }
+
+    public synchronized int consume() {
+        while (items.isEmpty()) {
+            try {
+                System.out.println("Consumer is waiting as the resource is empty...");
+                wait(); // Wait if the resource is empty
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        int item = items.remove();
+        System.out.println("Consumer consumed item: " + item);
+        notifyAll(); // Notify all producers that space is available
+        return item;
+    }
+}
+
+public class Producer implements Runnable {
+    private SharedResource resource;
+
+    public Producer(SharedResource resource) {
+        this.resource = resource;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 1; i <= 10; i++) {
+            resource.produce(i);
+            try {
+                Thread.sleep(1000); // Simulate production time
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class Consumer implements Runnable {
+    private SharedResource resource;
+
+    public Consumer(SharedResource resource) {
+        this.resource = resource;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 10; i++) {
+            resource.consume();
+            try {
+                Thread.sleep(2000); // Simulate consumption time
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SharedResource resource = new SharedResource();
+        Thread producerThread = new Thread(new Producer(resource));
+        Thread consumerThread = new Thread(new Consumer(resource));
+
+        producerThread.start();
+        consumerThread.start();
+    }
+}
+```
+- Explanation:
+1. Producer-Consumer Interaction:
+- Producers produce items and add them to the shared resource using the produce() method.
+- Consumers consume items from the shared resource using the consume() method.
+2. Synchronization:
+- Both produce() and consume() methods are synchronized to ensure thread safety.
+- If the resource is full, the producer waits by calling wait() until space is available.
+- If the resource is empty, the consumer waits by calling wait() until an item is available.
+3. Notification:
+- When a producer produces an item, it notifies the consumer by calling notify().
+- When a consumer consumes an item, it notifies all producers that space is available by calling notifyAll().
+4. Output:
+- The output demonstrates the producer producing items and the consumer consuming them, while ensuring that the resource capacity is maintained and threads wait when necessary.
+
+- [Detailed explanation](https://medium.com/@adam.rizk9/demystifying-java-wait-notify-and-join-methods-for-multithreading-an-in-depth-look-ffb43a514bbc)
 
 
 ## Read about Executor Service and Threadpool, Reentrant lock
