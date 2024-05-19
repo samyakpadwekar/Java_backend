@@ -601,5 +601,27 @@ public class Main {
 
 - [Detailed explanation](https://medium.com/@adam.rizk9/demystifying-java-wait-notify-and-join-methods-for-multithreading-an-in-depth-look-ffb43a514bbc)
 
+### Thread priority
+- Thread priority in Java is a crucial concept that helps in determining the order in which threads are scheduled for execution.
+- In Java, thread priorities range from MIN_PRIORITY (1) to MAX_PRIORITY (10), with NORM_PRIORITY (5) being the default for every thread.
+- Setting thread priorities allows you to control the relative importance of threads, influencing which threads should be executed first when multiple threads compete for system resources.
+- The use of thread priority in Java is significant for managing the execution order and resource allocation of threads in multi-threaded programming.
+- By assigning priorities to threads, you can ensure that high-priority threads are given precedence over lower-priority ones, although the exact execution order is platform-dependent and not guaranteed.
+- However, manipulating thread priorities in Java comes with certain risks. High-priority threads can potentially monopolize CPU time, leading to situations like "starvation" where lower-priority threads may not get a chance to run, causing unpredictable behavior or performance issues.
+```
+public class PriorityExample {
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(new MyRunnable(), "Thread 1");
+        Thread thread2 = new Thread(new MyRunnable(), "Thread 2");
+
+        // Set priorities
+        thread1.setPriority(Thread.MIN_PRIORITY); // Priority 1
+        thread2.setPriority(Thread.MAX_PRIORITY); // Priority 10
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
 
 ## Read about Executor Service and Threadpool, Reentrant lock
