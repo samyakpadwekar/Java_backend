@@ -842,10 +842,39 @@ public ResponseEntity<String> getResource() {
 - If you're using @Transactional without @EnableTransactionManagement, Spring will automatically configure a PlatformTransactionManager based on the transactional resource (e.g., DataSource) in your application.
 
 ### Q. What does @Transactional annotation do? What are the ways to configure it?
-- A database transaction is a sequence of actions treated as a single unit of work.
-- In other words, either all actions will be executed or none.
-- Simply annotating a method with @Transactional, we automatically open a database transaction when the method execution starts and close the transaction when it finishes.
+- We can use @Transactional to wrap a method in a database transaction.It allows us to set propagation, isolation, timeout, read-only, and rollback conditions for our transaction. We can also specify the transaction manager.
+- We can put the annotation on definitions of interfaces, classes, or directly on methods.  They override each other according to the priority order; from lowest to highest we have: interface, superclass, class, interface method, superclass method, and class method.
+- Spring applies the class-level annotation to all public methods of this class that we did not annotate with @Transactional.
+- However, if we put the annotation on a private or protected method, Spring will ignore it without an error.
 
+### Q. @Transactional important attribute, theis possible values and uses?
+1. Propagation
+- Propagation defines how transactions interact with each other. It determines how a method should run within a transactional context, especially when a method is called within another method that has a transaction. Here are the key propagation types:
+a. REQUIRED (default): If there is an existing transaction, the method will join it. If there is no existing transaction, a new one will be started.
+b. REQUIRES_NEW: Always starts a new transaction, suspending the current one if it exists.
+c. NESTED: Starts a new transaction within the current one, creating a savepoint. If the nested transaction rolls back, it doesn't affect the outer transaction.
+d. SUPPORTS: If there is an existing transaction, the method will join it. If there is no existing transaction, it will run without a transaction.
+e. NOT_SUPPORTED: The method will not run within a transaction. If there's an existing transaction, it will be suspended.
+f. MANDATORY: Requires an existing transaction. If there's no transaction, an exception will be thrown.
+g. NEVER: The method must not run within a transaction. If there's an existing transaction, an exception will be thrown.
+
+2. Isolation
+- Isolation determines how and when the changes made in one transaction become visible to other transactions. It helps manage concurrency issues like dirty reads, non-repeatable reads, and phantom reads. Here are the main isolation levels:
+a. DEFAULT: Uses the default isolation level of the underlying database.
+b. READ_UNCOMMITTED: Lowest isolation level. Allows reading uncommitted changes made by other transactions (dirty reads).
+c. READ_COMMITTED: Ensures a transaction can only read committed changes. Prevents dirty reads but still allows non-repeatable reads.
+d. REPEATABLE_READ: Ensures that if a transaction reads the same row twice, it will see the same data both times. Prevents dirty reads and non-repeatable reads, but phantom reads can still occur.
+e. SERIALIZABLE: Highest isolation level. Transactions are executed in a sequential order, effectively serializing them.Prevents dirty reads, non-repeatable reads, and phantom reads, but can significantly impact performance due to locking.
+
+- When you use the @Transactional annotation, you can specify these attributes to control the behavior of your transactions. For example:
+```
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+public void someMethod() {
+    // method implementation
+}
+```
+- propagation = Propagation.REQUIRED: The method will join an existing transaction if one exists, or start a new one if not.
+- isolation = Isolation.READ_COMMITTED: The method will ensure that it only reads committed changes made by other transactions, preventing dirty reads.
 
 ### Important dependencies used in project
 
