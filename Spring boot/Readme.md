@@ -863,7 +863,7 @@ public ResponseEntity<String> getResource() {
 - DEFAULT: Uses the default isolation level of the underlying database.
 - READ_UNCOMMITTED: Lowest isolation level. Allows reading uncommitted changes made by other transactions (dirty reads).
 - READ_COMMITTED: Ensures a transaction can only read committed changes. Prevents dirty reads but still allows non-repeatable reads.
-- REPEATABLE_READ: Ensures that if a transaction reads the same row twice, it will see the same data both times. Prevents dirty reads and non-repeatable reads, but phantom reads can still occur.
+- REPEATABLE_READ: Ensures that if a transaction reads the same row twice, it will see the same data both times. Prevents dirty reads and non-repeatable reads.
 - SERIALIZABLE: Highest isolation level. Transactions are executed in a sequential order, effectively serializing them.Prevents dirty reads, non-repeatable reads, and phantom reads, but can significantly impact performance due to locking.
 
 - When you use the @Transactional annotation, you can specify these attributes to control the behavior of your transactions. For example:
