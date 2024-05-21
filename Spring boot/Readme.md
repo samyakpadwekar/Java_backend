@@ -850,21 +850,21 @@ public ResponseEntity<String> getResource() {
 ### Q. @Transactional important attribute, theis possible values and uses?
 1. Propagation
 - Propagation defines how transactions interact with each other. It determines how a method should run within a transactional context, especially when a method is called within another method that has a transaction. Here are the key propagation types:
-a. REQUIRED (default): If there is an existing transaction, the method will join it. If there is no existing transaction, a new one will be started.
-b. REQUIRES_NEW: Always starts a new transaction, suspending the current one if it exists.
-c. NESTED: Starts a new transaction within the current one, creating a savepoint. If the nested transaction rolls back, it doesn't affect the outer transaction.
-d. SUPPORTS: If there is an existing transaction, the method will join it. If there is no existing transaction, it will run without a transaction.
-e. NOT_SUPPORTED: The method will not run within a transaction. If there's an existing transaction, it will be suspended.
-f. MANDATORY: Requires an existing transaction. If there's no transaction, an exception will be thrown.
-g. NEVER: The method must not run within a transaction. If there's an existing transaction, an exception will be thrown.
+- REQUIRED (default): If there is an existing transaction, the method will join it. If there is no existing transaction, a new one will be started.
+- REQUIRES_NEW: Always starts a new transaction, suspending the current one if it exists.
+- NESTED: Starts a new transaction within the current one, creating a savepoint. If the nested transaction rolls back, it doesn't affect the outer transaction.
+- SUPPORTS: If there is an existing transaction, the method will join it. If there is no existing transaction, it will run without a transaction.
+- NOT_SUPPORTED: The method will not run within a transaction. If there's an existing transaction, it will be suspended.
+- MANDATORY: Requires an existing transaction. If there's no transaction, an exception will be thrown.
+- NEVER: The method must not run within a transaction. If there's an existing transaction, an exception will be thrown.
 
 2. Isolation
 - Isolation determines how and when the changes made in one transaction become visible to other transactions. It helps manage concurrency issues like dirty reads, non-repeatable reads, and phantom reads. Here are the main isolation levels:
-a. DEFAULT: Uses the default isolation level of the underlying database.
-b. READ_UNCOMMITTED: Lowest isolation level. Allows reading uncommitted changes made by other transactions (dirty reads).
-c. READ_COMMITTED: Ensures a transaction can only read committed changes. Prevents dirty reads but still allows non-repeatable reads.
-d. REPEATABLE_READ: Ensures that if a transaction reads the same row twice, it will see the same data both times. Prevents dirty reads and non-repeatable reads, but phantom reads can still occur.
-e. SERIALIZABLE: Highest isolation level. Transactions are executed in a sequential order, effectively serializing them.Prevents dirty reads, non-repeatable reads, and phantom reads, but can significantly impact performance due to locking.
+- DEFAULT: Uses the default isolation level of the underlying database.
+- READ_UNCOMMITTED: Lowest isolation level. Allows reading uncommitted changes made by other transactions (dirty reads).
+- READ_COMMITTED: Ensures a transaction can only read committed changes. Prevents dirty reads but still allows non-repeatable reads.
+- REPEATABLE_READ: Ensures that if a transaction reads the same row twice, it will see the same data both times. Prevents dirty reads and non-repeatable reads, but phantom reads can still occur.
+- SERIALIZABLE: Highest isolation level. Transactions are executed in a sequential order, effectively serializing them.Prevents dirty reads, non-repeatable reads, and phantom reads, but can significantly impact performance due to locking.
 
 - When you use the @Transactional annotation, you can specify these attributes to control the behavior of your transactions. For example:
 ```
