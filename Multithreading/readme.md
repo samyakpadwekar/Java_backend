@@ -388,11 +388,6 @@ public class Main {
 - When increment() or decrement() is called, the thread must acquire the lock on the Class object of Counter.
 - This ensures that only one thread can execute either increment or decrement at any given time, providing thread-safe access to the shared static variable count.
 
-### Volatile keyword for thread safety
-- The volatile keyword ensures visibility of changes to variables across threads. It guarantees that when a thread writes to a volatile variable, the value is immediately visible to other threads.
-1. volatile is lightweight and ensures visibility only, unlike synchronization mechanisms which provide both visibility and atomicity.
-2. Use volatile when you only need visibility guarantees, but for operations requiring atomicity or compound actions, other mechanisms like synchronization or atomic variables should be preferred.
-
 ### Executors and Thread Pools for thread safety
 - Using Executors and Thread Pools ensures thread safety by managing a pool of threads and controlling the execution of tasks. Each task submitted to an Executor is executed sequentially, one after the other, by the threads in the pool. This sequential execution eliminates the need for explicit synchronization in most cases, as each task is executed independently of others, ensuring thread safety.
 - Scenarios to use Executors and Thread Pools:
@@ -687,6 +682,16 @@ public class PriorityExample {
 - Fine-Grained Synchronization:
 1. Bucket-Level Locking: Instead of locking the entire map, it locks only a part of the map. This significantly reduces contention and improves throughput.
 2. Non-Blocking Reads: Read operations do not block, thanks to the use of volatile variables and atomic operations.
+
+### what is wait(),notify() and notifyAll() method?
+1. wait(): Causes the current thread to wait until another thread invokes the notify() method or the notifyAll() method for this object.
+2. notify(): Wakes up a single thread that is waiting on this object's monitor.
+3. notifyAll(): Wakes up all threads that are waiting on this object's monitor.
+- Here's a brief overview of how they are typically used:
+1. wait() is called within a synchronized block to release the lock and wait until another thread notifies it.
+2. notify() is called to notify a single waiting thread that it can proceed. It's important to note that which thread gets notified is not deterministic.
+3. notifyAll() is called to notify all waiting threads that they can proceed. This method is often used to avoid the risk of leaving threads waiting indefinitely, which can occur with notify() if the wrong thread gets notified.
+- These methods are commonly used in concurrent programming to implement producer-consumer scenarios, where one thread produces data and another consumes it. They are also used in other scenarios where synchronization between threads is necessary. It's important to use them carefully to avoid issues like deadlock or livelock.
 
 ### Q.why wait(),notify() and notifyAll() is in Object class and not in Thread class?
 - In the Java language, you wait() on a particular instance of an Object – a monitor assigned to that object to be precise. If you want to send a signal to one thread that is waiting on that specific object instance then you call notify() on that object. If you want to send a signal to all threads that are waiting on that object instance, you use notifyAll() on that object.
