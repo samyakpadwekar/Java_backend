@@ -216,7 +216,7 @@ for (int i = 1; i < strs.length; i++) {
 - If the prefix becomes empty, the method returns an empty string as there is no common prefix.
 - After iterating through all strings, the remaining prefix is the longest common prefix.
 
-- For the input array {"flower", "flow", "flight"}:
+For the input array {"flower", "flow", "flight"}:
 - Initially, prefix = "flower".
 - Comparing with "flow":
 - "flow".indexOf("flower") is -1, so the prefix is shortened to "flowe".
