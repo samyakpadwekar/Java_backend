@@ -558,7 +558,7 @@ public class Main {
         return count;
     }
 }
-``
+```
 - Explanation:
 - Input String: The input string contains alphanumeric characters and spaces.
 - countDigits Method: This method takes a string as input and initializes a count variable to zero. It iterates over each character in the string. It checks if the current character is a digit using the Character.isDigit method.If it is a digit, it increments the count.
