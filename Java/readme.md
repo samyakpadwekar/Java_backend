@@ -74,6 +74,7 @@ Explanation :
 2. Getter and Setter Methods: Public methods getName, setName, getAge, and setAge are provided to allow controlled access and modification of the private fields.
 3. Validation: The setAge method includes a simple validation to ensure that the age is a positive number, demonstrating how encapsulation allows for added control over the data.
 4. Main Method: In the main method, a Person object is created and its fields are accessed and modified through the getter and setter methods.
+
 2. Inheritance:
 ``
 public class ElectricCar extends Car {
