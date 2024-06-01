@@ -96,10 +96,64 @@ public class ThreadSafeSingleton {
 -In this version, the getInstance() method uses double-checked locking to ensure thread safety while minimizing synchronization overhead.
 - Singleton pattern is widely used in scenarios where you want to ensure that there is only one instance of a class throughout the application, such as logger, database connection, configuration settings, etc.
 
-### I am calling singleton getinstance method using serialisation and writing in some file , that is doing serialisation. That is storing the state. Now Using the same file which I stored I am doing deserialization , so now will I get 2 objects,right? (Extended question on previous question,may not be asked)
+### Q.I am calling singleton getinstance method using serialisation and writing in some file , that is doing serialisation. That is storing the state. Now Using the same file which I stored I am doing deserialization , so now will I get 2 objects,right? (Extended question on previous question,may not be asked)
 - In the case of serialization and deserialization with a singleton class, if the class is implemented correctly, you should not get multiple instances of the singleton. Here's why:
 - Singleton Instance: The whole point of the singleton pattern is to ensure that only one instance of the class exists throughout the JVM.
 - Serialization and Deserialization: When you serialize a singleton object and then deserialize it back, the deserialized object will not have gone through the constructor. Instead, it will be created using the existing instance that was already in memory.
+
+
+### Q.Some git commands
+- Initialize a new Git repository: git init
+- Clone an existing repository: git clone https://github.com/user/repository.git
+- Check the status of the repository: git status
+- Add files to the staging area: git add filename.txt
+- To add all files: git add .
+- Commit changes: git commit -m "Commit message"
+- View the commit history: git log
+- Create a new branch: git branch new-branch
+- Switch to a different branch: git checkout new-branch
+- Create and switch to a new branch: git checkout -b new-branch
+- Merge a branch into the current branch: git merge new-branch
+- Delete a branch: git branch -d new-branch
+- List remote repositories: git remote -v
+- Fetch changes from the remote repository: git fetch origin
+- Push changes to the remote repository: git push origin main
+- Pull changes from the remote repository: git pull origin main
+- Show changes between the working directory and the index: git diff
+- Show changes between the index and the last commit: git diff --cached
+- Show changes between two commits: git diff commit1 commit2
+
+### Suppose 2 developers are working on core related functionality, one of the developer pushed his changes on common branch and other developer is still working on changes , but when other developer push the changes on master he will get conflicts, so what is good approach for other developer to avoid conflicts
+- To avoid conflicts when multiple developers are working on core-related functionality and pushing to a common branch, a good approach involves the following steps:
+- Best Practices for Avoiding Conflicts
+1. Frequent Pulls and Rebases: The second developer should frequently pull the latest changes from the common branch (e.g., master) and rebase their work onto the latest state. This way, they can resolve any conflicts locally before pushing their changes.
+2. Feature Branches: Developers should work on separate feature branches and only merge into the common branch after their work is completed and conflicts are resolved.
+
+### Q.If I use this code in production will this code compile and run properly. If not then what challenges will it face and how to resolve them.
+```
+abstract class Employee {
+    public EmployeeDetails getDetails(int id) throws SQLException {
+        // Connects to DB and fetches the details
+    }
+}
+
+class EmployeeDal extends Employee {
+    @Override
+    public EmployeeDetails getDetails(int id) throws SQLException, IOException {
+        // Fetches DB details from a file
+        // Connects to DB and fetches the details
+    }
+}
+```
+**Compilation and Runtime Issues**
+- Method Signature Mismatch:
+The method getDetails(int id) in the Employee class is overridden in the EmployeeDal class. However, the overridden method in EmployeeDal adds an additional exception (IOException) to its throws clause. This is not allowed because the overridden method cannot throw new or broader checked exceptions than the method it overrides.
+
+### If both methods are private then can we override it , in the above code And what about protected method 
+- In Java, method overriding has specific rules regarding access modifiers:
+- Private Methods: Private methods are not visible to subclasses. Therefore, they cannot be overridden. Each class has its own private copy of the method, and there is no relationship between the private methods in the superclass and the subclass. If both methods are private in the superclass and subclass, they are considered separate methods, not an override.
+- Protected Methods: Protected methods can be overridden by subclasses. The protected access modifier allows the method to be visible in the same package and in subclasses, even if they are in different packages. When a subclass overrides a protected method, it can use the same access level or a more permissive access level (i.e., protected or public).
+
 
 
 ## Coding and SQL
@@ -330,4 +384,185 @@ For the input array {"flower", "flow", "flight"}:
 - Comparing with "flight":
 - "flight".indexOf("flow") is -1, so the prefix is shortened to "flo", then to "fl", which is found at the start of "flight".
 - The final common prefix is "fl".
+
+### Output of below code :
+```
+interface A {
+    int id = 0;
+    void incrementId();
+    int getId();
+}
+
+class Employee implements A {
+    int id = 0;
+
+    public void incrementId() {
+        id++;
+    }
+
+    public int getId() {
+        return id;
+    }
+}
+
+class Professor implements A {
+    int id = 0;
+
+    public void incrementId() {
+        id++;
+    }
+
+    public int getId() {
+        return id;
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        A a1 = new Employee();
+        A a2 = new Professor();
+
+        a1.incrementId();
+        a2.incrementId();
+
+        System.out.println(a1.getId()); // What would be printed?
+    }
+}
+```
+- Now, let's walk through the main method:
+- A a1 = new Employee(); creates an instance of Employee and assigns it to the variable a1. The id in Employee is initialized to 0.
+- A a2 = new Professor(); creates an instance of Professor and assigns it to the variable a2. The id in Professor is also initialized to 0.
+- a1.incrementId(); calls the incrementId method on the Employee instance, which increments id from 0 to 1.
+- a2.incrementId(); calls the incrementId method on the Professor instance, which increments id from 0 to 1.
+- System.out.println(a1.getId()); calls the getId method on the Employee instance, which returns id, which is 1.
+- Therefore, the output printed will be: 1
+
+### Q.There are 1 million records, I want to print unique records in descending order of their age.
+- {"Smit", "1000", "30", "IT", "Some Address"});
+- {"Smit", "1000", "30", "IT", "Some Address"}); // Duplicate
+- {"Smit D", "1000", "30", "IT", "Some Address"});
+- {"Smit", "1000", "25", "IT", "Some Address"});
+- {"Smit", "1000", "25", "IT", "Some Address"}); // Duplicate
+- {"Smit", "1000", "25", "IT", "Some Address"}); // Duplicate
+- Given the requirement to handle 1 million records efficiently, we need to optimize the code for performance and memory usage. We can achieve this by using data structures and algorithms that have good performance characteristics.
+- Here’s a more optimized approach using a TreeSet to maintain unique records and sort them automatically:
+- Use a TreeSet with a custom comparator: This will ensure that the records are sorted as they are inserted and duplicates are handled efficiently.
+```
+class Employee implements Comparable<Employee> {
+    String name;
+    String salary;
+    int age;
+    String dept;
+    String address;
+
+    public Employee(String name, String salary, int age, String dept, String address) {
+        this.name = name;
+        this.salary = salary;
+        this.age = age;
+        this.dept = dept;
+        this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return age == employee.age &&
+                Objects.equals(name, employee.name) &&
+                Objects.equals(salary, employee.salary) &&
+                Objects.equals(dept, employee.dept) &&
+                Objects.equals(address, employee.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, salary, age, dept, address);
+    }
+
+    @Override
+    public String toString() {
+        return name + ", " + salary + ", " + age + ", " + dept;
+    }
+
+    @Override
+    public int compareTo(Employee other) {
+        if (this.age != other.age) {
+            return Integer.compare(other.age, this.age); // Descending order by age
+        } else {
+            // Break ties by comparing other fields to maintain uniqueness
+            int cmp = this.name.compareTo(other.name);
+            if (cmp != 0) return cmp;
+            cmp = this.salary.compareTo(other.salary);
+            if (cmp != 0) return cmp;
+            cmp = this.dept.compareTo(other.dept);
+            if (cmp != 0) return cmp;
+            return this.address.compareTo(other.address);
+        }
+    }
+}
+
+public class Main {
+    public void printStats(List<String[]> employeeDetails) {
+        Set<Employee> employeeSet = new TreeSet<>();
+        for (String[] details : employeeDetails) {
+            String name = details[0];
+            String salary = details[1];
+            int age = Integer.parseInt(details[2]);
+            String dept = details[3];
+            String address = details[4];
+            Employee employee = new Employee(name, salary, age, dept, address);
+            employeeSet.add(employee);
+        }
+
+        for (Employee employee : employeeSet) {
+            System.out.println(employee);
+        }
+    }
+
+    public static void main(String[] args) {
+        List<String[]> employeeDetails = new ArrayList<>();
+        employeeDetails.add(new String[]{"Smit", "1000", "30", "IT", "Some Address"});
+        employeeDetails.add(new String[]{"Smit", "1000", "30", "IT", "Some Address"}); // Duplicate
+        employeeDetails.add(new String[]{"Smit D", "1000", "30", "IT", "Some Address"});
+        employeeDetails.add(new String[]{"Smit", "1000", "25", "IT", "Some Address"});
+        employeeDetails.add(new String[]{"Smit", "1000", "25", "IT", "Some Address"}); // Duplicate
+        employeeDetails.add(new String[]{"Smit", "1000", "25", "IT", "Some Address"}); // Duplicate
+        // Add more records as needed
+
+        Main main = new Main();
+        main.printStats(employeeDetails);
+    }
+}
+```
+- Employee Class: The Employee class implements Comparable<Employee> to provide a natural ordering for the TreeSet. The compareTo method ensures that employees are sorted by age in descending order and breaks ties by comparing other fields to ensure uniqueness.
+- TreeSet: Using a TreeSet automatically sorts the elements and removes duplicates based on the compareTo method.
+- Main Logic: The printStats method processes the list of employee details and adds each employee to the TreeSet. It then iterates through the TreeSet and prints each unique, sorted employee. This approach ensures that the code is optimized for handling large datasets, providing efficient insertion, uniqueness check, and sorting with the TreeSet.
+
+### String with any numerical digits. Calculate the number of digits . 
+```
+public class Main {
+    public static void main(String[] args) {
+        String input = "This is a test string with numbers 1234567890";
+        int numberOfDigits = countDigits(input);
+        System.out.println("Number of digits in the string: " + numberOfDigits);
+    }
+
+    public static int countDigits(String input) {
+        int count = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (Character.isDigit(input.charAt(i))) {
+                count++;
+            }
+        }
+        return count;
+    }
+}
+``
+- Explanation:
+- Input String: The input string contains alphanumeric characters and spaces.
+- countDigits Method: This method takes a string as input and initializes a count variable to zero. It iterates over each character in the string. It checks if the current character is a digit using the Character.isDigit method.If it is a digit, it increments the count.
+- Main Method: The main method demonstrates the usage of the countDigits method with a sample input string. It prints the number of digits found in the string.
+- Output: When you run this code, it will output:  Number of digits in the string: 10
+- This solution is efficient with a time complexity of O(n), where n is the length of the string. It processes each character in the string exactly once.
 
