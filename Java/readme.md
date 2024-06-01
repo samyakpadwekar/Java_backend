@@ -45,9 +45,115 @@ System.out.println(str1 == str2); // Output: true
   - The cost of traversal for random access is not a concern.
   - You prefer efficient memory management when dealing with a large number of insertions and deletions.
 
+### Q.Singleton Design pattern.Is it thread safe?If not,how to make it thread safe?
+- The Singleton pattern ensures that a class has only one instance and provides a global point of access to that instance. Here's a basic implementation of the Singleton pattern in ```
+```
+public class Singleton {
+    // Private static instance variable
+    private static Singleton instance;
+
+    // Private constructor to prevent instantiation from outside
+    private Singleton() {
+    }
+
+    // Public static method to get the instance
+    public static Singleton getInstance() {
+        // Lazy initialization: create instance if not already exists
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+```
+- Explanation:
+1. Private Constructor: The constructor of the Singleton class is made private to prevent instantiation from outside the class.
+2. Static Instance Variable: A private static variable instance holds the single instance of the class.
+3. getInstance() Method: The public static method getInstance() provides a global point of access to the instance. It ensures that only one instance of the class is created and returned.
+4. Lazy Initialization: The above implementation uses lazy initialization, meaning the instance is created only when getInstance() is called for the first time. This approach is thread-safe for most scenarios but may lead to race conditions in a multithreaded environment.
+
+- **Thread-Safe Singleton**:
+-  To make the Singleton pattern thread-safe, you can use double-checked locking or initialize the instance statically. Here's an example using double-checked locking:
+```
+public class ThreadSafeSingleton {
+    private static volatile ThreadSafeSingleton instance;
+
+    private ThreadSafeSingleton() {
+    }
+
+    public static ThreadSafeSingleton getInstance() {
+        if (instance == null) {
+            synchronized (ThreadSafeSingleton.class) {
+                if (instance == null) {
+                    instance = new ThreadSafeSingleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+-In this version, the getInstance() method uses double-checked locking to ensure thread safety while minimizing synchronization overhead.
+- Singleton pattern is widely used in scenarios where you want to ensure that there is only one instance of a class throughout the application, such as logger, database connection, configuration settings, etc.
+
+### I am calling singleton getinstance method using serialisation and writing in some file , that is doing serialisation. That is storing the state. Now Using the same file which I stored I am doing deserialization , so now will I get 2 objects,right? (Extended question on previous question,may not be asked)
+- In the case of serialization and deserialization with a singleton class, if the class is implemented correctly, you should not get multiple instances of the singleton. Here's why:
+- Singleton Instance: The whole point of the singleton pattern is to ensure that only one instance of the class exists throughout the JVM.
+- Serialization and Deserialization: When you serialize a singleton object and then deserialize it back, the deserialized object will not have gone through the constructor. Instead, it will be created using the existing instance that was already in memory.
 
 
-## Coding
+## Coding and SQL
+
+### We Have an Employee table ,with 3 columns namely, Id , salary and name . Write a sql query to get name of employee with second highest salary.
+```
+SELECT name 
+FROM Employee 
+ORDER BY salary DESC 
+LIMIT 1 OFFSET 1;
+```
+- This will return only one employee with second highest salary and will not work in case of duplicate salaries. It orders the rows in the Employee table by salary in descending order using ORDER BY salary DESC.
+- It uses the LIMIT clause to restrict the result set to one row, starting from the second row (LIMIT 1 OFFSET 1), effectively selecting the second highest salary.
+- Finally, it selects the name of the employee with the second highest salary.
+- This optimized query is more concise and easier to understand compared to the nested subquery approach, and it achieves the same result.
+
+**What does limit 1 and offset 1 do.**
+- The LIMIT and OFFSET clauses are used in SQL queries to control the number of rows returned and where to start returning rows from, respectively.
+1. LIMIT: Specifies the maximum number of rows to return in the result set. For example, LIMIT 1 limits the result set to one row.
+2. OFFSET: Specifies the number of rows to skip before starting to return rows. For example, OFFSET 1 skips the first row.
+- In combination, LIMIT and OFFSET are commonly used for pagination or to retrieve subsets of rows from large result sets.
+- In the context of the query SELECT name FROM Employee ORDER BY salary DESC LIMIT 1 OFFSET 1;, LIMIT 1 restricts the result set to one row, and OFFSET 1 skips the first row. As a result, the query returns the second row in the sorted result set, effectively retrieving the name of the employee with the second highest salary.
+
+## For nth highest salary (handles duplicate salaries properly)
+- For finding the Nth highest salary, the approach can become quite complex with subqueries. Instead, we can use a different approach using LIMIT and OFFSET in SQL, which works well in MySQL. Here's the approach for finding the Nth highest salary using a Common Table Expression (CTE):
+- SQL Query to Find the Employee with the Nth Highest Salary:
+1. Using Common Table Expression (CTE) and DENSE_RANK():
+```
+WITH SalaryRank AS (
+    SELECT name, salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+    FROM Employee
+)
+SELECT name
+FROM SalaryRank
+WHERE rank = 4;  -- Replace 4 with N to get the Nth highest salary
+```
+- Explanation:
+1. Common Table Expression (CTE):
+- We define a CTE named SalaryRank that includes the columns name, salary, and the rank of each salary using the DENSE_RANK() window function. DENSE_RANK() ranks the rows based on the salary column in descending order.
+```
+WITH SalaryRank AS (
+    SELECT name, salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+    FROM Employee
+)
+```
+2. Select the Nth Highest Salary:
+- We then select the name of the employee where the rank matches the desired Nth position.
+```
+SELECT name
+FROM SalaryRank
+WHERE rank = 4;  -- Replace 4 with N to get the Nth highest salary
+```
+This method is flexible and allows you to easily find the Nth highest salary by changing the rank number in the final WHERE clause.
+
 
 ### Q.Implement a custom arraylist in Java, we should have 2 methods where we should be able to add elements, While adding the elements we should check the capacity , if the capacity is above 80 percent then we have to double the capacity of arraylist . Then we should have get method to get random access to elements.
 - To implement a custom ArrayList in Java, we'll create a class called CustomArrayList. This class will manage an array internally and provide methods to add elements and get elements by index. It will automatically resize the internal array when the capacity exceeds 80%.
