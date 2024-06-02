@@ -101,7 +101,6 @@ public class ThreadSafeSingleton {
 - Singleton Instance: The whole point of the singleton pattern is to ensure that only one instance of the class exists throughout the JVM.
 - Serialization and Deserialization: When you serialize a singleton object and then deserialize it back, the deserialized object will not have gone through the constructor. Instead, it will be created using the existing instance that was already in memory.
 
-
 ### Q.Some git commands
 - Initialize a new Git repository: git init
 - Clone an existing repository: git clone https://github.com/user/repository.git
@@ -153,6 +152,73 @@ The method getDetails(int id) in the Employee class is overridden in the Employe
 - In Java, method overriding has specific rules regarding access modifiers:
 - Private Methods: Private methods are not visible to subclasses. Therefore, they cannot be overridden. Each class has its own private copy of the method, and there is no relationship between the private methods in the superclass and the subclass. If both methods are private in the superclass and subclass, they are considered separate methods, not an override.
 - Protected Methods: Protected methods can be overridden by subclasses. The protected access modifier allows the method to be visible in the same package and in subclasses, even if they are in different packages. When a subclass overrides a protected method, it can use the same access level or a more permissive access level (i.e., protected or public).
+
+### Method Overloading vs Overriding
+- Method overloading and method overriding are both concepts used to achieve polymorphism in Java, but they have distinct differences. Here's a detailed comparison:
+1. Method Overloading (Compile Time Polymorphism)
+- Method overloading is the ability to create multiple methods in the same class with the same name but with different parameters (different type, number, or both).
+- Overloaded methods must have different parameter lists (type, number, or both).
+- The return type can be different in overloaded methods but does not contribute to the method signature (i.e. does not affect method overloading)
+- Access modifiers can be different, but it does not affect the method overloading.
+- Static methods can be overloaded.
+```
+public class MathUtils {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+public class TestOverloading {
+    public static void main(String[] args) {
+        MathUtils math = new MathUtils();
+        System.out.println(math.add(5, 3));       // Calls add(int, int)
+        System.out.println(math.add(5.0, 3.0));   // Calls add(double, double)
+        System.out.println(math.add(5, 3, 2));    // Calls add(int, int, int)
+    }
+}
+```
+2. Method Overriding (Runtime polymorphism)
+- Method overriding occurs when a subclass provides a specific implementation of a method that is already defined in its superclass.
+- The method in the subclass must have the same parameter list as the method in the superclass.
+- The return type must be the same or a subclass (covariant return type) of the return type declared in the original method in the superclass.
+- The access level cannot be more restrictive than the overridden method's access level in the superclass.
+- *Static methods cannot be overridden*. If you define a static method with the same signature in a subclass, it will hide the superclass static method.
+- The @Override annotation is often used to indicate that a method is overriding a method in its superclass. This is optional but recommended as it helps catch errors.
+```
+class Animal {
+    public void makeSound() {
+        System.out.println("Some generic animal sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Bark");
+    }
+}
+
+public class TestOverriding {
+    public static void main(String[] args) {
+        Animal myAnimal = new Dog();
+        myAnimal.makeSound(); // Outputs "Bark"
+    }
+}
+```
+
+### Q.String class in Java are immutable, why they are made immutable 
+- In Java, the String class is immutable for several reasons, each contributing to the robustness and performance of Java applications:
+1. String Pool: Java uses a string pool to manage memory more efficiently. If strings were mutable, changing the value of one string could inadvertently affect other strings that reference the same value in the pool.
+2. Security: Many critical parameters, like database connection URLs, user credentials, and file paths, are passed as strings. If strings were mutable, these values could be changed unintentionally or maliciously, leading to security vulnerabilities.
+3. Caching Hashcode: Immutable strings can cache their hashcode. Since the hashcode of an immutable string never changes, it can be computed once and reused, improving performance in scenarios like using strings as keys in hash-based collections.
+4. Thread Safety (Concurrency): Immutable objects are inherently thread-safe, as their state cannot change after they are created. This eliminates the need for synchronization when strings are shared between multiple threads, simplifying concurrent programming. (*Strings are thread safe*)
 
 
 
@@ -566,3 +632,90 @@ public class Main {
 - Output: When you run this code, it will output:  Number of digits in the string: 10
 - This solution is efficient with a time complexity of O(n), where n is the length of the string. It processes each character in the string exactly once.
 
+### Output of below java code
+```
+public class Test {
+    public static void main(String[] args) {
+        Integer a = 1000, b = 1000;
+        System.out.println(a == b);
+
+        Integer c = 100, d = 100;
+        System.out.println(c == d);
+    }
+}
+```
+The output of this code will be:
+```
+false
+true
+```
+- Explanation:
+1. Integer Caching Mechanism: Java caches Integer objects for values between -128 and 127. This is known as the Integer Cache.When you create Integer objects using autoboxing within this range, they refer to the same cached objects.
+2. Comparison with == Operator: The == operator compares the references of objects, not their values.
+- Analysis of the Code:
+For a and b:
+```
+Integer a = 1000, b = 1000;
+System.out.println(a == b);
+```
+The values 1000 are outside the cache range (-128 to 127). Therefore, a and b refer to different Integer objects. a == b compares the references of these two different objects, which are not the same. Thus, the output is *false*. \
+For c and d:
+```
+Integer c = 100, d = 100;
+System.out.println(c == d);
+```
+The values 100 are within the cache range (-128 to 127). Therefore, c and d refer to the same cached Integer object. c == d compares the references of these two objects, which are the same. Thus, the output is *true*.
+
+
+### Check if strings are anagrams of each others
+- Anagrams are strings that are exactly same when read from front or back
+1. Sort and Check
+```
+public static boolean areAnagrams(String str1, String str2) {
+        // If lengths are not the same, they cannot be anagrams
+        if (str1.length() != str2.length()) {
+            return false;
+        }
+
+        // Convert both strings to character arrays
+        char[] charArray1 = str1.toCharArray();
+        char[] charArray2 = str2.toCharArray();
+
+        // Sort both character arrays
+        Arrays.sort(charArray1);
+        Arrays.sort(charArray2);
+
+        // Compare the sorted arrays
+        return Arrays.equals(charArray1, charArray2);
+    }
+```
+2. Using Character Count
+```
+public static boolean areAnagrams(String str1, String str2) {
+        if (str1.length() != str2.length()) {
+            return false;
+        }
+
+        Map<Character, Integer> charCountMap = new HashMap<>();
+
+        // Count characters in the first string
+        for (char c : str1.toCharArray()) {
+            charCountMap.put(c, charCountMap.getOrDefault(c, 0) + 1);
+        }
+
+        // Subtract counts using the second string
+        for (char c : str2.toCharArray()) {
+            if (!charCountMap.containsKey(c)) {
+                return false;
+            }
+            charCountMap.put(c, charCountMap.get(c) - 1);
+            if (charCountMap.get(c) == 0) {
+                charCountMap.remove(c);
+            }
+        }
+
+        // If the map is empty, the strings are anagrams
+        return charCountMap.isEmpty();
+    }
+
+```
