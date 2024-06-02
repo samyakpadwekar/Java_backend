@@ -427,6 +427,196 @@ Disadvantages of Using Such a Class as a Key in a Map
 - Lookup (get): O(n) with a linked list. O(log n) with a balanced tree (Java 8+ with many collisions)
 - Deletion (remove): O(n) with a linked list. O(log n) with a balanced tree (Java 8+ with many collisions)
 
+### Q.Is hashmap thread safe?
+- No, HashMap is not thread-safe. If multiple threads access a HashMap concurrently and at least one of the threads modifies the map structurally (e.g., adding or removing elements), it must be synchronized externally to avoid data corruption and unpredictable behavior. Structural modifications are those that affect the size of the map or modify the internal structure of the map in a way that can cause a concurrent access issue.
+
+### Q.Volatile keyword in Java
+- The volatile keyword in Java is used to mark a variable as being stored in main memory. More precisely, every read of a volatile variable will be read from the computer's main memory, and not from the CPU cache, and every write to a volatile variable will be written to main memory, and not just to the CPU cache. Volatile only ensures readability i.e visibility and not thread safety that means multiple threads can work on it simultaneously,it has to be synchronized externally for thread safety.
+
+### Q.Can volatile keyword used with primitive datatype
+- Yes, the volatile keyword can be used with primitive data types in Java. This ensures that any read or write to a volatile variable is done directly to and from the main memory, thus making changes visible to all threads.
+- Visibility but Not Atomicity: Declaring a variable as volatile ensures that its value is always read from and written to main memory, making changes visible to all threads. However, operations like incrementing a counter (counter++) are not atomic, even if the variable is declared volatile. These operations involve multiple steps (read, modify, write), and volatile does not ensure atomicity.
+
+### Q.Can we use volatile with object reference or for object reference 
+- Yes, you can use the volatile keyword with object references in Java. This ensures that the reference to the object is always read from and written to main memory, making any changes to the reference visible to all threads. However, it is important to note that volatile does not make the object itself thread-safe; it only ensures the visibility of the reference to the object.
+
+### Q.which maps are thread safe in java collections?
+1. *Collections.synchronizedMap*
+2. *ConcurrentHashMap*
+- Choosing the Right Thread-Safe Map
+1. Performance: If you need high performance in a concurrent environment, ConcurrentHashMap is typically the best choice. It allows concurrent reads and fine-grained locking for write operations.
+2. Legacy Code: If you’re working with legacy code that already uses Hashtable or if simplicity is a priority over performance, Hashtable or Collections.synchronizedMap might be sufficient.
+3. Simplicity vs. Concurrency: If you need a simple thread-safe map and don’t expect high contention, Collections.synchronizedMap can be used. However, for better scalability and performance, especially in a highly concurrent environment, prefer ConcurrentHashMap.
+
+### Q.ConcurrentHashmap and synchronisedHashmap difference 
+1. Concurrency Strategy:
+- ConcurrentHashMap: Uses a partitioned locking mechanism, where the map is divided into segments, and each segment has its own lock. Multiple threads can modify the map concurrently as long as they are operating on different segments.
+- Collections.synchronizedMap(HashMap): Utilizes a single lock to synchronize access to the entire map. Only one thread can modify the map at a time, while other threads must wait for the lock to be released.
+
+2. Performance:
+- ConcurrentHashMap: Generally offers better performance under high concurrency due to its finer-grained locking strategy and reduced contention.
+- Collections.synchronizedMap(HashMap): Tends to exhibit poorer performance under heavy concurrent access, as all operations are synchronized on a single mutex, leading to more contention and potential thread contention.
+
+3.Iterators:
+- ConcurrentHashMap: Supports weakly consistent iterators, meaning they reflect the state of the map at the time of creation and may or may not show the effects of subsequent modifications.
+- Collections.synchronizedMap(HashMap): Provides fail-fast iterators, which throw ConcurrentModificationException if the map is structurally modified while an iterator is in use.
+
+### Let's say a application is using synchroniseMap , can we replace this with concurrentHashmap, will any issue happens or we can directly replace it?And is vice versa possible?
+- Replacing a Collections.synchronizedMap with a ConcurrentHashMap can generally be done to improve performance in a concurrent application. However, there are a few considerations and potential issues to be aware of before making the switch. 
+- Direct Replacement: If the application only uses basic map operations (put, get, remove, etc.) and does not rely on iteration, the replacement is straightforward. You can replace instances of Collections.synchronizedMap with ConcurrentHashMap directly.
+- Iteration:  In Collections.synchronizedMap, you must synchronize on the map object during iteration to avoid ConcurrentModificationException.
+- Null Keys and Values: ConcurrentHashMap does not allow null keys or values. If your code relies on storing nulls, you will need to refactor to avoid using nulls.
+
+
+- Yes, replacing a ConcurrentHashMap with a Collections.synchronizedMap is possible, but there are several considerations and potential issues to be aware of.
+- Direct Replacement: You can replace instances of ConcurrentHashMap with Collections.synchronizedMap(new HashMap<>()) directly.
+- Iteration: When iterating over a Collections.synchronizedMap, you must synchronize on the map object to avoid ConcurrentModificationException.
+
+java
+Copy code
+// Original code with ConcurrentHashMap (no explicit synchronization required)
+for (Map.Entry<String, Integer> entry : concurrentMap.entrySet()) {
+    // process entry
+}
+
+// Replacement code with synchronizedMap (explicit synchronization required)
+synchronized (synchronizedMap) {
+    for (Map.Entry<String, Integer> entry : synchronizedMap.entrySet()) {
+        // process entry
+    }
+}
+Atomic Operations:
+
+ConcurrentHashMap provides atomic operations such as putIfAbsent, computeIfAbsent, computeIfPresent, etc. If you replace ConcurrentHashMap with Collections.synchronizedMap, you need to handle these operations manually using synchronization.
+
+java
+Copy code
+// Original code with ConcurrentHashMap
+concurrentMap.putIfAbsent("key", 1);
+
+// Replacement code with synchronizedMap
+synchronized (synchronizedMap) {
+    if (!synchronizedMap.containsKey("key")) {
+        synchronizedMap.put("key", 1);
+    }
+}
+Performance Considerations:
+
+Collections.synchronizedMap synchronizes all access to the map, which can significantly degrade performance in highly concurrent scenarios compared to ConcurrentHashMap which allows concurrent reads and fine-grained locking for writes.
+Potential Issues
+Performance Degradation:
+
+Collections.synchronizedMap uses a single lock for all operations, which can become a bottleneck under high concurrency. This can lead to poor performance and increased contention.
+Behavioral Differences:
+
+Iteration over Collections.synchronizedMap requires explicit synchronization, whereas ConcurrentHashMap iterators are weakly consistent and do not require explicit synchronization.
+Ensure that any logic relying on weakly consistent iterators is adjusted accordingly.
+Compound Actions:
+
+Atomic compound actions provided by ConcurrentHashMap will need to be handled manually using synchronization when using Collections.synchronizedMap.
+Example
+Here is a detailed example demonstrating the replacement and the necessary changes:
+
+Original Code with ConcurrentHashMap
+java
+Copy code
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ConcurrentHashMapExample {
+    public static void main(String[] args) {
+        Map<String, Integer> concurrentMap = new ConcurrentHashMap<>();
+
+        // Put and get operations
+        concurrentMap.put("one", 1);
+        concurrentMap.put("two", 2);
+        System.out.println("Value for 'one': " + concurrentMap.get("one"));
+
+        // Atomic operation
+        concurrentMap.putIfAbsent("three", 3);
+
+        // Iteration
+        for (Map.Entry<String, Integer> entry : concurrentMap.entrySet()) {
+            System.out.println(entry.getKey() + " = " + entry.getValue());
+        }
+    }
+}
+Replacement Code with Collections.synchronizedMap
+java
+Copy code
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class SynchronizedMapExample {
+    public static void main(String[] args) {
+        Map<String, Integer> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
+
+        // Put and get operations
+        synchronizedMap.put("one", 1);
+        synchronizedMap.put("two", 2);
+        System.out.println("Value for 'one': " + synchronizedMap.get("one"));
+
+        // Atomic operation
+        synchronized (synchronizedMap) {
+            if (!synchronizedMap.containsKey("three")) {
+                synchronizedMap.put("three", 3);
+            }
+        }
+
+        // Iteration
+        synchronized (synchronizedMap) {
+            for (Map.Entry<String, Integer> entry : synchronizedMap.entrySet()) {
+                System.out.println(entry.getKey() + " = " + entry.getValue());
+            }
+        }
+    }
+}
+Summary
+Replacing ConcurrentHashMap with Collections.synchronizedMap is possible but generally not advisable due to potential performance degradation and different handling of concurrent operations. If you must make this replacement, ensure that:
+
+You handle iteration with explicit synchronization.
+You manually handle atomic operations with proper synchronization.
+You thoroughly test the application to ensure correctness and acceptable performance.
+By addressing these considerations, you can make the replacement safely, though the performance may suffer under high concurrency.
+
+### Q.how does synchronized and concurrentHashMap ensures thread safety?or hwo do they achieve concurrency?
+- Collections.synchronizedMap ensures thread safety by synchronizing all method calls using the intrinsic lock of the synchronized map object, resulting in coarse-grained locking. In contrast, ConcurrentHashMap uses finer-grained locking and non-blocking algorithms, providing much better scalability and performance under high concurrency.
+
+1. Collections.synchronizedMap
+- The Collections.synchronizedMap method returns a synchronized (thread-safe) map backed by the specified map. This synchronization is achieved by wrapping the map and synchronizing access to it using the intrinsic lock (monitor) of the synchronized map object.
+- How It Works:
+1. Synchronization on Each Method Call: Every method that accesses or modifies the map is synchronized, ensuring that only one thread can execute a method at a time. This is done by using the synchronized keyword on the methods.
+2. Intrinsic Lock: The lock used for synchronization is the intrinsic lock (monitor) of the synchronizedMap object.
+
+2. ConcurrentHashMap
+- ConcurrentHashMap is part of the java.util.concurrent package and provides a more sophisticated and efficient way to handle concurrency.
+- How It Works:
+1. Segmented Locking (Prior to Java 8): In earlier versions (Java 7 and before), ConcurrentHashMap used a segmented locking mechanism. The map was divided into segments, each with its own lock. This allowed multiple threads to access different segments concurrently without contention.
+2. Lock Striping (Java 8 and later): In Java 8, the internal structure of ConcurrentHashMap was redesigned to use a finer-grained locking mechanism called lock striping, and it also introduced non-blocking algorithms (using CAS operations) for some operations.
+- Fine-Grained Synchronization:
+1. Bucket-Level Locking: Instead of locking the entire map, it locks only a part of the map. This significantly reduces contention and improves throughput.
+2. Non-Blocking Reads: Read operations do not block, thanks to the use of volatile variables and atomic operations.
+
+### what is wait(),notify() and notifyAll() method?
+1. wait(): Causes the current thread to wait until another thread invokes the notify() method or the notifyAll() method for this object.
+2. notify(): Wakes up a single thread that is waiting on this object's monitor.
+3. notifyAll(): Wakes up all threads that are waiting on this object's monitor.
+- Here's a brief overview of how they are typically used:
+1. wait() is called within a synchronized block to release the lock and wait until another thread notifies it.
+2. notify() is called to notify a single waiting thread that it can proceed. It's important to note that which thread gets notified is not deterministic.
+3. notifyAll() is called to notify all waiting threads that they can proceed. This method is often used to avoid the risk of leaving threads waiting indefinitely, which can occur with notify() if the wrong thread gets notified.
+- These methods are commonly used in concurrent programming to implement producer-consumer scenarios, where one thread produces data and another consumes it. They are also used in other scenarios where synchronization between threads is necessary. It's important to use them carefully to avoid issues like deadlock or livelock.
+
+### Q.why wait(),notify() and notifyAll() is in Object class and not in Thread class?
+- In the Java language, you wait() on a particular instance of an Object – a monitor assigned to that object to be precise. If you want to send a signal to one thread that is waiting on that specific object instance then you call notify() on that object. If you want to send a signal to all threads that are waiting on that object instance, you use notifyAll() on that object.
+- If wait() and notify() were on the Thread instead then each thread would have to know the status of every other thread. How would thread1 know that thread2 was waiting for access to a particular resource? If thread1 needed to call thread2.notify() it would have to somehow find out that thread2 was waiting. There would need to be some mechanism for threads to register the resources or actions that they need so others could signal them when stuff was ready or available.
+- In Java, the object itself is the entity that is shared between threads which allows them to communicate with each other. The threads have no specific knowledge of each other and they can run asynchronously. They run and they lock, wait, and notify on the object that they want to get access to. They have no knowledge of other threads and don't need to know their status. They don't need to know that it is thread2 which is waiting for the resource – they just notify on the resource and whomever it is that is waiting (if anyone) will be notified.
+- In Java, we then use objects as synchronization, mutex, and communication points between threads. We synchronize on an object to get mutex access to an important code block and to synchronize memory. We wait on an object if we are waiting for some condition to change – some resource to become available. We notify on an object if we want to awaken sleeping threads.
+
+
+
+
 ## Coding and SQL
 
 ### We Have an Employee table ,with 3 columns namely, Id , salary and name . Write a sql query to get name of employee with second highest salary.
