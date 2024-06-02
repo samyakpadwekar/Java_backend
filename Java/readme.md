@@ -448,7 +448,18 @@ Disadvantages of Using Such a Class as a Key in a Map
 2. Legacy Code: If you’re working with legacy code that already uses Hashtable or if simplicity is a priority over performance, Hashtable or Collections.synchronizedMap might be sufficient.
 3. Simplicity vs. Concurrency: If you need a simple thread-safe map and don’t expect high contention, Collections.synchronizedMap can be used. However, for better scalability and performance, especially in a highly concurrent environment, prefer ConcurrentHashMap.
 
-### Q.ConcurrentHashmap and synchronisedHashmap difference 
+### what is wait(),notify() and notifyAll() method?
+1. wait(): Causes the current thread to wait until another thread invokes the notify() method or the notifyAll() method for this object.
+2. notify(): Wakes up a single thread that is waiting on this object's monitor.
+3. notifyAll(): Wakes up all threads that are waiting on this object's monitor.
+- Here's a brief overview of how they are typically used:
+1. wait() is called within a synchronized block to release the lock and wait until another thread notifies it.
+2. notify() is called to notify a single waiting thread that it can proceed. It's important to note that which thread gets notified is not deterministic.
+3. notifyAll() is called to notify all waiting threads that they can proceed. This method is often used to avoid the risk of leaving threads waiting indefinitely, which can occur with notify() if the wrong thread gets notified.
+- These methods are commonly used in concurrent programming to implement producer-consumer scenarios, where one thread produces data and another consumes it. They are also used in other scenarios where synchronization between threads is necessary. It's important to use them carefully to avoid issues like deadlock or livelock.
+
+
+### Q.ConcurrentHashmap and synchronisedHashmap difference (multithreadibg questions from this are asked only in companies that requires very strong multithreading knowledge)
 1. Concurrency Strategy:
 - ConcurrentHashMap: Uses a partitioned locking mechanism, where the map is divided into segments, and each segment has its own lock. Multiple threads can modify the map concurrently as long as they are operating on different segments.
 - Collections.synchronizedMap(HashMap): Utilizes a single lock to synchronize access to the entire map. Only one thread can modify the map at a time, while other threads must wait for the lock to be released.
@@ -462,123 +473,16 @@ Disadvantages of Using Such a Class as a Key in a Map
 - Collections.synchronizedMap(HashMap): Provides fail-fast iterators, which throw ConcurrentModificationException if the map is structurally modified while an iterator is in use.
 
 ### Let's say a application is using synchroniseMap , can we replace this with concurrentHashmap, will any issue happens or we can directly replace it?And is vice versa possible?
-- Replacing a Collections.synchronizedMap with a ConcurrentHashMap can generally be done to improve performance in a concurrent application. However, there are a few considerations and potential issues to be aware of before making the switch. 
-- Direct Replacement: If the application only uses basic map operations (put, get, remove, etc.) and does not rely on iteration, the replacement is straightforward. You can replace instances of Collections.synchronizedMap with ConcurrentHashMap directly.
-- Iteration:  In Collections.synchronizedMap, you must synchronize on the map object during iteration to avoid ConcurrentModificationException.
-- Null Keys and Values: ConcurrentHashMap does not allow null keys or values. If your code relies on storing nulls, you will need to refactor to avoid using nulls.
+- While replacing Collections.synchronizedMap with ConcurrentHashMap, take care of below points :
+- Iteration Handling: Ensure that any manual synchronization used with synchronizedMap during iteration is removed when switching to ConcurrentHashMap.
+- Null Key and Value Handling: Check and refactor any code that relies on inserting null keys or values, as ConcurrentHashMap does not allow them.
+- Atomic Operations: Leverage the atomic operations(putIfAbsent, remove, and replace) provided by ConcurrentHashMap to simplify and optimize your code.
 
-
-- Yes, replacing a ConcurrentHashMap with a Collections.synchronizedMap is possible, but there are several considerations and potential issues to be aware of.
-- Direct Replacement: You can replace instances of ConcurrentHashMap with Collections.synchronizedMap(new HashMap<>()) directly.
-- Iteration: When iterating over a Collections.synchronizedMap, you must synchronize on the map object to avoid ConcurrentModificationException.
-
-java
-Copy code
-// Original code with ConcurrentHashMap (no explicit synchronization required)
-for (Map.Entry<String, Integer> entry : concurrentMap.entrySet()) {
-    // process entry
-}
-
-// Replacement code with synchronizedMap (explicit synchronization required)
-synchronized (synchronizedMap) {
-    for (Map.Entry<String, Integer> entry : synchronizedMap.entrySet()) {
-        // process entry
-    }
-}
-Atomic Operations:
-
-ConcurrentHashMap provides atomic operations such as putIfAbsent, computeIfAbsent, computeIfPresent, etc. If you replace ConcurrentHashMap with Collections.synchronizedMap, you need to handle these operations manually using synchronization.
-
-java
-Copy code
-// Original code with ConcurrentHashMap
-concurrentMap.putIfAbsent("key", 1);
-
-// Replacement code with synchronizedMap
-synchronized (synchronizedMap) {
-    if (!synchronizedMap.containsKey("key")) {
-        synchronizedMap.put("key", 1);
-    }
-}
-Performance Considerations:
-
-Collections.synchronizedMap synchronizes all access to the map, which can significantly degrade performance in highly concurrent scenarios compared to ConcurrentHashMap which allows concurrent reads and fine-grained locking for writes.
-Potential Issues
-Performance Degradation:
-
-Collections.synchronizedMap uses a single lock for all operations, which can become a bottleneck under high concurrency. This can lead to poor performance and increased contention.
-Behavioral Differences:
-
-Iteration over Collections.synchronizedMap requires explicit synchronization, whereas ConcurrentHashMap iterators are weakly consistent and do not require explicit synchronization.
-Ensure that any logic relying on weakly consistent iterators is adjusted accordingly.
-Compound Actions:
-
-Atomic compound actions provided by ConcurrentHashMap will need to be handled manually using synchronization when using Collections.synchronizedMap.
-Example
-Here is a detailed example demonstrating the replacement and the necessary changes:
-
-Original Code with ConcurrentHashMap
-java
-Copy code
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-public class ConcurrentHashMapExample {
-    public static void main(String[] args) {
-        Map<String, Integer> concurrentMap = new ConcurrentHashMap<>();
-
-        // Put and get operations
-        concurrentMap.put("one", 1);
-        concurrentMap.put("two", 2);
-        System.out.println("Value for 'one': " + concurrentMap.get("one"));
-
-        // Atomic operation
-        concurrentMap.putIfAbsent("three", 3);
-
-        // Iteration
-        for (Map.Entry<String, Integer> entry : concurrentMap.entrySet()) {
-            System.out.println(entry.getKey() + " = " + entry.getValue());
-        }
-    }
-}
-Replacement Code with Collections.synchronizedMap
-java
-Copy code
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-public class SynchronizedMapExample {
-    public static void main(String[] args) {
-        Map<String, Integer> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
-
-        // Put and get operations
-        synchronizedMap.put("one", 1);
-        synchronizedMap.put("two", 2);
-        System.out.println("Value for 'one': " + synchronizedMap.get("one"));
-
-        // Atomic operation
-        synchronized (synchronizedMap) {
-            if (!synchronizedMap.containsKey("three")) {
-                synchronizedMap.put("three", 3);
-            }
-        }
-
-        // Iteration
-        synchronized (synchronizedMap) {
-            for (Map.Entry<String, Integer> entry : synchronizedMap.entrySet()) {
-                System.out.println(entry.getKey() + " = " + entry.getValue());
-            }
-        }
-    }
-}
-Summary
-Replacing ConcurrentHashMap with Collections.synchronizedMap is possible but generally not advisable due to potential performance degradation and different handling of concurrent operations. If you must make this replacement, ensure that:
-
-You handle iteration with explicit synchronization.
-You manually handle atomic operations with proper synchronization.
-You thoroughly test the application to ensure correctness and acceptable performance.
-By addressing these considerations, you can make the replacement safely, though the performance may suffer under high concurrency.
+- While replacing ConcurrentHashMap with Collections.synchronizedMap, take care of below points :
+- Iteration Handling: Add manual synchronization for iteration to prevent ConcurrentModificationException (as synchronizedMap will throw this execption which was not in ConcurrentHashMap).
+- Null Key and Value Handling: Ensure that null keys and values are properly handled or prevented.
+- Performance and Concurrency: Be aware of potential performance degradation due to increased contention and lower concurrency.
+- Atomic Operations: Add necessary synchronization logic to ensure atomicity of operations as ConcurrenthashMaps atomic method will be absent in synchronizedMap.
 
 ### Q.how does synchronized and concurrentHashMap ensures thread safety?or hwo do they achieve concurrency?
 - Collections.synchronizedMap ensures thread safety by synchronizing all method calls using the intrinsic lock of the synchronized map object, resulting in coarse-grained locking. In contrast, ConcurrentHashMap uses finer-grained locking and non-blocking algorithms, providing much better scalability and performance under high concurrency.
@@ -598,24 +502,153 @@ By addressing these considerations, you can make the replacement safely, though 
 1. Bucket-Level Locking: Instead of locking the entire map, it locks only a part of the map. This significantly reduces contention and improves throughput.
 2. Non-Blocking Reads: Read operations do not block, thanks to the use of volatile variables and atomic operations.
 
-### what is wait(),notify() and notifyAll() method?
-1. wait(): Causes the current thread to wait until another thread invokes the notify() method or the notifyAll() method for this object.
-2. notify(): Wakes up a single thread that is waiting on this object's monitor.
-3. notifyAll(): Wakes up all threads that are waiting on this object's monitor.
-- Here's a brief overview of how they are typically used:
-1. wait() is called within a synchronized block to release the lock and wait until another thread notifies it.
-2. notify() is called to notify a single waiting thread that it can proceed. It's important to note that which thread gets notified is not deterministic.
-3. notifyAll() is called to notify all waiting threads that they can proceed. This method is often used to avoid the risk of leaving threads waiting indefinitely, which can occur with notify() if the wrong thread gets notified.
-- These methods are commonly used in concurrent programming to implement producer-consumer scenarios, where one thread produces data and another consumes it. They are also used in other scenarios where synchronization between threads is necessary. It's important to use them carefully to avoid issues like deadlock or livelock.
-
 ### Q.why wait(),notify() and notifyAll() is in Object class and not in Thread class?
 - In the Java language, you wait() on a particular instance of an Object – a monitor assigned to that object to be precise. If you want to send a signal to one thread that is waiting on that specific object instance then you call notify() on that object. If you want to send a signal to all threads that are waiting on that object instance, you use notifyAll() on that object.
 - If wait() and notify() were on the Thread instead then each thread would have to know the status of every other thread. How would thread1 know that thread2 was waiting for access to a particular resource? If thread1 needed to call thread2.notify() it would have to somehow find out that thread2 was waiting. There would need to be some mechanism for threads to register the resources or actions that they need so others could signal them when stuff was ready or available.
 - In Java, the object itself is the entity that is shared between threads which allows them to communicate with each other. The threads have no specific knowledge of each other and they can run asynchronously. They run and they lock, wait, and notify on the object that they want to get access to. They have no knowledge of other threads and don't need to know their status. They don't need to know that it is thread2 which is waiting for the resource – they just notify on the resource and whomever it is that is waiting (if anyone) will be notified.
 - In Java, we then use objects as synchronization, mutex, and communication points between threads. We synchronize on an object to get mutex access to an important code block and to synchronize memory. We wait on an object if we are waiting for some condition to change – some resource to become available. We notify on an object if we want to awaken sleeping threads.
 
+### Q.Producer Consumer Multithreading problem (Solution must handle multiple producer and multiple consumer)
+- The Producer-Consumer problem is a classic synchronization problem in which a fixed-size buffer is shared between multiple producer threads and multiple consumer threads. Producers produce items and place them into the buffer, while consumers take items from the buffer. The buffer must be protected from concurrent access to ensure data consistency and to avoid race conditions.
+- Here is a working solution using Java's BlockingQueue to handle multiple producers and multiple consumers. *BlockingQueue provides thread-safe operations and handles synchronization internally*.
+```
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
+class Producer implements Runnable {
+    private BlockingQueue<Integer> queue;
+    private int id;
 
+    public Producer(BlockingQueue<Integer> queue, int id) {
+        this.queue = queue;
+        this.id = id;
+    }
+
+    @Override
+    public void run() {
+        try {
+            int item;
+            while (true) {
+                item = produce(); //Calls the produce method to generate an item.
+                queue.put(item); //Puts the produced item into the queue. If the queue is full, this method blocks until space becomes available.
+                System.out.println("Producer " + id + " produced: " + item);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private int produce() {
+        // Simulate item production
+        return (int) (Math.random() * 100);
+    }
+}
+
+class Consumer implements Runnable {
+    private BlockingQueue<Integer> queue;
+    private int id;
+
+    public Consumer(BlockingQueue<Integer> queue, int id) {
+        this.queue = queue;
+        this.id = id;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                int item = queue.take();//Takes an item from the queue. If the queue is empty, this method blocks until an item becomes available.
+                consume(item);//Calls the consume method to process the consumed item.
+                System.out.println("Consumer " + id + " consumed: " + item);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void consume(int item) {
+        // Simulate item consumption
+    }
+}
+
+public class ProducerConsumerExample {
+    public static void main(String[] args) {
+        final int BUFFER_SIZE = 10;
+        final int NUM_PRODUCERS = 4;
+        final int NUM_CONSUMERS = 4;
+
+        BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(BUFFER_SIZE);
+
+        // Start producer threads
+        for (int i = 1; i <= NUM_PRODUCERS; i++) {
+            new Thread(new Producer(queue, i)).start();
+        }
+
+        // Start consumer threads
+        for (int i = 1; i <= NUM_CONSUMERS; i++) {
+            new Thread(new Consumer(queue, i)).start();
+        }
+    }
+}
+```
+- Explanation
+1. BlockingQueue:
+- The BlockingQueue interface is part of the java.util.concurrent package and is designed to handle producer-consumer scenarios.
+- ArrayBlockingQueue is used as the buffer, which has a fixed capacity (BUFFER_SIZE). It provides thread-safe put and take methods.
+2. Producer Class:
+- Implements the Runnable interface.
+- In the run method, it continuously produces items and puts them into the queue using queue.put(item). The put method blocks if the queue is full, ensuring that producers wait until space is available.
+3. Consumer Class:
+- Implements the Runnable interface.
+- In the run method, it continuously takes items from the queue using queue.take(). The take method blocks if the queue is empty, ensuring that consumers wait until items are available.
+4. Main Method:
+- Creates an ArrayBlockingQueue with a specified buffer size.
+- Starts multiple producer and consumer threads.
+
+- Key Points
+- BlockingQueue: Manages synchronization internally, making the code simpler and easier to understand.
+- Multiple Producers and Consumers: The solution handles multiple producers and consumers without additional synchronization mechanisms.
+- Blocking Methods: put and take methods in BlockingQueue handle blocking when the queue is full or empty, respectively.
+- This approach ensures that producers and consumers can operate concurrently without the risk of race conditions, while also efficiently managing the buffer size.
+
+- Internal Mechanism
+- The ArrayBlockingQueue (and other implementations of BlockingQueue) handle these blocking operations internally using low-level concurrency primitives such as locks and condition variables. Here's a simplified explanation of the internal mechanism:
+- Locks: The queue uses locks to ensure that only one thread can modify the queue at a time. This prevents race conditions.
+- Condition Variables: The queue uses condition variables to manage the state of the queue (e.g., not empty, not full). Threads can wait on these conditions and be notified when the conditions change.
+
+### Q. In the run methods we have called expections , what will happen if interurrupt exception is recieved, will thread stop or continue?
+- In the run methods of both the Producer and Consumer classes, we catch InterruptedException. What Happens When InterruptedException is Received
+- Interruption During Blocking Operations: If a thread is blocked on a queue.put() (for the producer) or queue.take() (for the consumer) and it is interrupted, an InterruptedException is thrown.
+- Handling the Exception: When InterruptedException is caught, the code inside the catch block is executed. Thread.currentThread().interrupt(); is called to restore the interrupted status of the thread. This is a common practice to ensure that the thread's interrupted status is preserved, allowing other parts of the code to detect that an interruption has occurred.
+- Thread Behavior After Interruption:
+- Exiting the Loop: In the provided code, the while (true) loop does not have a break statement after catching the InterruptedException, so the thread does not exit the loop. Instead, it continues running and re-enters the loop.
+- Continuing Execution: Since the loop continues, the thread will attempt to perform the blocking operation (put or take) again. If the thread is not interrupted again, it will continue its normal operation.
+- Modifying the Code to Stop the Thread :If you want the thread to stop executing when it is interrupted, you need to add a break statement or return statement inside the catch block:
+
+### Q.Apart from blocking queue, is there any other way to handle this producer and consumer problem?
+- Yes, you can solve the Producer-Consumer problem using a LinkedList along with explicit synchronization using wait() and notify() methods. This approach requires careful handling of synchronization to avoid race conditions and ensure proper coordination between producer and consumer threads.
+
+### Q.What thing to take care when using wait method ?
+- When using the wait() method in Java, it is crucial to ensure correct synchronization and proper handling of the wait-notify mechanism. 
+- wait() must be called within a synchronized block or method. The thread must own the monitor (lock) of the object on which wait() is called.
+- Always use the same lock object for calling wait(), notify(), and notifyAll().
+- Handling Spurious Wakeups:
+- wait() can sometimes return without being notified (a spurious wakeup). To handle this, always call wait() inside a loop that checks the condition. The loop ensures that after being awakened, the thread rechecks the condition and waits again if necessary.
+```
+synchronized(lock) {
+    while (!condition) {
+        lock.wait();
+    }
+  // perform action
+}
+```
+- Properly Use notify() and notifyAll(): Use *notify()* to wake up a single thread waiting on the object's monitor. This should be used when only one thread needs to proceed. Use *notifyAll()* to wake up all threads waiting on the object's monitor. This should be used when any of the waiting threads can proceed.
+- Interruptions: Handle InterruptedException appropriately. If a thread is interrupted while waiting, it throws InterruptedException. Typically, you should restore the interrupted status of the thread or handle the interruption in a meaningful way.
+- Summary
+1. Synchronization: Ensure wait() and notify() are called within synchronized blocks.
+2. Condition Check: Always use wait() inside a loop that checks the condition.
+3. Notify Properly: Use notify() or notifyAll() to wake up waiting threads appropriately.
+4. Interruptions: Handle InterruptedException and restore the thread's interrupt status.
 
 ## Coding and SQL
 
@@ -669,6 +702,13 @@ WHERE rank = 4;  -- Replace 4 with N to get the Nth highest salary
 ```
 This method is flexible and allows you to easily find the Nth highest salary by changing the rank number in the final WHERE clause.
 
+### Q. There are two tables, Emp and Dept , Deptid is foreign key in Emp, Write a sql query to get department name and number of employees in that department 
+```
+SELECT D.dept_name, COUNT(E.emp_id) AS num_employees
+FROM DEPT D
+LEFT JOIN EMP E ON D.dept_id = E.dept_id
+GROUP BY D.dept_name;
+```
 
 ### Q.Implement a custom arraylist in Java, we should have 2 methods where we should be able to add elements, While adding the elements we should check the capacity , if the capacity is above 80 percent then we have to double the capacity of arraylist . Then we should have get method to get random access to elements.
 - To implement a custom ArrayList in Java, we'll create a class called CustomArrayList. This class will manage an array internally and provide methods to add elements and get elements by index. It will automatically resize the internal array when the capacity exceeds 80%.
@@ -1155,3 +1195,82 @@ public final class ImmutableClass {
 }
 
 ```
+
+### Second largest integer
+```
+public static int findSecondLargest(int[] arr) {
+        if (arr == null || arr.length < 2) {
+            throw new IllegalArgumentException("Array must contain at least two elements.");
+        }
+
+        int largest = Integer.MIN_VALUE;
+        int secondLargest = Integer.MIN_VALUE;
+
+        for (int num : arr) {
+            if (num > largest) {
+                secondLargest = largest;
+                largest = num;
+            } else if (num > secondLargest && num < largest) {
+                secondLargest = num;
+            }
+        }
+
+        if (secondLargest == Integer.MIN_VALUE) {
+            throw new IllegalArgumentException("No second largest element found.");
+        }
+
+        return secondLargest;
+    }
+```
+
+
+## Other topics
+
+### Q.What is kubernetes?
+- Kubernetes, often abbreviated as K8s,is designed to automate deploying, scaling, and operating application containers.
+- *Why Do We Require Kubernetes?*
+- In simple terms, Kubernetes helps manage applications that are made up of multiple containers. Containers are like lightweight, standalone, and executable software packages that include everything needed to run a piece of software, including the code, runtime, system tools, and libraries. Containers can run on any computer and in any environment without needing to be modified.
+1. Automates Deployment and Scaling:
+- Without Kubernetes: Manually deploying and scaling applications across multiple servers is labor-intensive and error-prone.
+- With Kubernetes: You can define how your applications should be deployed and scaled, and Kubernetes automatically manages these tasks.
+2. Self-Healing:
+- Without Kubernetes: If a part of your application fails, you need to manually detect and fix the issue.
+- With Kubernetes: It automatically detects failures, replaces failed containers, and restarts them as needed.
+3. Efficient Resource Utilization:
+- Without Kubernetes: Ensuring efficient use of server resources can be challenging.
+- With Kubernetes: It optimally places containers based on their resource requirements and server capacity.
+4. Load Balancing:
+- Without Kubernetes: Distributing network traffic across multiple containers manually can be complex.
+- With Kubernetes: It automatically load balances network traffic to ensure stability and performance.
+
+### Q.Microservice vs monolithic difference 
+- Microservices and monolithic architectures are two different approaches to designing and building software applications. Each has its own advantages and disadvantages, and they are suitable for different types of projects and organizational needs.
+1. Single Codebase vs. Decoupled Services
+- Monolithic Architecture: Single Codebase - All components of the application are tightly integrated into a single, unified codebase. This means that the user interface, business logic, and data access layers are all part of one large codebase.
+- Microservices Architecture: Decoupled Services - The application is divided into smaller, independent services. Each service handles a specific piece of functionality and can be developed, deployed, and scaled independently.
+2. Single Deployment vs. Independent Deployment
+- Monolithic Architecture: Single Deployment - The entire application is packaged and deployed as a single unit. Any change in the application requires redeploying the entire system.
+- Microservices Architecture: Independent Deployment - Each microservice can be deployed independently, allowing for more flexible and faster deployment cycles.
+3. Tightly Coupled Components vs. Communication
+- Monolithic Architecture: Tightly Coupled Components - Components are tightly linked, making it difficult to isolate and modify individual parts without impacting others.
+- Microservices Architecture: Communication - Services typically communicate with each other through well-defined APIs, often using HTTP/REST or messaging queues.
+4. Scalability
+- Monolithic Architecture: Scalability - Difficult to scale components independently. The entire application must be scaled even if only one part needs more resources.
+- Microservices Architecture: Scalability - Individual services can be scaled independently based on demand, leading to more efficient use of resources.
+5. Deployment
+- Monolithic Architecture: Deployment - Any change, even a small one, requires redeploying the entire application, which can be time-consuming and risky.
+- Microservices Architecture: Deployment - Small, independent services can be deployed more frequently and quickly, enabling continuous delivery and integration.
+
+### Q.Kubernetes with microservices vs kubernetes with monolithic
+1. Microservices with Kubernetes
+- Independent Scaling: Kubernetes efficiently scales individual microservices based on demand, optimizing resource usage.
+- Resilience: Kubernetes handles container failures and manages microservices independently, ensuring overall application stability.
+- Continuous Deployment: Kubernetes supports seamless updates and deployments, aligning well with microservices' frequent updates.
+
+2. Monolithic Applications on Kubernetes
+- Single Deployment Unit: Monolithic apps are deployed as one unit; any change requires full redeployment, which can be inefficient.
+- Resource Utilization: Scaling monolithic applications means scaling the entire app, leading to potential resource wastage.
+- Complexity in Scaling: Different scaling needs within monolithic apps can't be individually addressed, causing possible over-provisioning.
+
+
+
