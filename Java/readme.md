@@ -220,7 +220,212 @@ public class TestOverriding {
 3. Caching Hashcode: Immutable strings can cache their hashcode. Since the hashcode of an immutable string never changes, it can be computed once and reused, improving performance in scenarios like using strings as keys in hash-based collections.
 4. Thread Safety (Concurrency): Immutable objects are inherently thread-safe, as their state cannot change after they are created. This eliminates the need for synchronization when strings are shared between multiple threads, simplifying concurrent programming. (*Strings are thread safe*)
 
+### Q.Apart from string which class is immutable 
+1. Wrapper Classes: All the primitive wrapper classes in Java are immutable. Integer, Long, Float etc.
+2.  LocalDate: Represents an immutable date without time and time zone.
+3. LocalTime: Represents an immutable time-of-day without date and time zone.
 
+### Q.You are working on project where there is requirements to have all methods of string class ,There are some custom requirements where we need to modify String class . We need to extend string class , is it possible to write a class to extend String class
+- In Java, you cannot extend the String class because it is declared as final. The final keyword in the class declaration prevents any other class from inheriting from it. This design choice ensures that the String class remains immutable and secure.
+- *Alternatives to Extending the String Class*
+1. *Composition*: Create a custom class that wraps a String object and provides additional methods.
+2. *Utility Class*: Create a utility class with static methods that operate on String objects.
+3. *Use of Decorator Pattern*: Implement the decorator pattern to extend the functionality of the String class. (don't mention if not knowing about design patterns)
+
+1. Using Composition
+```
+public final class CustomString {
+    private final String str;
+
+    public CustomString(String str) {
+        this.str = str;
+    }
+
+    // Delegate methods to the internal string
+    public int length() {
+        return str.length();
+    }
+
+    public char charAt(int index) {
+        return str.charAt(index);
+    }
+
+    public CustomString concat(String str) {
+        return new CustomString(this.str.concat(str));
+    }
+
+    public boolean equals(Object obj) {
+        return str.equals(obj);
+    }
+
+    public int hashCode() {
+        return str.hashCode();
+    }
+
+    public String toString() {
+        return str;
+    }
+
+    // Custom method
+    public CustomString customMethod() {
+        // Your custom implementation
+        return this;
+    }
+
+    // Add more methods as required
+}
+```
+
+2. Utility Class
+```
+public final class StringUtils {
+
+    private StringUtils() {
+        // Prevent instantiation
+    }
+
+    public static String customMethod(String str) {
+        // Your custom implementation
+        return str;
+    }
+
+    // Add more static methods as required
+}
+```
+
+3. Using Decorator Pattern
+```
+public interface CustomStringInterface {
+    int length();
+    char charAt(int index);
+    CustomStringInterface concat(String str);
+    boolean equals(Object obj);
+    int hashCode();
+    String toString();
+    // Add custom methods
+    CustomStringInterface customMethod();
+}
+
+public final class CustomStringDecorator implements CustomStringInterface {
+    private final String str;
+
+    public CustomStringDecorator(String str) {
+        this.str = str;
+    }
+
+    public int length() {
+        return str.length();
+    }
+
+    public char charAt(int index) {
+        return str.charAt(index);
+    }
+
+    public CustomStringInterface concat(String str) {
+        return new CustomStringDecorator(this.str.concat(str));
+    }
+
+    public boolean equals(Object obj) {
+        return str.equals(obj);
+    }
+
+    public int hashCode() {
+        return str.hashCode();
+    }
+
+    public String toString() {
+        return str;
+    }
+
+    public CustomStringInterface customMethod() {
+        // Your custom implementation
+        return this;
+    }
+}
+```
+
+### Q.Collections in Java (it's main interfaces anc classes)
+1. List Interface: Represents an ordered collection (sequence) that allows duplicate elements.
+- ArrayList: Resizable-array implementation of the List interface.
+- LinkedList: Doubly-linked list implementation of the List and Deque interfaces.
+- Vector: Synchronized resizable-array implementation of the List interface.
+- Stack: Subclass of Vector that implements a last-in-first-out stack.
+
+2. Set Interface: Represents a collection that does not allow duplicate elements.
+- HashSet: Hash table-backed implementation of the Set interface.
+- LinkedHashSet: Hash table and linked list implementation of the Set interface, with predictable iteration order.
+- TreeSet: Red-black tree implementation of the NavigableSet interface.
+- EnumSet: Specialized Set implementation for use with enum types.
+
+3. Queue Interface: Represents a collection designed for holding elements prior to processing.
+- PriorityQueue: Unbounded priority queue based on a priority heap.
+- LinkedList: Can also be used as a Queue implementation.
+- ArrayDeque: Resizable-array implementation of the Deque interface.
+- LinkedBlockingQueue: Linked node-based implementation of the BlockingQueue interface.
+
+4. Map Interface: Represents a collection that maps keys to values, without duplicate keys. Does not extend Collection,rest mentioned above does.
+- HashMap: Hash table-based implementation of the Map interface.
+- LinkedHashMap: Hash table and linked list implementation of the Map interface, with predictable iteration order.
+- TreeMap: Red-black tree implementation of the NavigableMap interface.
+- ConcurrentHashMap: Concurrent implementation of the Map interface.
+- WeakHashMap: Implementation of the Map interface with weak keys, allowing for automatic garbage collection of keys.
+
+### Q.Explain Map in Java
+- In Java, the Map interface represents a mapping between a key and a value. It is part of the Java Collections Framework and provides a way to store and manipulate key-value pairs. Unlike collections such as List or Set, Map does not inherit from the Collection interface.
+- Key Features of Map
+1. Key-Value Pairs: A Map stores data in key-value pairs.
+2. No Duplicate Keys: Each key in a Map must be unique.
+3. Value Access: Values can be accessed, inserted, or removed using their corresponding keys.
+4. Null Keys and Values: Some implementations of Map allow null keys and values (e.g., HashMap).
+
+- Common Implementations
+1. HashMap: Provides constant-time performance for basic operations (get and put). Allows null keys and values. Does not guarantee any order of the keys.
+2. LinkedHashMap: Extends HashMap to maintain a doubly-linked list of the entries. Preserves the insertion order or the order in which keys were last accessed.
+3. TreeMap: Implements the NavigableMap interface. Keys are sorted based on their natural ordering or by a specified comparator. Guarantees log(n) time cost for basic operations.
+4. ConcurrentHashMap: Part of the java.util.concurrent package. Designed for concurrent access, allowing concurrent reads and writes without locking the entire map.
+
+### Q.What is time complexity of Hashmap 
+- The time complexity of operations in a HashMap largely depends on how well the hash function distributes the keys and how collisions are handled. 
+- Average case:
+1. Insertion (put): O(1)
+2. Lookup (get): O(1)
+3. Deletion (remove): O(1)
+4. Contains Key (containsKey): O(1)
+
+- Worst-Case Time Complexities
+1. Insertion (put): O(n) (In the worst case, if many keys hash to the same bucket (causing a collision), a linked list (or a balanced tree, in the case of Java 8+ with many collisions) may be used. In the case of a linked list, insertion in the worst case is O(n) because it may require traversing the list.)
+2. Lookup (get): O(n)
+3. Deletion (remove): O(n)
+4. Contains Key (containsKey): O(n)
+
+- Factors Affecting Time Complexity (not asked usually)
+1. Hash Function Quality: A good hash function distributes keys evenly across the hash table, minimizing collisions and maintaining constant time complexity for operations.
+2. Load Factor: The load factor is the measure of how full the hash table is allowed to get before its capacity is automatically increased. A lower load factor reduces collisions but uses more memory.
+3. Collision Resolution Strategy: HashMap uses separate chaining (linked lists or trees) to resolve collisions. The efficiency of this strategy affects the overall time complexity, especially when many collisions occur.
+4. Initial Capacity: The initial capacity of the hash table affects the need for resizing. A higher initial capacity reduces the frequency of resizing operations, which can be costly.
+
+### Q.Any connection between immutable class and Map/Why keys in Map are immutable?
+- Yes, there is a connection between immutable classes and the use of Map. (Immutable Keys) - Using immutable objects as keys in a Map is a best practice. 
+1. Consistency: The immutability of keys ensures that their hash codes and equality checks remain consistent throughout their lifetime. If a key's state were to change while it is in the Map, it could lead to incorrect behavior, such as the keys can get lost..
+2. Thread Safety: Immutable keys are inherently thread-safe. If multiple threads access the Map concurrently, there is no risk of the keys being modified by one thread while another thread is accessing or modifying the Map.
+
+### Q.Let's say there is a class that is not immutable, can we use it as key of map?
+- It can be used but it is generally not recommended because it can lead to unpredictable behavior. Here are some reasons why using mutable objects as keys in a Map is problematic, along with potential workarounds if you must use mutable objects.
+1. Problems with Using Mutable Keys
+- Inconsistent Behavior: If a key's state changes after it has been added to the Map, its hash code and equality comparison might also change. This can cause the key to become "lost" in the Map because it will no longer be found in the bucket corresponding to its original hash code.
+- Difficulty in Retrieving Values: If the key has changed, you might not be able to retrieve the associated value using the mutated key or even the original key.
+
+### Q. Let's say I have created a custom class , mutuble class which always returns 1 , can we use this class as key in Map. If we do so what are disadvantages 
+- If you create a custom mutable class where the hashCode() method always returns 1, it can technically be used as a key in a Map, but it comes with significant disadvantages. 
+Disadvantages of Using Such a Class as a Key in a Map
+1. Hash Collisions: Since the hashCode() method always returns 1, all keys will hash to the same bucket in the HashMap. This leads to a high number of hash collisions.
+2. Linked List in Buckets: In the case of a large number of keys, the single bucket will degenerate into a linked list (or a balanced tree in Java 8+ if the number of elements in the bucket exceeds a threshold). This makes the time complexity for basic operations (get, put, remove) degrade from O(1) to O(n).
+3. Slow Operations: With many keys in a single bucket, the performance of get, put, and remove operations will be similar to that of a linked list, resulting in O(n) time complexity for these operations.
+
+### Q.(follow up question) And will the time complexity get affected and what will be new time complexity?
+- Insertion (put): O(n) with a linked list. O(log n) with a balanced tree (Java 8+ with many collisions)
+- Lookup (get): O(n) with a linked list. O(log n) with a balanced tree (Java 8+ with many collisions)
+- Deletion (remove): O(n) with a linked list. O(log n) with a balanced tree (Java 8+ with many collisions)
 
 ## Coding and SQL
 
@@ -717,5 +922,46 @@ public static boolean areAnagrams(String str1, String str2) {
         // If the map is empty, the strings are anagrams
         return charCountMap.isEmpty();
     }
+```
+
+### Custom Immutable class in Java
+- Steps to Make a Class Immutable
+1. Declare the class as final so it cannot be subclassed.
+2. Make all fields private and final to prevent modification after the object is constructed.
+3. Do not provide setters for any fields.
+4. Provide only getters to access the fields.
+5. If the class holds references to mutable objects, ensure that getters return deep copies of these objects.
+- the tags list passed to the constructor is copied using the new ArrayList<>(tags) statement. This deep copy ensures that any modifications to the original tags list after the ImmutableClass object is created do not affect the internal state of the ImmutableClass object.
+
+```
+public final class ImmutableClass {
+    private final int id;
+    private final String name;
+    private final List<String> tags;
+
+    // Constructor
+    public ImmutableClass(int id, String name, List<String> tags) {
+        this.id = id;
+        this.name = name;
+        // Create a deep copy of the list to ensure immutability
+        this.tags = new ArrayList<>(tags);
+    }
+
+    // Getters
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    // Return a copy of the list to preserve immutability
+    public List<String> getTags() {
+        return new ArrayList<>(tags);
+    }
+
+    // No setters provided
+}
 
 ```
