@@ -427,6 +427,142 @@ Disadvantages of Using Such a Class as a Key in a Map
 - Lookup (get): O(n) with a linked list. O(log n) with a balanced tree (Java 8+ with many collisions)
 - Deletion (remove): O(n) with a linked list. O(log n) with a balanced tree (Java 8+ with many collisions)
 
+### Difference between imports and Static imports
+1. Regular Imports
+- Regular imports are used to import classes and interfaces from other packages so that they can be used in your code without needing to specify their full package name each time.
+2. Static Imports
+- Static imports are used to import static members (fields and methods) from a class so that they can be used without qualifying them with the class name.
+- With regular imports, you still need to create an instance of the class or use the class name to access its static members.With static imports, you can directly use the static members without prefixing them with the class name.
+
+- Use regular imports when you need to use classes or interfaces from other packages.
+- Use static imports sparingly and only when it enhances readability and reduces code verbosity, such as when using constants or utility methods frequently.
+
+### Which access modifiers are available in Java and what are their purposes
+1. public
+- Purpose: The public modifier allows the member (class, method, or variable) to be accessible from any other class.
+- Usage: Applied to classes, methods, and variables.
+- Scope: Accessible from any other class in any package.
+2. private
+- Purpose: The private modifier restricts the member to be accessible only within the class in which it is defined.
+- Usage: Applied to methods and variables.
+- Scope: Accessible only within the class itself.
+3. protected
+- Purpose: The protected modifier allows the member to be accessible within its own package and by subclasses (including subclasses in different packages).
+- Usage: Applied to methods and variables.
+- Scope: Accessible within the same package and by subclasses.
+4. Default (package-private)
+- Purpose: When no access modifier is specified, the member is accessible only within its own package. This is also known as package-private or default access.
+- Usage: Applied to classes, methods, and variables.
+- Scope: Accessible only within the same package.
+
+### Comparable vs Comparator
+1. Definition Location:
+- Comparable: The comparison logic is defined within the class itself.
+- Comparator: The comparison logic is defined in a separate class.
+2.Method:
+- Comparable: compareTo(T o)
+- Comparator: compare(T o1, T o2)
+3. Usage:
+- Comparable: Used when a single natural ordering is needed.
+- Comparator: Used when multiple orderings are needed or when you cannot modify the class to implement Comparable.
+4.Flexibility:
+- Comparable: Less flexible since it defines a single comparison method.
+- Comparator: More flexible as you can create multiple comparator classes for different comparison strategies.
+
+-In summary, use Comparable when you need a single, natural ordering of objects and Comparator when you need to define multiple, custom orderings or if you cannot modify the class to implement Comparable.
+
+### Explain what are exceptions in Java and what are frequently occurring exceptions and how to resolve them
+- In Java, exceptions are events that disrupt the normal flow of a program’s instructions. They are objects that represent errors or unexpected conditions that a program may encounter during its execution. Exceptions can be thrown by the Java runtime system or by user code.
+- Types of Exceptions
+1. Checked Exceptions: These are exceptions that are checked at compile-time. The compiler ensures that these exceptions are either caught or declared in the method signature.
+Examples: IOException, SQLException
+2. Unchecked Exceptions: These are exceptions that are not checked at compile-time. They are subclasses of RuntimeException.
+Examples: NullPointerException, ArrayIndexOutOfBoundsException, ArithmeticException
+
+- Frequently Occurring Exceptions and How to Resolve Them
+1. NullPointerException
+- Cause: This exception is thrown when an application attempts to use an object reference that has the null value.
+- Resolution: Ensure that the object is properly initialized before use. Check for null before accessing the object's methods or fields.
+```
+if (obj != null) {
+    obj.someMethod();
+}
+```
+2. ArrayIndexOutOfBoundsException
+- Cause: This exception is thrown when trying to access an array element with an index that is outside the bounds of the array.
+- Resolution: Ensure that the index is within the valid range before accessing the array element.
+```
+if (index >= 0 && index < array.length) {
+    System.out.println(array[index]);
+}
+```
+3. ClassNotFoundException
+- Cause: This exception is thrown when an application tries to load a class through its string name but no definition for the class with the specified name could be found.
+- Resolution: Ensure that the class name is correct and the class is available in the classpath.
+```
+try {
+    Class.forName("com.example.MyClass");
+} catch (ClassNotFoundException e) {
+    e.printStackTrace();
+}
+```
+
+- Handling Exceptions
+- Java provides a robust mechanism to handle exceptions using try, catch, finally, and throw/throws.
+1. try: A block of code where exceptions are monitored.
+2. catch: A block of code where exceptions are handled.
+3. finally: A block of code that will always execute, whether an exception is thrown or not.
+4. throw: Used to explicitly throw an exception.
+5. throws: Used in method signatures to declare the exceptions that a method can throw.
+```
+public class ExceptionExample {
+    public static void main(String[] args) {
+        try {
+            int[] array = new int[5];
+            System.out.println(array[10]); // This will throw ArrayIndexOutOfBoundsException
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array index is out of bounds!");
+        } finally {
+            System.out.println("This block always executes.");
+        }
+    }
+}
+```
+
+### Difference between final finally and finalize 
+1. final
+- Purpose: The final keyword is used to define constants, prevent method overriding, and prevent inheritance.
+- Final Variable: When a variable is declared as final, its value cannot be changed once it is initialized.
+- Final Method: When a method is declared as final, it cannot be overridden by subclasses.
+- Final Class: When a class is declared as final, it cannot be subclassed.
+2. finally
+- Purpose: The finally block is used in exception handling to execute a block of code regardless of whether an exception is thrown or not. It is typically used to release resources such as closing files, releasing database connections, etc.
+- Usage: The finally block is always executed after the try and catch blocks, even if an exception is not thrown.
+3. finalize
+- Purpose: The finalize method is called by the garbage collector on an object when garbage collection determines that there are no more references to the object. It is used to perform cleanup operations before the object is permanently removed from memory.
+- Usage: The finalize method is defined in the Object class and can be overridden to clean up resources.
+
+### How many strings will be created and explain them 
+```
+String s1 = "abc";
+String s2 = "efg";
+String s3 = new String("abc");
+String s4 = "abc";
+```
+- Summary of String Creation
+1. String Literals in the String Pool:
+- "abc": 1 string literal (referred to by s1 and s4)
+- "efg": 1 string literal (referred to by s2)
+2. String Objects in the Heap:
+- new String("abc"): 1 new String object in the heap (referred to by s3)
+3. Total Number of Strings Created:
+- String Pool: 2 (one for "abc" and one for "efg")
+- Heap Memory: 1 (created by new String("abc"))
+- Total Strings: 3
+
+
+## Multithreading
+
 ### Q.Is hashmap thread safe?
 - No, HashMap is not thread-safe. If multiple threads access a HashMap concurrently and at least one of the threads modifies the map structurally (e.g., adding or removing elements), it must be synchronized externally to avoid data corruption and unpredictable behavior. Structural modifications are those that affect the size of the map or modify the internal structure of the map in a way that can cause a concurrent access issue.
 
@@ -1223,6 +1359,137 @@ public static int findSecondLargest(int[] arr) {
     }
 ```
 
+### Top 10 most occurring elements and sort as per the frequency
+
+**Using Priority Queue**
+```
+public static void findTop10Words(String text) {
+        // Split the text into words, assuming words are separated by spaces and punctuation
+        String[] words = text.split("\\W+");
+        
+        // Use a HashMap to count the frequency of each word
+        Map<String, Integer> wordCount = new HashMap<>();
+        for (String word : words) {
+            word = word.toLowerCase(); // Convert to lowercase for case-insensitive counting
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        }
+        
+        // Use a PriorityQueue to find the top 10 most frequent words
+        PriorityQueue<Entry<String, Integer>> pq = new PriorityQueue<>(new Comparator<Entry<String, Integer>>() {
+            @Override
+            public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
+                return e1.getValue().compareTo(e2.getValue());
+            }
+        });
+        
+        for (Entry<String, Integer> entry : wordCount.entrySet()) {
+            pq.offer(entry);
+            if (pq.size() > 10) {
+                pq.poll(); // Remove the entry with the lowest frequency
+            }
+        }
+        
+        // Extract the top 10 words from the PriorityQueue and sort them by frequency
+        List<Entry<String, Integer>> topWords = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            topWords.add(pq.poll());
+        }
+        Collections.sort(topWords, (e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+        
+        // Print the top 10 words with their frequencies
+        for (Entry<String, Integer> entry : topWords) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+```
+- Explanation:
+- Splitting the Text: The text is split into words using \\W+, which splits by non-word characters.
+- Counting Frequencies: A HashMap is used to count the frequency of each word, converting words to lowercase to ensure case-insensitive counting.
+- Using PriorityQueue: The use of a PriorityQueue in the solution helps to efficiently manage and retrieve the top N most frequent words from the frequency map. A PriorityQueue (min-heap) keeps track of the top 10 most frequent words. If the size exceeds 10, the least frequent word is removed.
+- Sorting and Printing: The remaining words in the priority queue are sorted by frequency in descending order, and then printed.
+
+**Without using Priority Queue**
+
+```
+    public static void findTop10Words(String text) {
+        // Split the text into words, assuming words are separated by spaces and punctuation
+        String[] words = text.split("\\W+");
+        
+        // Use a HashMap to count the frequency of each word
+        Map<String, Integer> wordCount = new HashMap<>();
+        for (String word : words) {
+            word = word.toLowerCase(); // Convert to lowercase for case-insensitive counting
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        }
+        
+        // Convert the map to a list of entries and sort by frequency
+        List<Entry<String, Integer>> wordList = new ArrayList<>(wordCount.entrySet());
+        wordList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue())); // Sort in descending order
+        
+        // Print the top 10 words with their frequencies
+        for (int i = 0; i < Math.min(10, wordList.size()); i++) {
+            Entry<String, Integer> entry = wordList.get(i);
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+```
+- PriorityQueue Approach: Efficiently maintains the top N elements with O(M log 10) complexity, where M is the number of unique words.
+- Sorting Entire List: Directly sorting the list of all word frequencies has a complexity of O(M log M).
+- For very large datasets, the priority queue approach is more efficient and scalable.
+
+
+### I have 3 integer arrays namely , A , B ,C. All 3 are sorted arrays. I want to find all common numbers in which exist in all 3 arrays. Each array length can be different.
+- To find all common numbers in three sorted arrays A, B, and C, you can use a three-pointer approach. This method is efficient with a time complexity of O(n1 + n2 + n3) where n1, n2, and n3 are the lengths of the arrays A, B, and C respectively. The idea is to traverse all three arrays simultaneously using three pointers.
+
+```
+public static List<Integer> findCommonElements(int[] A, int[] B, int[] C) {
+        List<Integer> result = new ArrayList<>();
+        int i = 0, j = 0, k = 0;
+
+        // Traverse all arrays simultaneously
+        while (i < A.length && j < B.length && k < C.length) {
+            // If the current elements in A, B, and C are equal, add to the result
+            if (A[i] == B[j] && B[j] == C[k]) {
+                result.add(A[i]);
+                i++;
+                j++;
+                k++;
+            }
+            // If A[i] is smaller, increment i
+            else if (A[i] < B[j]) {
+                i++;
+            }
+            // If B[j] is smaller, increment j
+            else if (B[j] < C[k]) {
+                j++;
+            }
+            // If C[k] is smaller, increment k
+            else {
+                k++;
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] A = {1, 5, 10, 20, 40, 80};
+        int[] B = {6, 7, 20, 80, 100};
+        int[] C = {3, 4, 15, 20, 30, 70, 80, 120};
+        
+        List<Integer> commonElements = findCommonElements(A, B, C);
+        
+        // Print the common elements
+        System.out.println("Common elements: " + commonElements);
+    }
+}
+```
+- Explanation:
+- The while loop continues until one of the pointers reaches the end of its array.
+- If the elements at A[i], B[j], and C[k] are the same, it means the element is common to all three arrays. Add it to the result list and increment all three pointers.
+- If A[i] is less than B[j], increment i to move to the next element in A.
+- If B[j] is less than C[k], increment j to move to the next element in B.
+- If C[k] is less than the others, increment k to move to the next element in C.
 
 ## Other topics
 
